@@ -1054,6 +1054,17 @@
                                                    class="form-control rounded-right">
                                         </label>
                                     </div>
+                                  <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="la la-search"></i>
+                                            </span>
+                                    </div>
+                                    <select class="form-control rounded-right"   aria-label="Filtro Cobertura" id="ship"
+                                            @change="getShipping()">
+                                      <option v-for="(ship) in shippingAreaData" :value="ship.id">{{ship.area}}</option>
+                                    </select>
+                                  </div>
                                 </div>
                                 <div class="col-12 pr-0">
                                     <div>
@@ -1066,17 +1077,34 @@
                                                    @click.prevent="setHoldOrderToCart(customerHoldOrder)">
 
                                                     <div class="row">
-                                                        <div class="col-5 text-left">
+                                                        <div class="col-4 text-left">
                                                             <span class="font-weight-bold pl-1">{{
                                                                     customerHoldOrder.invoice_id
                                                                 }}</span>
                                                         </div>
-                                                        <div class="col-7">
-                                                            <span class="text-center">
+                                                        <div class="col-4">
+                                                            <span v-if="customerHoldOrder.customer == null" class="text-center">
+                                                                {{ dateFormats(customerHoldOrder.date) }}
+                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                                                            </span>
+                                                          <span v-else-if="customerHoldOrder.customer != null" class="text-center">
+                                                                {{ customerHoldOrder.customer.first_name}}
+                                                                {{ customerHoldOrder.customer.last_name}}
                                                                 {{ dateFormats(customerHoldOrder.date) }}
                                                                 {{ timeFormateForDatetime(customerHoldOrder.time) }}
                                                             </span>
                                                         </div>
+                                                      <div class="col-4 text-center">
+                                                            <span v-if="customerHoldOrder.shipping == null" class="font-weight-bold pl-1">
+                                                              Envió no configurado
+                                                            </span>
+
+                                                        <span v-else-if="customerHoldOrder.shipping != null" class="font-weight-bold pl-1">
+                                                          <p v-for="(ship) in shippingAreaData"  v-if="ship.id == customerHoldOrder.shipping.shipping_area_id">
+                                                            {{ship.area}}
+                                                          </p>
+                                                          </span>
+                                                      </div>
                                                     </div>
                                                 </a>
                                             </div>
@@ -1170,6 +1198,151 @@
                 </div>
             </div>
         </div>
+
+<!--      modal shippment-->
+      <div class="modal fade" id="shippment-orders-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <pre-loader class="small-loader-container" v-if="!hideOrderHoldItemsPreLoader"/>
+            <div class="pt-2 px-4 pb-4" v-else>
+              <a href="#" class="close" data-dismiss="modal"
+                 aria-label="Close" @click.prevent="">
+                <i class="la la-close text-grey"/>
+              </a>
+              <h5 class="mb-3 text-center">
+                Configuración de envió
+              </h5>
+
+              <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                <div class="d-flex align-items-center">
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio"
+                           name="shipment"
+                           class="custom-control-input"
+                           id="shipment-yes"
+                           checked="checked"
+                           @click="addShipmentStatus(1)"
+                           value="1"
+                           v-model="addShipment"/>
+                    <label class="custom-control-label"
+                           for="shipment-yes">
+                      {{ trans('lang.yes') }}
+                    </label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio"
+                           name="shipment"
+                           class="custom-control-input"
+                           id="shipment-no"
+                           @click="addShipmentStatus(0)"
+                           value="0"
+                           v-model="addShipment"/>
+                    <label class="custom-control-label"
+                           for="shipment-no">
+                      {{ trans('lang.no') }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="addShipmentInfo" class="">
+                <div class="form-group row ml-0">
+                  <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label">
+                    {{ trans('lang.shipping_area') }}
+                  </label>
+                  <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                    <select v-model="shippingAreaId"
+                            v-validate="'required'"
+                            data-vv-as="shipping area"
+                            id="id"
+                            name="shipping_area"
+                            class="form-control"
+                            @change="setShippingPrice">
+                      <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
+                      <option v-for="(ship) in shippingAreaData" :value="ship.id">{{ship.area}}</option>
+                    </select>
+
+                    <div class="heightError">
+                      <small class="text-danger" v-show="errors.has('shipping_area')">
+                        {{ errors.first('shipping_area') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row ml-0">
+                  <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label">
+                    {{ trans('lang.price') }}
+                  </label>
+                  <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                    <input v-validate="'required'"
+                           name="price"
+                           type="text"
+                           class="form-control"
+                           v-model="shippingPrice"/>
+                    <div class="heightError">
+                      <small class="text-danger" v-show="errors.has('price')">
+                        {{ errors.first('price') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row ml-0">
+                  <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label">{{
+                      trans('lang.address')
+                    }}</label>
+                  <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                    <input v-validate="'required'"
+                           name="address"
+                           type="text"
+                           class="form-control"
+                           v-model="shippingAddress"
+                    />
+                    <div class="heightError">
+                      <small class="text-danger" v-show="errors.has('address')">
+                        {{ errors.first('address') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row ml-0">
+                  <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label">
+                    Departamento
+                  </label>
+                  <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                    <input v-validate="'required'" name="shippingDepartamento" type="text" class="form-control"
+                           v-model="shippingDepartamento" />
+                    <div class="heightError">
+                      <small class="text-danger" v-show="errors.has('shippingDepartamento')">
+                        {{ errors.first('shippingDepartamento') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group row ml-0">
+                  <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label">
+                    Municipio
+                  </label>
+                  <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                    <input v-validate="'required'" name="shippingMunicipio" type="text" class="form-control"
+                           v-model="shippingMunicipio" />
+                    <div class="heightError">
+                      <small class="text-danger" v-show="errors.has('shippingMunicipio')">
+                        {{ errors.first('shippingMunicipio') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn app-color mobile-btn mr-1 mb-1"  @click="saveShipping()">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
         <!-- Confirmation Modal -->
         <confirmation-modal id="clear-cart-modal"

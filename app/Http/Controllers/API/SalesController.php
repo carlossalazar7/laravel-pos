@@ -1543,6 +1543,29 @@ class SalesController extends Controller
 
         ShippingInformation::store($ShippingData);
     }
+    public function saveShippingInformation(Request $request)
+    {
+        $ShippingData = array();
+        $ShippingData['shipping_area_id'] = $request->shippingAreaId;
+        $ShippingData['price'] = $request->shippingPrice;
+        $ShippingData['shipping_address'] = $request->shippingAreaSddress;
+        $ShippingData['order_id'] = $request->orderId;
+        $ShippingData['branch_id'] = $request->branchId;
+        $ShippingData['departamento'] = $request->departamento;
+        $ShippingData['municipio'] = $request->municipio;
+
+        ShippingInformation::store($ShippingData);
+        $response = [
+            'message' => 'Informacion de envio guardada'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function getShipping(Request $request){
+        $shippings = ShippingInformation::where("order_id","=",$request->id)->first();
+        return $shippings;
+    }
 
     public function insertInternalTransfer($orderData, $transferBranch, $userBranchId, $invoiceFixes, $purchaseLastInvoiceNumber)
     {

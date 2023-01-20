@@ -6,7 +6,7 @@ namespace App\Models;
 
 class ShippingInformation extends BaseModel
 {
-    protected $fillable = ['shipping_area_id', 'price', 'shipping_address', 'order_id', 'branch_id', 'status'];
+    protected $fillable = ['shipping_area_id', 'price', 'shipping_address', 'order_id', 'branch_id', 'status','municipio','departamento'];
 
     public static function salesShipmentList($id, $searchValue, $columnSortedBy, $limit, $offset, $columnName, $requestType)
     {

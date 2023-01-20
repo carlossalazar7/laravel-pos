@@ -487,6 +487,7 @@
                    :class="{'disabled': parseInt(customerHoldOrders.length) === 0 || parseInt(cart.length) !== 0 || salesOrReturnType === 'returns' }"
                    @click.prevent="openHoldOrderModal">
                     <i class="la la-recycle la-2x p-2 app-color-text hold-icon"></i>
+                  <p class="app-color-text p-2">Lista</p>
                     <span class="badge badge-danger hold-items-badge-position"
                           v-if="countHoldOrder>0">{{ countHoldOrder }}</span>
                 </a>
@@ -504,10 +505,11 @@
                    href="#"
                    class="col-4 p-0 text-center border-right hold-cart"
                    :class="{'disabled': cart.length === 0 || !isConnected && offline == 0}"
-                   @click.prevent="orderHold()"
+                   @click.prevent="orderHold() "
                    v-shortkey="hold_card_item"
                    @shortkey="commonMethodForAccessingShortcut('holdCard')">
                     <i class="la la-pause la-2x p-2 text-warning"></i>
+                  <p class="p-2 text-warning">Guardar</p>
                 </a>
 
                 <a href="#"
@@ -519,6 +521,7 @@
                    v-shortkey="cancel_card_item"
                    @shortkey="commonMethodForAccessingShortcut('cancelCarditem')">
                     <i class="la la-times-circle la-2x p-2 text-danger"></i>
+                  <p class="text-danger">Cancelar</p>
                 </a>
             </div>
             <div v-else class="row mx-0 receiveDeleteButton">
@@ -529,6 +532,7 @@
                    :class="{'disabled': parseInt(cart.length) === 0}"
                    @click.prevent="">
                     <i class="la la-times-circle la-2x p-2 text-danger"></i>
+                  <p class="p-2 text-white">Cancelar</p>
                 </a>
             </div>
         </div>
@@ -1214,6 +1218,8 @@ export default {
         },
 
         orderHold() {
+          $('#shippment-orders-modal').modal('show');
+          if (!this.isCartComponentActive) $('#cart-modal-for-mobile-view').modal('hide');
             this.cartSave('hold');
         },
         cartSave(status = 'done') {

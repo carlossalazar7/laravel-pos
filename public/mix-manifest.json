@@ -1,6 +1,3 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/invoice/80mm.css": "/css/invoice/80mm.css",
-    "/css/invoice.css": "/css/invoice.css",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js"
 }

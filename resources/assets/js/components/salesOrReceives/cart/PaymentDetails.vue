@@ -400,6 +400,7 @@
                                     <hr class="custom-margin">
                                     <span
                                         v-if="(salesOrReceivingType !== 'internal-transfer') && parseInt(balance)===0 || paidAmount == finalCart.grandTotal">
+                                      <!--   proceso de pago -->
                                         <button class="btn btn-block app-color payment-button"
                                                 v-shortkey="donePaymentShortcut"
                                                 :disabled="!status.isConnected && offline == 0"

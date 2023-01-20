@@ -178,6 +178,17 @@ export default {
         invoice_size: '',
         adjustedDiscount: 0,
         originalSoldProductForReturn: {},
+        addShipment: '',
+        addShipmentInfo: '',
+        shippingAreaId: '',
+        shippingArea: '',
+        shippingPrice: '',
+        shippingAddress: '',
+        shippingDepartamento: '',
+        shippingMunicipio: '',
+        shippingData: [],
+        shippingInfo: {},
+        shippingInfoGet:[],
     }),
     computed: {
         filteredHoldOrder() {
@@ -1461,6 +1472,16 @@ export default {
                 }
             );
         },
+        addShipmentStatus(value) {
+            this.addShipment = value;
+            if (parseInt(this.addShipment) === 1) {
+                this.addShipmentInfo = true;
+                this.$emit('addShipmentInfo', this.shippingInfo, true);
+            } else {
+                this.addShipmentInfo = false;
+                this.$emit('addShipmentInfo', this.shippingInfo, false);
+            }
+        },
         setHoldOrderToCart(holdItem) {
             let instance = this;
             this.orderFromHold = holdItem;
@@ -2003,6 +2024,65 @@ export default {
         openHoldOrderModalFromCart() {
             $('#hold-orders-modal').modal('show');
             if (!this.isCartComponentActive) $('#cart-modal-for-mobile-view').modal('hide');
+        },
+        openModalShippmentFromCart() {
+            $('#shippment-orders-modal').modal('show');
+            if (!this.isCartComponentActive) $('#cart-modal-for-mobile-view').modal('hide');
+        },
+        setShippingPrice() {
+           
+        },
+        saveShipping(){
+            $('#shippment-orders-modal').modal('hide');
+        let data = {
+            shippingAreaId: this.shippingAreaId,
+            shippingPrice: this.shippingPrice,
+            shippingAreaSddress: this.shippingAddress,
+            branchId: this.currentBranch.id,
+            orderId :this.finalCart.orderID,
+            departamento: this.shippingDepartamento,
+            municipio: this.shippingMunicipio
+        }
+        let info = {
+            id : this.finalCart.orderID
+        }
+        let response= [];
+        let orderId = this.finalCart.orderID;
+        let instance = this;
+
+            instance.axiosGETorPOST({url: '/get-shipping',  postData: info},
+                (success, responseData) => {
+                    if (success) {
+                        response = responseData;
+                        if(response.status != null){
+                            this.showSuccessAlert("Ya posee un envió configurado");
+
+                        }else{
+                            instance.axiosGETorPOST({url: '/save-shipping',  postData: data},
+                                (success, responseData) => {
+                                    if (success) {
+                                        console.log(responseData);
+                                        this.showSuccessAlert(responseData.message);
+                                        this.getHoldOrders(false);
+                                    }
+                                })
+                        }
+                    }
+                })
+        },
+        getShipping(id){
+            let response= [];
+            let instance = this;
+
+            instance.axiosGETorPOST({url: '/get-shipping',  postData: info},
+                (success, responseData) => {
+                    if (success) {
+                        this.shippingInfoGet = responseData;
+                    }else{
+                        this.shippingInfoGet = [];
+                    }
+                })
+
         },
         makeFinalCart(status) {
             let selectCustomerForCart = [];

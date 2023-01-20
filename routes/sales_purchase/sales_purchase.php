@@ -18,6 +18,10 @@ Route::post('/sales/list/delete/{id}', [SalesController::class, 'saleListDelete'
 Route::post('/sales/date/update/{id}', [SalesController::class, 'saleListUpdate']);
 
 //sales shipment list
+Route::post('/save-shipping', [SalesController::class, 'saveShippingInformation'])
+    ->middleware('permissions:can_manage_sales');
+Route::post('/get-shipping', [SalesController::class, 'getShipping'])
+    ->middleware('permissions:can_manage_sales');
 Route::post('/sales-shipment-data/{id}', [SalesShipmentController::class, 'salesListShipment']);
 Route::post('/shipping-order-status/{id}/{status}', [SalesShipmentController::class, 'setShippingStatus']);
 Route::post('sales-receiving-type-set', [SalesController::class, 'setSalesReceivingType']);

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Relationships\OrderRelationship;
+use App\Models\ShippingInformation;
 use DB;
 use App\Http\Controllers\API\PermissionController;
 use Carbon\Carbon;
@@ -610,7 +611,7 @@ class Order extends BaseModel
 
     public static function getHoldOrders()
     {
-        return Order::leftJoin('branches', 'branches.id', 'orders.transfer_branch_id')
+        $data = Order::leftJoin('branches', 'branches.id', 'orders.transfer_branch_id')
             ->leftJoin('restaurant_tables', 'restaurant_tables.id', 'orders.table_id')
             ->select(
                 'orders.created_by as createdBy',
@@ -634,6 +635,14 @@ class Order extends BaseModel
             )
             ->where('orders.status', 'hold')
             ->get();
+
+        foreach($data as $item) {
+            $id =  $item['orderID'];
+            $shipping = ShippingInformation::where("order_id","=",$id)->first();
+            $item['shipping'] = $shipping;
+        }
+
+        return $data;
     }
 
     public static function getOrderDetailsForInvoice($orderId, $orderType, $cashRegisterId)
