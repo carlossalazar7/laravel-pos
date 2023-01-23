@@ -2034,41 +2034,70 @@ export default {
         },
         saveShipping(){
             $('#shippment-orders-modal').modal('hide');
-        let data = {
-            shippingAreaId: this.shippingAreaId,
-            shippingPrice: this.shippingPrice,
-            shippingAreaSddress: this.shippingAddress,
-            branchId: this.currentBranch.id,
-            orderId :this.finalCart.orderID,
-            departamento: this.shippingDepartamento,
-            municipio: this.shippingMunicipio
-        }
-        let info = {
-            id : this.finalCart.orderID
-        }
-        let response= [];
-        let orderId = this.finalCart.orderID;
-        let instance = this;
 
-            instance.axiosGETorPOST({url: '/get-shipping',  postData: info},
+            let subtotal = this.finalCart.grandTotal+this.finalCart.overAllDiscount;
+            let date = this.finalCart.date;
+            let lastOrderIdHold= [];
+            let lasOrderHoldToSave = {
+                branchId: this.finalCart.branchId,
+                date: date,
+                status: this.finalCart.status,
+                profit: this.finalCart.profit,
+                grandTotal:this.finalCart.grandTotal,
+                salesOrReceivingType: this.finalCart.salesOrReceivingType,
+                createdBy:this.finalCart.createdBy,
+                sub_total:subtotal
+            };
+            let numeroOrden = null;
+            let instance = this;
+
+            instance.axiosGETorPOST({url: '/get-last-order',  postData: lasOrderHoldToSave},
                 (success, responseData) => {
                     if (success) {
-                        response = responseData;
-                        if(response.status != null){
-                            this.showSuccessAlert("Ya posee un envió configurado");
+                        console.log(responseData)
+                        lastOrderIdHold= responseData;
+                        numeroOrden = responseData.id;
 
-                        }else{
-                            instance.axiosGETorPOST({url: '/save-shipping',  postData: data},
-                                (success, responseData) => {
-                                    if (success) {
-                                        console.log(responseData);
-                                        this.showSuccessAlert(responseData.message);
-                                        this.getHoldOrders(false);
-                                    }
-                                })
+                        //si obtenemos la orden procedemos a guardarla
+                        let data = {
+                            shippingAreaId: this.shippingAreaId,
+                            shippingPrice: this.shippingPrice,
+                            shippingAreaSddress: this.shippingAddress,
+                            branchId: this.currentBranch.id,
+                            orderId : (numeroOrden!=null) ? numeroOrden: null,
+                            departamento: this.shippingDepartamento,
+                            municipio: this.shippingMunicipio
                         }
+                        let info = {
+                            id : lastOrderIdHold.id,
+                        }
+                        let response= [];
+
+                        instance.axiosGETorPOST({url: '/get-shipping',  postData: info},
+                            (success, responseData) => {
+                                if (success) {
+                                    response = responseData;
+                                    if(response.status != null){
+                                        this.showSuccessAlert("Ya posee un envió configurado");
+
+                                    }else{
+                                        instance.axiosGETorPOST({url: '/save-shipping',  postData: data},
+                                            (success, responseData) => {
+                                                if (success) {
+                                                    this.showSuccessAlert(responseData.message);
+                                                    this.getHoldOrders(false);
+                                                }
+                                            })
+                                    }
+                                }
+                            })
+                    }else{
+                        this.showSuccessAlert("Error general contacte al administrador...");
                     }
                 })
+
+
+
         },
         getShipping(id){
             let response= [];

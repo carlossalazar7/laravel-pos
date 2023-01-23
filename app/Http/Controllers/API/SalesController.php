@@ -1566,6 +1566,18 @@ class SalesController extends Controller
         $shippings = ShippingInformation::where("order_id","=",$request->id)->first();
         return $shippings;
     }
+    public function getLastOrder(Request $request){
+        $order = Order::where("branch_id","=",$request->branchId)
+            ->where("created_at","=",Carbon::parse($request->date)->format('Y-m-d H:i:s'))
+            ->where("status","=",$request->status)
+            ->where("profit","=",$request->profit)
+            ->where("total","=",$request->grandTotal)
+            ->where("type","=",$request->salesOrReceivingType)
+            ->where("created_by","=",$request->createdBy)
+            ->where("sub_total","=",$request->sub_total)
+            ->first();
+        return $order;
+    }
 
     public function insertInternalTransfer($orderData, $transferBranch, $userBranchId, $invoiceFixes, $purchaseLastInvoiceNumber)
     {
