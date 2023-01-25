@@ -40,6 +40,8 @@ class DBDemoSeeder extends Seeder
             RestaurantTableSeeder::class,
             AdjustStockTableSeeder::class,
             ShippingAreaTableSeeder::class,
+            DepartamentoTableSeeder::class,
+            MunicipioTableSeeder::class,
             ]);
     }
 }
