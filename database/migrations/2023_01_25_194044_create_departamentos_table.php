@@ -16,7 +16,7 @@ class CreateDepartamentosTable extends Migration
         Schema::create('departamentos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string("name");
-            $table->string("country");
+            $table->string("country")->default('El Salvador');
             $table->timestamps();
         });
     }

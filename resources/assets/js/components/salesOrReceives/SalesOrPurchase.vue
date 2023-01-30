@@ -1327,20 +1327,7 @@
                   <select v-validate="'required'" name="shippingDepartamento" id="shippingDepartamento"
                           class="form-control" v-model="shippingDepartamento" @change="callMunicipio()">
                     <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
-                    <option value="Ahuachapán">Ahuachapán</option>
-                    <option value="Cabañas">Cabañas</option>
-                    <option value="Chalatenango">Chalatenango</option>
-                    <option value="Cuscatlán">Cuscatlán</option>
-                    <option value="La Libertad">La Libertad</option>
-                    <option value="Morazán">Morazán</option>
-                    <option value="La Paz">La Paz</option>
-                    <option value="Santa Ana">Santa Ana</option>
-                    <option value="San Miguel">San Miguel</option>
-                    <option value="San Salvador">San Salvador</option>
-                    <option value="San Vicente">San Vicente</option>
-                    <option value="Sonsonate">Sonsonate</option>
-                    <option value="La Unión">La Unión</option>
-                    <option value="Usulután">Usulután</option>
+                    <option v-for="(dep) in departamentosData" :value="dep.id">{{ dep.name }}</option>
                   </select>
 
                   <div class="heightError">
@@ -1359,6 +1346,7 @@
                 <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
                   <select v-validate="'required'" name="shippingMunicipio" id="shippingMunicipio" class="form-control"
                           v-model="shippingMunicipio">
+                    <option v-for="(mun) in municipiosData" :value="mun.id">{{ mun.name }}</option>
                   </select>
 
                   <div class="heightError">

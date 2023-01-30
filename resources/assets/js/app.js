@@ -26,15 +26,17 @@ VeeValidate.Validator.extend('phoneNumber', {
     }
 });
 import Vuelidate from 'vuelidate';
+
 Vue.use(VeeValidate);
 Vue.use(Vuelidate);
 
 //Popover
 import Popover from 'vue-js-popover';
+
 Vue.use(Popover);
 
 //Shortcuts
-Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] });
+Vue.use(require('vue-shortkey'), {prevent: ['input', 'textarea']});
 
 //An EventHub to share events between components
 Vue.prototype.$hub = new Vue();
@@ -53,6 +55,7 @@ const datepickerOptions = {};
 
 //Vue Toasted
 import Toasted from 'vue-toasted';
+
 Vue.use(Toasted);
 
 //For success messages
@@ -70,7 +73,6 @@ Vue.toasted.register('success',
     },
     success
 );
-
 
 
 //Error messages example
@@ -94,7 +96,6 @@ Vue.toasted.register('error',
 
     },
     errors
-
 );
 
 // for warning message example
@@ -155,7 +156,7 @@ Vue.toasted.register('warningToast',
     warningToast
 );
 
-Vue.use('vue-shortkey', { prevent: ['.my-class-name', 'textarea.class-of-textarea'] })
+Vue.use('vue-shortkey', {prevent: ['.my-class-name', 'textarea.class-of-textarea']})
 
 Vue.prototype.app_name = window.appConfig.app_name;
 Vue.prototype.dateFormat = window.appConfig.dateFormat;
@@ -412,6 +413,16 @@ Vue.component('contacts-page-index', require('./components/contacts/ContactsPage
 
 //Guides
 Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
+
+//Departments
+Vue.component('departments-index', require('./components/departamentos/DepartamentoIndex.vue'));
+Vue.component('add-edit-depto-modal', require('./components/departamentos/AddEditDepartamentoModal.vue'));
+Vue.component('departamento-action-component', require('./components/datatable/DepartamentoActionTable.vue'));
+
+//Municipios
+Vue.component('municipios-index', require('./components/municipios/MunicipiosIndex.vue'));
+Vue.component('add-edit-municipio-modal', require('./components/municipios/AddEditMunicipioModal.vue'));
+Vue.component('municipio-action-component', require('./components/datatable/MunicipioActionTable.vue'));
 
 //Customers Component
 Vue.component('customers-page-index', require('./components/contacts/customersTab/CustomersPageIndex.vue'));

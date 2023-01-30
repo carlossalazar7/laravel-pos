@@ -168,12 +168,16 @@ export default {
         receiveOrReturnType: null,
         totalProducts: 0,
         shippingAreaData: [],
+        departamentosData: [],
+        municipiosData: [],
         isShipmentListComponentActive: false,
         addShipping: false,
         returnCartLength: 0,
         categories: [],
+        departamentos: [],
         categorySearchValue: [],
         categoryPreloader: true,
+        departamentoPreloader: true,
         isTemplateDefault: '',
         invoice_size: '',
         adjustedDiscount: 0,
@@ -397,6 +401,12 @@ export default {
             "/get-areal-list",
             response => {
                 this.shippingAreaData = response.data.shippingData;
+            },
+        ),
+        this.axiosGet(
+            "/get-departments",
+            response => {
+                this.departamentosData = response.data.departments;
             },
         )
 
@@ -2335,339 +2345,12 @@ export default {
             this.makeFinalCart('done');
         },
         callMunicipio() {
-            let ahuachapan = `
-                <option value="Ahuachapán">Ahuachapán</option>
-                <option value="Apaneca">Apaneca</option>
-                <option value="Atiquizaya">Atiquizaya</option>
-                <option value="Concepción de Ataco">Concepción de Ataco</option>
-                <option value="El Refugio">El Refugio</option>
-                <option value="Guaymango">Guaymango</option>
-                <option value="Jujutla">Jujutla</option>
-                <option value="San Francisco Menéndez">San Francisco Menéndez</option>
-                <option value="San Lorenzo">San Lorenzo</option>
-                <option value="San Pedro Puxtla">San Pedro Puxtla</option>
-                <option value="Tacuba">Tacuba</option>
-                <option value="Turín">Turín</option>
-                `;
-
-            let cabanias = `
-                <option value="Cinquera" >Cinquera</option>
-                <option value="Dolores" >Dolores</option>
-                <option value="Guacotecti" >Guacotecti</option>
-                <option value="Ilobasco" >Ilobasco</option>
-                <option value="Jutiapa" >Jutiapa</option>
-                <option value="San Isidro" >San Isidro</option>
-                <option value="Sensuntepeque" >Sensuntepeque</option>
-                <option value="Tejutepeque" >Tejutepeque</option>
-                <option value="Victoria" >Victoria</option>
-                `;
-            let chalatenango = `
-                <option value="Agua Caliente">Agua Caliente</option>
-                <option value="Arcatao">Arcatao</option>
-                <option value="Azacualpa">Azacualpa</option>
-                <option value="Chalatenango">Chalatenango</option>
-                <option value="Citalá">Citalá</option>
-                <option value="Comalapa">Comalapa</option>
-                <option value="Concepción Quezaltepeque">Concepción Quezaltepeque</option>
-                <option value="Dulce Nombre de María">Dulce Nombre de María</option>
-                <option value="El Carrizal">El Carrizal</option>
-                <option value="El Paraíso">El Paraíso</option>
-                <option value="La Laguna">La Laguna</option>
-                <option value="La Palma">La Palma</option>
-                <option value="La Reina">La Reina</option>
-                <option value="Las Vueltas">Las Vueltas</option>
-                <option value="Nombre de Jesús">Nombre de Jesús</option>
-                <option value="Nueva Concepción">Nueva Concepción</option>
-                <option value="Nueva Trinidad">Nueva Trinidad</option>
-                <option value="Ojos de Agua">Ojos de Agua</option>
-                <option value="Potonico">Potonico</option>
-                <option value="San Antonio de la Cruz">San Antonio de la Cruz</option>
-                <option value="San Antonio los Ranchos">San Antonio los Ranchos</option>
-                <option value="San Fernando">San Fernando</option>
-                <option value="San Francisco Lempa">San Francisco Lempa</option>
-                <option value="San Francisco Morazán">San Francisco Morazán</option>
-                <option value="San Ignacio">San Ignacio</option>
-                <option value="San Isidro Labrador">San Isidro Labrador</option>
-                <option value="San José Cancasque">San José Cancasque</option>
-                <option value="San José Las Flores">San José Las Flores</option>
-                <option value="San Luis del Carmen">San Luis del Carmen</option>
-                <option value="San Miguel de Mercedes">San Miguel de Mercedes</option>
-                <option value="San Rafael">San Rafael</option>
-                <option value="Santa Rita">Santa Rita</option>
-                <option value="Tejutla">Tejutla</option>
-                `;
-
-            let cuscatlan = `
-                <option>Candelaria</option>
-                <option>Cojutepeque</option>
-                <option>El Carmen</option>
-                <option>El Rosario</option>
-                <option>Monte San Juan</option>
-                <option>Oratorio de Concepción</option>
-                <option>San Bartolomé Perulapía</option>
-                <option>San Cristóbal</option>
-                <option>San José Guayabal</option>
-                <option>San Pedro Perulapán</option>
-                <option>San Rafael Cedros</option>
-                <option>San Ramón</option>
-                <option>Santa Cruz Analquito</option>
-                <option>Santa Cruz Michapa</option>
-                <option>Suchitoto</option>
-                <option>Tenancingo</option>
-                `;
-
-            let laLibertad = `
-                <option>Antiguo Cuscatlán</option>
-                <option>Chiltiupán</option>
-                <option>Ciudad Arce</option>
-                <option>Colón</option>
-                <option>Comasagua</option>
-                <option>Huizúcar</option>
-                <option>Jayaque</option>
-                <option>Jicalapa</option>
-                <option>La Libertad</option>
-                <option>Nuevo Cuscatlán</option>
-                <option>Opico</option>
-                <option>Quezaltepeque</option>
-                <option>Sacacoyo</option>
-                <option>San José Villanueva</option>
-                <option>San Matías</option>
-                <option>San Pablo Tacachico</option>
-                <option>Santa Tecla</option>
-                <option>Talnique</option>
-                <option>Tamanique</option>
-                <option>Teotepeque</option>
-                <option>Tepecoyo</option>
-                <option>Zaragoza</option>
-                `;
-
-            let morazan = `
-                <option>Arambala</option>
-                <option>Cacaopera</option>
-                <option>Chilanga</option>
-                <option>Corinto</option>
-                <option>Delicias de Concepción</option>
-                <option>El Divisadero</option>
-                <option>El Rosario</option>
-                <option>Gualococti</option>
-                <option>Guatajiagua</option>
-                <option>Joateca</option>
-                <option>Jocoaitique</option>
-                <option>Jocoro</option>
-                <option>Lolotiquillo</option>
-                <option>Meanguera</option>
-                <option>Osicala</option>
-                <option>Perquín</option>
-                <option>San Carlos</option>
-                <option>San Fernando</option>
-                <option>San Francisco Gotera</option>
-                <option>San Isidro</option>
-                <option>San Simón</option>
-                <option>Sensembra</option>
-                <option>Sociedad</option>
-                <option>Torola</option>
-                <option>Yamabal</option>
-                <option>Yoloaiquín</option>
-                `;
-            let laPaz = `
-                <option>Cuyultitán</option>
-                <option>El Rosario</option>
-                <option>Jerusalén</option>
-                <option>Mercedes La Ceiba</option>
-                <option>Olocuilta</option>
-                <option>Paraíso de Osorio</option>
-                <option>San Antonio Masahuat</option>
-                <option>San Emigdio</option>
-                <option>San Francisco Chinameca</option>
-                <option>San Juan Nonualco</option>
-                <option>San Juan Talpa</option>
-                <option>San Juan Tepezontes</option>
-                <option>San Luis La Herradura</option>
-                <option>San Luis Talpa</option>
-                <option>San Miguel Tepezontes</option>
-                <option>San Pedro Masahuat</option>
-                <option>San Pedro Nonualco</option>
-                <option>San Rafael Obrajuelo</option>
-                <option>Santa María Ostuma</option>
-                <option>Santiago Nonualco</option>
-                <option>Tapalhuaca</option>
-                <option>Zacatecoluca</option>
-                `;
-
-            let santaAna = `
-                <option>Santa Ana</option>
-                <option>Candelaria de la Frontera</option>
-                <option>Chalchuapa</option>
-                <option>Coatepeque</option>
-                <option>El Congo</option>
-                <option>El Porvenir</option>
-                <option>Masahuat</option>
-                <option>Metapán</option>
-                <option>San Antonio Pajonal</option>
-                <option>San Sebastián Salitrillo</option>
-                <option>Santa Rosa Guachipilín</option>
-                <option>Santiago de la Frontera</option>
-                <option>Texistepeque</option>
-                `;
-
-            let sanMiguel = `
-                <option>San Miguel</option>
-                <option>Carolina</option>
-                <option>Chapeltique</option>
-                <option>Chinameca</option>
-                <option>Chirilagua</option>
-                <option>Ciudad Barrios</option>
-                <option>Comacarán</option>
-                <option>El Tránsito</option>
-                <option>Lolotique</option>
-                <option>Moncagua</option>
-                <option>Nueva Guadalupe</option>
-                <option>Nuevo Edén de San Juan</option>
-                <option>Quelepa</option>
-                <option>San Antonio del Mosco</option>
-                <option>San Gerardo</option>
-                <option>San Jorge</option>
-                <option>San Luis de La Reina</option>
-                <option>San Rafael Oriente</option>
-                <option>Sesori</option>
-                <option>Uluazapa</option>
-                `;
-            let sanSalvador = `
-                <option>San Salvador</option>
-                <option>Aguilares</option>
-                <option>Apopa</option>
-                <option>Ayutuxtepeque</option>
-                <option>Ciudad Delgado</option>
-                <option>Cuscatancingo</option>
-                <option>El Paisnal</option>
-                <option>Guazapa</option>
-                <option>Ilopango</option>
-                <option>Mejicanos</option>
-                <option>Nejapa</option>
-                <option>Panchimalco</option>
-                <option>Rosario de Mora</option>
-                <option>San Marcos</option>
-                <option>San Martín</option>
-                <option>Santiago Texacuangos</option>
-                <option>Santo Tomás</option>
-                <option>Soyapango</option>
-                <option>Tonacatepeque</option>
-                
-                `;
-            let SanVicente = `
-                <option>San Vicente</option>
-                <option>Apastepeque</option>
-                <option>Guadalupe</option>
-                <option>San Cayetano Istepeque</option>
-                <option>San Esteban Catarina</option>
-                <option>San Ildefonso</option>
-                <option>San Lorenzo</option>
-                <option>San Sebastián</option>
-                <option>Santa Clara</option>
-                <option>Santo Domingo</option>
-                <option>Tecoluca</option>
-                <option>Tepetitán</option>
-                <option>Verapaz</option>
-                `;
-            let sonsonate = `
-                <option>Sonsonate<option>
-                <option>Acajutla<option>
-                <option>Armenia<option>
-                <option>Caluco<option>
-                <option>Cuisnahuat<option>
-                <option>Izalco<option>
-                <option>Juayúa<option>
-                <option>Nahulingo<option>
-                <option>Nahuizalco<option>
-                <option>Salcoatitán<option>
-                <option>San Antonio del Monte<option>
-                <option>San Julián<option>
-                <option>Santa Catarina Masahuat<option>
-                <option>Santa Isabel Ishuatán<option>
-                <option>Santo Domingo de Guzmán<option>
-                <option>Sonzacate<option>
-                `;
-            let laUnion = `
-                <option>La Unión</option>
-                <option>Anamorós</option>
-                <option>Bolívar</option>
-                <option>Concepción de Oriente</option>    
-                <option>Conchagua</option>
-                <option>El Carmen</option>
-                <option>El Sauce</option>
-                <option>Intipucá</option>
-                <option>Lislique</option>
-                <option>Meanguera del Golfo</option>
-                <option>Nueva Esparta</option>
-                <option>Pasaquina</option>
-                <option>Polorós</option>
-                <option>San Alejo</option>
-                <option>San José La Fuente</option>
-                <option>Santa Rosa de Lima</option>
-                <option>Yayantique</option>
-                <option>Yucuaiquín</option>
-                `;
-
-            let usulutan = `
-                <option>Usulután</option>
-                <option>Alegría</option>
-                <option>Berlín</option>
-                <option>California</option>
-                <option>Concepción Batres</option>
-                <option>El Triunfo</option>
-                <option>Ereguayquín</option>
-                <option>Estanzuelas</option>
-                <option>Jiquilisco</option>
-                <option>Jucuapa</option>
-                <option>Jucuarán</option>
-                <option>Mercedes Umaña</option>
-                <option>Nueva Granada</option>
-                <option>Ozatlán</option>
-                <option>Puerto El Triunfo</option>
-                <option>San Agustín</option>
-                <option>San Buenaventura</option>
-                <option>San Dionisio</option>
-                <option>San Francisco Javier</option>
-                <option>Santa Elena</option>
-                <option>Santa María</option>
-                <option>Santiago de María</option>
-                <option>Tecapán</option>
-                `;
-
-            let departamentoId = document.getElementById("shippingDepartamento");
-
-            if (departamentoId.value == "Ahuachapán") {
-                document.getElementById("shippingMunicipio").innerHTML = ahuachapan;
-            } else if (departamentoId.value == "Cabañas") {
-                document.getElementById("shippingMunicipio").innerHTML = cabanias;
-            } else if (departamentoId.value == "Chalatenango") {
-                document.getElementById("shippingMunicipio").innerHTML = chalatenango;
-            } else if (departamentoId.value == "Cuscatlán") {
-                document.getElementById("shippingMunicipio").innerHTML = cuscatlan;
-            } else if (departamentoId.value == "La Libertad") {
-                document.getElementById("shippingMunicipio").innerHTML = laLibertad;
-            } else if (departamentoId.value == "Morazán") {
-                document.getElementById("shippingMunicipio").innerHTML = morazan;
-            } else if (departamentoId.value == "La Paz") {
-                document.getElementById("shippingMunicipio").innerHTML = laPaz;
-            } else if (departamentoId.value == "Santa Ana") {
-                document.getElementById("shippingMunicipio").innerHTML = santaAna;
-            } else if (departamentoId.value == "San Miguel") {
-                document.getElementById("shippingMunicipio").innerHTML = sanMiguel;
-            } else if (departamentoId.value == "San Salvador") {
-                document.getElementById("shippingMunicipio").innerHTML = sanSalvador;
-            } else if (departamentoId.value == "San Vicente") {
-                document.getElementById("shippingMunicipio").innerHTML = SanVicente;
-            } else if (departamentoId.value == "Sonsonate") {
-                document.getElementById("shippingMunicipio").innerHTML = sonsonate;
-            } else if (departamentoId.value == "La Unión") {
-                document.getElementById("shippingMunicipio").innerHTML = laUnion;
-            } else if (departamentoId.value == "Usulután") {
-                document.getElementById("shippingMunicipio").innerHTML = usulutan;
-            } else {
-                document.getElementById("shippingMunicipio")
-                    .innerHTML`<option>Seleccione un departamento valido</option>`;
-            }
-        }
+            let departamentoId = document.getElementById("shippingDepartamento").value;
+            this.axiosGet("/get-municipios-departamentoId/" + departamentoId,
+                response => {
+                    this.municipiosData = response.data.municipios;
+                },
+            );
+        },
     }
 }

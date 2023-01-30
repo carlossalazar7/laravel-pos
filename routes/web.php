@@ -20,6 +20,9 @@ Route::group(['middleware' => ['auth']], function () {
     require_once(__DIR__ . '/report/exportAllReport.php');
     require_once(__DIR__ . '/setting/setting.php');
     require_once(__DIR__ . '/todo/todo.php');
+    require_once(__DIR__ . '/guide/guide.php');
+    require_once(__DIR__ . '/department/department.php');
+    require_once(__DIR__ . '/municipio/municipio.php');
 
     //logout
     Route::get('/logout', [LoginController::class, 'logout']);
