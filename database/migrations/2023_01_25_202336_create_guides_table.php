@@ -14,15 +14,19 @@ class CreateGuidesTable extends Migration
     public function up()
     {
         Schema::create('guides', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('name');
             $table->string('status', 50)->default('open');
             $table->integer('created_by');
+            $table->date('fecha_entrega');
+            $table->string('observacion');
+            $table->unsignedBigInteger('delivery_id');
+            $table->foreign('delivery_id')->references('id')->on('deliveries');
             $table->timestamps();
         });
     }
 
-    /**
+    /**php artisan make:controller ProductController --resource
      * Reverse the migrations.
      *
      * @return void

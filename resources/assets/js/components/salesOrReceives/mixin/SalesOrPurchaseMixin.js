@@ -190,6 +190,9 @@ export default {
         shippingInfo: {},
         shippingInfoGet: [],
         shippingAreaIdGet: 0,
+        ordersSelected:[],
+        selected: [],
+        allSelected: false,
     }),
     computed: {
         filteredHoldOrder() {
@@ -386,6 +389,9 @@ export default {
         });
     },
     mounted() {
+        //cargar por defecto el modal
+        this.addShipmentInfo = true;
+        this.$emit('addShipmentInfo', this.shippingInfo, true);
 
         this.axiosGet(
             "/get-areal-list",
@@ -1490,6 +1496,7 @@ export default {
             } else {
                 this.addShipmentInfo = false;
                 this.$emit('addShipmentInfo', this.shippingInfo, false);
+                $('#shippment-orders-modal').modal('hide');
             }
         },
         setHoldOrderToCart(holdItem) {
@@ -2042,6 +2049,39 @@ export default {
         setShippingPrice() {
 
         },
+        descargarPedidos(){
+            let instance = this;
+            console.log(this.ordersSelected);
+
+            if(this.ordersSelected.length>0){
+                axios({
+                    url: '/get-order-by-invoice-id',
+                    method: 'POST',
+                    data: this.ordersSelected,
+                    responseType: 'blob', // important
+                }).then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'file.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                });
+            }else{
+                this.showSuccessAlert("seleccione un pedido primero");
+            }
+
+        },
+        selectAll() {
+            this.ordersSelected = [];
+            let ordenes =[];
+            if (!this.allSelected) {
+                this.orderHoldItems.forEach(function (orderHoldItem, index, array) {
+                    ordenes.push(orderHoldItem.invoice_id);
+                });
+            }
+            this.ordersSelected = ordenes;
+        },
         saveShipping() {
             $('#shippment-orders-modal').modal('hide');
 
@@ -2079,7 +2119,7 @@ export default {
                             municipio: this.shippingMunicipio
                         }
                         let info = {
-                            id: lastOrderIdHold.id,
+                            id: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
                         }
                         let response = [];
 

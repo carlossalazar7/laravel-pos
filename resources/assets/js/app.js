@@ -410,6 +410,9 @@ Vue.component('adjust-stock-details', require('./components/settings/adjustStock
 //Contacts
 Vue.component('contacts-page-index', require('./components/contacts/ContactsPageIndex.vue'));
 
+//Guides
+Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
+
 //Customers Component
 Vue.component('customers-page-index', require('./components/contacts/customersTab/CustomersPageIndex.vue'));
 Vue.component('customers-index', require('./components/contacts/customersTab/CustomersTabIndex.vue'));

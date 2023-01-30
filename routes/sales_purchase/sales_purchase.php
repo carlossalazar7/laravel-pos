@@ -20,6 +20,8 @@ Route::post('/sales/date/update/{id}', [SalesController::class, 'saleListUpdate'
 //sales shipment list
 Route::post('/save-shipping', [SalesController::class, 'saveShippingInformation'])
     ->middleware('permissions:can_manage_sales');
+Route::post('/get-order-by-invoice-id', [SalesController::class, 'getOrderByInvoiceId'])
+    ->middleware('permissions:can_manage_sales');
 Route::post('/get-shipping', [SalesController::class, 'getShipping'])
     ->middleware('permissions:can_manage_sales');
 Route::post('/get-last-order', [SalesController::class, 'getLastOrder'])

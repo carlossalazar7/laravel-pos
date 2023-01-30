@@ -1053,6 +1053,11 @@
                              v-model="searchHoldOrder"
                              class="form-control rounded-right">
                     </label>
+                    <div class="pl-2 ml-4">
+                      <button type="button" class="btn btn-primary"  @click="descargarPedidos" >
+                        <i class="la la-download"></i> Descargar Ordenes
+                      </button>
+                    </div>
                   </div>
                   <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -1069,21 +1074,24 @@
                 </div>
                 <div class="col-12 pr-0">
                   <div>
+                    <span>Seleccionar todos <input type="checkbox" @click="selectAll" v-model="allSelected"></span>
+                    <span>Pedidos seleccionados: {{ ordersSelected.length }}</span>
                     <div class="row mx-0 h-100 border hold-order-list-item"
                          v-for="(customerHoldOrder) in filteredHoldOrder"
                          v-if="customerHoldOrder.status === 'hold'">
                       <div class="col-11 px-0">
+                        <div class="col-3 text-left">
+                          <input type="checkbox"  v-model="ordersSelected"  :value="customerHoldOrder.invoice_id" >
+                        </div>
                         <a href="#"
                            class="d-block hold-items app-color-text"
                            @click.prevent="setHoldOrderToCart(customerHoldOrder)">
 
                           <div class="row">
-                            <div class="col-4 text-left">
-                                                            <span class="font-weight-bold pl-1">{{
-                                                                customerHoldOrder.invoice_id
-                                                              }}</span>
+                            <div class="col-3 text-left">
+                              <span class="font-weight-bold pl-1">{{customerHoldOrder.invoice_id }}</span>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                                             <span v-if="customerHoldOrder.customer == null"
                                                                   class="text-center">
                                                                 {{ dateFormats(customerHoldOrder.date) }}
@@ -1096,7 +1104,7 @@
                                                                 {{ timeFormateForDatetime(customerHoldOrder.time) }}
                                                             </span>
                             </div>
-                            <div class="col-4 text-center">
+                            <div class="col-3 text-center">
                                                             <span v-if="customerHoldOrder.shipping == null"
                                                                   class="font-weight-bold pl-1">
                                                               Envió no configurado
