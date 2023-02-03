@@ -168,16 +168,12 @@ export default {
         receiveOrReturnType: null,
         totalProducts: 0,
         shippingAreaData: [],
-        departamentosData: [],
-        municipiosData: [],
         isShipmentListComponentActive: false,
         addShipping: false,
         returnCartLength: 0,
         categories: [],
-        departamentos: [],
         categorySearchValue: [],
         categoryPreloader: true,
-        departamentoPreloader: true,
         isTemplateDefault: '',
         invoice_size: '',
         adjustedDiscount: 0,
@@ -193,7 +189,12 @@ export default {
         shippingData: [],
         shippingInfo: {},
         shippingInfoGet: [],
+
         shippingAreaIdGet: 0,
+        departamentosData: [],
+        municipiosData: [],
+        departamentos: [],
+
         ordersSelected:[],
         selected: [],
         allSelected: false,
@@ -393,9 +394,12 @@ export default {
         });
     },
     mounted() {
-        //cargar por defecto el modal
+        /*
+        ---BUG
+        cargar por defecto el modal
         this.addShipmentInfo = true;
         this.$emit('addShipmentInfo', this.shippingInfo, true);
+        */
 
         this.axiosGet(
             "/get-areal-list",
@@ -404,7 +408,7 @@ export default {
             },
         ),
         this.axiosGet(
-            "/get-departments",
+            "/get-departamentos",
             response => {
                 this.departamentosData = response.data.departments;
             },
@@ -2094,7 +2098,6 @@ export default {
         },
         saveShipping() {
             $('#shippment-orders-modal').modal('hide');
-
             let subtotal = this.finalCart.grandTotal + this.finalCart.overAllDiscount;
             let date = this.finalCart.date;
             let lastOrderIdHold = [];
@@ -2124,7 +2127,7 @@ export default {
                             shippingPrice: this.shippingPrice,
                             shippingAreaSddress: this.shippingAddress,
                             branchId: this.currentBranch.id,
-                            orderId: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
+                            orderId: (numeroOrden != null) ? numeroOrden : null,
                             departamento: this.shippingDepartamento,
                             municipio: this.shippingMunicipio
                         }
@@ -2136,7 +2139,6 @@ export default {
                         instance.axiosGETorPOST({url: '/get-shipping', postData: info},
                             (success, responseData) => {
                                 if (success) {
-                                    console.log("Envio encontrado");
                                     response = responseData;
                                     if (response.status != null) {
                                         this.showSuccessAlert("Ya posee un envió configurado");
@@ -2156,18 +2158,17 @@ export default {
                         this.showSuccessAlert("Error general contacte al administrador...");
                     }
                 })
-
-
         },
         getShipping(id) {
             let response = [];
             let instance = this;
-            let info = [];
 
             instance.axiosGETorPOST({url: '/get-shipping', postData: info},
                 (success, responseData) => {
                     if (success) {
                         this.shippingInfoGet = responseData;
+                    } else {
+                        this.shippingInfoGet = [];
                     }
                 })
 

@@ -9,6 +9,7 @@ Route::post('departamento/delete/{id}', [DepartamentoController::class, 'destroy
 Route::post('departamento/{id}', [DepartamentoController::class, 'update'])->middleware('permissions:can_manage_departamentos');
 Route::get('departamento/{id}', [DepartamentoController::class, 'show']);
 
-Route::post('departamentos', [DepartamentoController::class, 'getAllDepartments']);
-Route::get('/get-departments', [DepartamentoController::class, 'getDepartments']);
+Route::post('departamentos', [DepartamentoController::class, 'getAllDepartamentos']);
+Route::get('/get-departamentos', [DepartamentoController::class, 'getDepartamentos']);
+Route::get('/get-municipios-departamentoId/{department_id}', [MunicipioController::class, 'getMunicipiosByDepId']);
 

@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
+use App\Models\Route;
 use Illuminate\Http\Request;
 
-class DetallePuntoEntregaController extends Controller
+class RouteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +15,8 @@ class DetallePuntoEntregaController extends Controller
      */
     public function index()
     {
-        //
+      $response =  Route::allData();
+      return $response;
     }
 
     /**
@@ -23,7 +26,7 @@ class DetallePuntoEntregaController extends Controller
      */
     public function create()
     {
-        //
+       //
     }
 
     /**
@@ -45,7 +48,7 @@ class DetallePuntoEntregaController extends Controller
      */
     public function show($id)
     {
-        //
+        Route::getOne($id);
     }
 
     /**

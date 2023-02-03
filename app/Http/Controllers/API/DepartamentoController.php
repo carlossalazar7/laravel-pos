@@ -19,16 +19,16 @@ class DepartamentoController extends Controller
         if (isset($_GET['route_name'])) {
             $routeName = $_GET['route_name'];
         }
-        return view('departments.DepartmentsIndex', ['tab_name' => $tabName, 'route_name' => $routeName]);
+        return view('departamentos.DepartamentosIndex', ['tab_name' => $tabName, 'route_name' => $routeName]);
     }
 
-    public function getDepartments()
+    public function getDepartamentos()
     {
         $departments = Departamento::all();
         return ['departments' => $departments];
     }
 
-    public function getAllDepartments(Request $request)
+    public function getAllDepartamentos(Request $request)
     {
         if ($request->columnKey) $columnName = $request->columnKey;
 
@@ -53,7 +53,7 @@ class DepartamentoController extends Controller
         if ($departamento = Departamento::store($departamentoData)) {
             $response = [
                 'data' => $departamento,
-                'message' => Lang::get('Departamento') . ' ' . Lang::get('lang.successfully_saved')
+                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.successfully_saved')
             ];
             return response()->json($response, 201);
         } else {
@@ -82,7 +82,7 @@ class DepartamentoController extends Controller
             $departamento->name = $request->input('name');
             $departamento->save();
             $response = [
-                'message' => Lang::get('Departamento') . ' ' . Lang::get('lang.successfully_updated')
+                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.successfully_updated')
             ];
 
             return response()->json($response, 201);
@@ -102,13 +102,13 @@ class DepartamentoController extends Controller
         if ($used == 0) {
             Departamento::deleteData($id);
             $response = [
-                'message' => Lang::get('Departamento') . ' ' . Lang::get('lang.successfully_deleted')
+                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.successfully_deleted')
             ];
 
             return response()->json($response, 201);
         } else {
             $response = [
-                'message' => Lang::get('Departamento') . ' ' . Lang::get('lang.in_use') . ', ' . Lang::get('lang.you_can_not_delete_the') . ' ' . strtolower(Lang::get('departamento'))
+                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.in_use') . ', ' . Lang::get('lang.you_can_not_delete_the') . ' ' . strtolower(Lang::get('lang.departamento'))
             ];
 
             return response()->json($response, 200);

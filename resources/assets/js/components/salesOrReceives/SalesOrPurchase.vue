@@ -1054,7 +1054,7 @@
                              class="form-control rounded-right">
                     </label>
                     <div class="pl-2 ml-4">
-                      <button type="button" class="btn btn-primary"  @click="descargarPedidos" >
+                      <button type="button" class="btn btn-primary" @click="descargarPedidos">
                         <i class="la la-download"></i> Descargar Ordenes
                       </button>
                     </div>
@@ -1092,31 +1092,32 @@
                               <span class="font-weight-bold pl-1">{{customerHoldOrder.invoice_id }}</span>
                             </div>
                             <div class="col-3">
-                                                            <span v-if="customerHoldOrder.customer == null"
-                                                                  class="text-center">
-                                                                {{ dateFormats(customerHoldOrder.date) }}
-                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
-                                                            </span>
+                              <span v-if="customerHoldOrder.customer == null" class="text-center">
+                                  {{ dateFormats(customerHoldOrder.date) }}
+                                  {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                              </span>
                               <span v-else-if="customerHoldOrder.customer != null" class="text-center">
-                                                                {{ customerHoldOrder.customer.first_name }}
-                                                                {{ customerHoldOrder.customer.last_name }}
-                                                                {{ dateFormats(customerHoldOrder.date) }}
-                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
-                                                            </span>
+                                  {{ customerHoldOrder.customer.first_name }}
+                                  {{ customerHoldOrder.customer.last_name }}
+                                  {{ dateFormats(customerHoldOrder.date) }}
+                                  {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                              </span>
                             </div>
+
                             <div class="col-3 text-center">
-                                                            <span v-if="customerHoldOrder.shipping == null"
-                                                                  class="font-weight-bold pl-1">
-                                                              Envió no configurado
-                                                            </span>
+                              <span v-if="customerHoldOrder.shipping == null"
+                                    class="font-weight-bold pl-1">
+                                Envió no configurado
+                              </span>
 
                               <span v-else-if="customerHoldOrder.shipping != null" class="font-weight-bold pl-1">
-                                                          <p v-for="(ship) in shippingAreaData"
-                                                             v-if="ship.id == customerHoldOrder.shipping.shipping_area_id">
-                                                            {{ ship.area }}
-                                                          </p>
-                                                          </span>
+                                <p v-for="(ship) in shippingAreaData"
+                                   v-if="ship.id == customerHoldOrder.shipping.shipping_area_id">
+                                  {{ ship.area }}
+                                </p>
+                              </span>
                             </div>
+
                           </div>
                         </a>
                       </div>
@@ -1170,20 +1171,20 @@
                            @click.prevent="setHoldOrderToCart(customerHoldOrder)">
                           <div class="row">
                             <div class="col-7 col-sm-4 col-md-4 col-lg-4 text-left">
-                                                            <span class="font-weight-bold invoice-id">{{
-                                                                customerHoldOrder.invoice_id
-                                                              }}</span>
+                              <span class="font-weight-bold invoice-id">{{
+                                  customerHoldOrder.invoice_id
+                                }}</span>
                             </div>
                             <div class="col-5 col-sm-3 col-md-3 col-lg-3">
-                                                            <span class="font-weight-bold invoice-table">{{
-                                                                customerHoldOrder.tableName
-                                                              }}</span>
+                              <span class="font-weight-bold invoice-table">{{
+                                  customerHoldOrder.tableName
+                                }}</span>
                             </div>
                             <div class="col-12 col-sm-5 col-md-5 col-lg-5">
-                                                            <span class="invoice-time">
-                                                                {{ dateFormats(customerHoldOrder.date) }}
-                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
-                                                            </span>
+                              <span class="invoice-time">
+                                  {{ dateFormats(customerHoldOrder.date) }}
+                                  {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                              </span>
                             </div>
                           </div>
                         </a>
@@ -1211,7 +1212,7 @@
       </div>
     </div>
 
-    <!--      modal shippment-->
+    <!--modal shippment-->
     <div class="modal fade" id="shippment-orders-modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -1329,7 +1330,6 @@
                     <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
                     <option v-for="(dep) in departamentosData" :value="dep.id">{{ dep.name }}</option>
                   </select>
-
                   <div class="heightError">
                     <small class="text-danger" v-show="errors.has('shippingDepartamento')">
                       {{ errors.first('shippingDepartamento') }}
@@ -1348,7 +1348,6 @@
                           v-model="shippingMunicipio">
                     <option v-for="(mun) in municipiosData" :value="mun.id">{{ mun.name }}</option>
                   </select>
-
                   <div class="heightError">
                     <small class="text-danger" v-show="errors.has('shippingMunicipio')">
                       {{ errors.first('shippingMunicipio') }}
@@ -1362,6 +1361,7 @@
         </div>
       </div>
     </div>
+
 
     <!-- Confirmation Modal -->
     <confirmation-modal id="clear-cart-modal"

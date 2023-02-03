@@ -3,7 +3,7 @@
     <div class="main-layout-card-header-with-button">
       <div class="main-layout-card-content-wrapper">
         <div class="main-layout-card-header-contents">
-          <h5 class="m-0">Municipios</h5>
+          <h5 class="m-0">{{ trans('lang.municipios') }}</h5>
         </div>
         <div v-if="permission !== 'read_only'"
              class="main-layout-card-header-contents text-right d-flex justify-content-end">
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Delete Modal -->
-    <confirmation-modal id="confirm-delete" :message="'brand_deleted_permanently'" :firstButtonName="'yes'"
+    <confirmation-modal id="confirm-delete" :message="'municipio_deleted_permanently'" :firstButtonName="'yes'"
                         :secondButtonName="'no'"
                         @confirmationModalButtonAction="confirmationModalButtonAction"></confirmation-modal>
   </div>
@@ -49,8 +49,8 @@ export default {
         tableName: 'municipios',
         columns: [
           {title: 'lang.id', key: 'id', type: 'text', sortable: true},
-          {title: 'lang.name', key: 'name', type: 'text', sortable: true},
-          {title: 'lang.id', key: 'nombreDepartamento', type: 'text', sortable: true},
+          {title: 'lang.nombre_municipio', key: 'name', type: 'text', sortable: true},
+          {title: 'lang.nombre_departamento', key: 'nombreDepartamento', type: 'text', sortable: true},
           (this.permission !== 'read_only' ? {
             title: 'lang.action',
             type: 'component',
@@ -65,8 +65,8 @@ export default {
 
       modalOptions: {
         modalID: '#municipio-add-edit-modal',
-        addLang: 'lang.add_brand',
-        editLang: 'lang.edit_brand',
+        addLang: 'lang.add_municipio',
+        editLang: 'lang.edit_municipio',
         getDataURL: sourceURL,
         postDataWithIDURL: sourceURL,
         postDataWithoutIDURL: sourceURL + '/store',
@@ -98,6 +98,12 @@ export default {
       });
       this.checkStatus = value;
       if (save) this.bus.$emit("saveStatus");
+    },
+    resetExportValue(value) {
+      this.exportToVue = value;
+      this.buttonLoader = false;
+      this.isDisabled = false;
+
     }
   }
 }

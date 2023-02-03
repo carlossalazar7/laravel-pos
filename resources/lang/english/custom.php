@@ -11,6 +11,45 @@
         |
         */
 
-        'hello2' => 'Hello2 updated by custom language'
+        'hello2' => 'Hello2 updated by custom language',
 
+        // departamentos
+        'departamento' => 'Department',
+        'departamentos' => 'Departments',
+        'add_departamento' => 'Add department',
+        'edit_departamento' => 'Edit department',
+        'nombre_departamento' => 'Department name',
+        'departamento_deleted_permanently' => 'This department will be deleted permanently.',
+
+        // municipios
+        'municipio' => 'Municipality',
+        'municipios' => 'Municipalities',
+        'add_municipio' => 'Add municipality',
+        'edit_municipio' => 'Edit municipality',
+        'nombre_municipio' => 'Municipality name',
+        'municipio_deleted_permanently' => 'This municipality will be deleted permanently.',
+
+        // puntos entrega
+        'punto_entrega' => 'Delivery point',
+        'puntos_entrega' => 'Delivery points',
+        'add_punto_entrega' => 'Add delivery point',
+        'edit_punto_entrega' => 'Edit delivery point',
+        'nombre_punto_entrega' => 'Delivery point name',
+        'delivery_point_deleted_permanently' => 'This delivery point will be deleted permanently.',
+
+        // deliveries
+        'delivery' => 'Delivery',
+        'deliveries' => 'Deliveries',
+        'add_delivery' => 'Add delivery',
+        'edit_delivery' => 'Edit delivery',
+        'nombre_delivery' => 'Delivery name',
+        'delivery_phone' => 'Phone',
+        'delivery_mail' => 'Mail',
+        'delivery_type' => 'Type',
+        'status_delivery' => 'Status',
+        'type_external' => 'External',
+        'type_internal' => 'Internal',
+        'status_active' => 'Active',
+        'status_inactive' => 'Inactive',
+        'delivery_deleted_permanently' => 'This delivery will be deleted permanently.',
     ];

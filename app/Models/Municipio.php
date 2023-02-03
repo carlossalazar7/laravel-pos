@@ -12,11 +12,6 @@ class Municipio extends BaseModel
 
     protected $fillable = ['name', 'department_id'];
 
-    public function departamento()
-    {
-        return $this->belongsTo(Departamento::class, 'department_id');
-    }
-
     public static function getMunicipios($column, $request, $limit, $rowOffset, $requestType)
     {
         if (empty($requestType)) {
@@ -30,5 +25,10 @@ class Municipio extends BaseModel
         }
         $count = Municipio::count();
         return ["data" => $data, 'count' => $count];
+    }
+
+    public static function usedMunicipio($id)
+    {
+        return PuntoEntrega::where('municipio_id', $id)->count();
     }
 }

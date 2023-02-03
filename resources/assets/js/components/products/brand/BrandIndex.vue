@@ -99,7 +99,6 @@
                 this.exportToVue = value;
                 this.buttonLoader = false;
                 this.isDisabled = false;
-
             }
         }
     }

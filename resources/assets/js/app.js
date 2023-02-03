@@ -424,6 +424,16 @@ Vue.component('municipios-index', require('./components/municipios/MunicipiosInd
 Vue.component('add-edit-municipio-modal', require('./components/municipios/AddEditMunicipioModal.vue'));
 Vue.component('municipio-action-component', require('./components/datatable/MunicipioActionTable.vue'));
 
+//Puntos entrega
+Vue.component('punto-entrega-index', require('./components/puntos_entrega/PuntoEntregaIndex.vue'));
+Vue.component('add-edit-punto-entrega-modal', require('./components/puntos_entrega/AddEditPuntoEntregaModal.vue'));
+Vue.component('punto-entrega-action-component', require('./components/datatable/PuntoEntregaActionTable.vue'));
+
+//Deliveries
+Vue.component('delivery-index', require('./components/deliveries/DeliveryIndex.vue'));
+Vue.component('add-edit-delivery-modal', require('./components/deliveries/AddEditDeliveryModal.vue'));
+Vue.component('delivery-action-component', require('./components/datatable/DeliveryActionTable.vue'));
+
 //Customers Component
 Vue.component('customers-page-index', require('./components/contacts/customersTab/CustomersPageIndex.vue'));
 Vue.component('customers-index', require('./components/contacts/customersTab/CustomersTabIndex.vue'));

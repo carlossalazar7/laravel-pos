@@ -22,13 +22,13 @@
       <form class="form-row margin-top" v-else>
         <div class="form-group col-md-12">
           {{ alertMessage }}
-          <label for="nombreDepartamento">{{ trans('lang.nombre_municipio') }}</label>
-          <input v-validate="'required'" name="nombreDepartamento" class="form-control" id="nombreDepartamento"
+          <label for="name">{{ trans('lang.nombre_punto_entrega') }}</label>
+          <input v-validate="'required'" name="name" class="form-control" id="name"
                  type="text"
-                 v-model="name" :class="{ 'is-invalid': submitted && errors.has('nombreDepartamento') }">
-          <div class="heightError" v-if="submitted && errors.has('nombreDepartamento')">
-            <small class="text-danger" v-if="errors.has('nombreDepartamento')">{{
-                errors.first('nombreDepartamento')
+                 v-model="name" :class="{ 'is-invalid': submitted && errors.has('name') }">
+          <div class="heightError" v-if="submitted && errors.has('name')">
+            <small class="text-danger" v-if="errors.has('name')">{{
+                errors.first('name')
               }}</small>
           </div>
         </div>
@@ -36,14 +36,30 @@
         <div class="form-group col-md-12">
           {{ alertMessage }}
           <label for="departamento">{{ trans('lang.nombre_departamento') }}</label>
+
           <select v-validate="'required'" name="departamento" id="departamento"
                   class="form-control" v-model="departamento"
-                  :class="{ 'is-invalid': submitted && errors.has('departamento') }">
+                  :class="{ 'is-invalid': submitted && errors.has('departamento') }" @change="callMunicipio()">
             <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
             <option v-for="(dep) in departamentosData" :value="dep.id">{{ dep.name }}</option>
           </select>
+
           <div class="heightError" v-if="submitted && errors.has('departamento')">
             <small class="text-danger" v-if="errors.has('departamento')">{{ errors.first('departamento') }}</small>
+          </div>
+        </div>
+
+        <div class="form-group col-md-12">
+          {{ alertMessage }}
+          <label for="municipio">{{ trans('lang.nombre_municipio') }}</label>
+          <select v-validate="'required'" name="municipio" id="municipio"
+                  class="form-control" v-model="municipio"
+                  :class="{ 'is-invalid': submitted && errors.has('municipio') }">
+            <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
+            <option v-for="(muni) in municipiosData" :value="muni.id">{{ muni.name }}</option>
+          </select>
+          <div class="heightError" v-if="submitted && errors.has('municipio')">
+            <small class="text-danger" v-if="errors.has('municipio')">{{ errors.first('municipio') }}</small>
           </div>
         </div>
 
@@ -73,11 +89,13 @@ export default {
   data() {
     return {
       name: '',
+      municipio: 0,
       departamento: 0,
       alertMessage: '',
       checkStatus: true,
       saveStatus: false,
       submitted: false,
+      municipiosData: [],
       departamentosData: [],
     }
   },
@@ -93,6 +111,7 @@ export default {
           this.departamentosData = response.data.departments;
         },
     )
+
     let instance = this;
     $('#attributes-add-edit-modal').on('hidden.bs.modal', function (e) {
       instance.close();
@@ -102,11 +121,11 @@ export default {
   methods: {
     close() {
       this.name = '';
-      this.departamento = 0;
+      this.municipio = 0;
       this.$validator.reset();
       this.checkStatus = false;
       this.saveStatus = false;
-      this.$emit('resetMunicipioModal', this.checkStatus, this.saveStatus);
+      this.$emit('resetPuntoEntregaModal', this.checkStatus, this.saveStatus);
     },
     closeModal() {
       $(this.modalOptions.modalID).modal('toggle')
@@ -117,7 +136,7 @@ export default {
         if (result) {
           this.inputFields = {
             name: this.name,
-            departamento: this.departamento,
+            municipio: this.municipio,
           };
           if (this.id) {
             this.postDataMethod(this.modalOptions.postDataWithIDURL + '/' + this.id, this.inputFields);
@@ -133,9 +152,23 @@ export default {
       this.axiosGet(route,
           function (response) {
             instance.name = response.data.name;
-            instance.departamento = response.data.department_id;
+            instance.municipio = response.data.municipio_id;
+            instance.getDepartamentoId("/municipio/" + response.data.municipio_id);
             instance.setPreLoader(true);
-            console.log(response.data);
+          },
+          function (response) {
+            instance.setPreLoader(true);
+          },
+      );
+    },
+    getDepartamentoId(route) {
+      let instance = this;
+      this.setPreLoader(false);
+      this.axiosGet(route,
+          function (response) {
+            instance.departamento = response.data.department_id;
+            instance.callMunicipio();
+            instance.setPreLoader(true);
           },
           function (response) {
             instance.setPreLoader(true);
@@ -147,10 +180,10 @@ export default {
       let instance = this;
       instance.saveStatus = true;
       this.name = '';
-      this.departamento = 0;
+      this.municipio = 0;
       this.$validator.reset();
       this.checkStatus = false;
-      this.$emit('resetMunicipioModal', this.checkStatus, this.saveStatus);
+      this.$emit('resetPuntoEntregaModal', this.checkStatus, this.saveStatus);
       if (!this.modalOptions.turnOffLoader) {
         this.$hub.$emit('reloadDataTable');
       } else {
@@ -158,6 +191,14 @@ export default {
       }
     },
     postDataCatchFunctionality(error) {
+    },
+    callMunicipio() {
+      let departamentoId = this.departamento;
+      this.axiosGet("/get-municipios-departamentoId/" + departamentoId,
+          response => {
+            this.municipiosData = response.data.municipios;
+          },
+      );
     },
   },
 }

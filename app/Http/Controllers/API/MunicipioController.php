@@ -62,7 +62,7 @@ class MunicipioController extends Controller
         if ($municipio = Municipio::store($municipioData)) {
             $response = [
                 'data' => $municipio,
-                'message' => Lang::get('Municipio') . ' ' . Lang::get('lang.successfully_saved')
+                'message' => Lang::get('lang.municipio') . ' ' . Lang::get('lang.successfully_saved')
             ];
             return response()->json($response, 201);
         } else {
@@ -93,7 +93,7 @@ class MunicipioController extends Controller
             $municipio->department_id = $request->input('departamento');
             $municipio->save();
             $response = [
-                'message' => Lang::get('Municipio') . ' ' . Lang::get('lang.successfully_updated')
+                'message' => Lang::get('lang.municipio') . ' ' . Lang::get('lang.successfully_updated')
             ];
 
             return response()->json($response, 201);
@@ -108,11 +108,20 @@ class MunicipioController extends Controller
 
     public function destroy($id)
     {
-        //--Agregar validacion que se encuentra un registro usando el municipio
-        Municipio::deleteData($id);
-        $response = [
-            'message' => Lang::get('Municipio') . ' ' . Lang::get('lang.successfully_deleted')
-        ];
-        return response()->json($response, 201);
+        $used = Municipio::usedMunicipio($id);
+
+        if ($used == 0) {
+            Municipio::deleteData($id);
+            $response = [
+                'message' => Lang::get('lang.municipio') . ' ' . Lang::get('lang.successfully_deleted')
+            ];
+            return response()->json($response, 201);
+        } else {
+            $response = [
+                'message' => Lang::get('lang.municipio') . ' ' . Lang::get('lang.in_use') . ', ' . Lang::get('lang.you_can_not_delete_the') . ' ' . strtolower(Lang::get('lang.municipio'))
+            ];
+
+            return response()->json($response, 200);
+        }
     }
 }
