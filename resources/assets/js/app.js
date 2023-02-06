@@ -434,6 +434,11 @@ Vue.component('delivery-index', require('./components/deliveries/DeliveryIndex.v
 Vue.component('add-edit-delivery-modal', require('./components/deliveries/AddEditDeliveryModal.vue'));
 Vue.component('delivery-action-component', require('./components/datatable/DeliveryActionTable.vue'));
 
+//Routes
+Vue.component('route-index', require('./components/routes/RoutesIndex.vue'));
+Vue.component('add-edit-route-modal', require('./components/routes/AddEditRouteModal.vue'));
+Vue.component('route-action-component', require('./components/datatable/RouteActionTable.vue'));
+
 //Customers Component
 Vue.component('customers-page-index', require('./components/contacts/customersTab/CustomersPageIndex.vue'));
 Vue.component('customers-index', require('./components/contacts/customersTab/CustomersTabIndex.vue'));

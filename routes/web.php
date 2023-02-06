@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth']], function () {
     require_once(__DIR__ . '/municipio/municipio.php');
     require_once(__DIR__ . '/punto_entrega/punto_entrega.php');
     require_once(__DIR__ . '/delivery/delivery.php');
+    require_once(__DIR__ . '/route/route.php');
 
     //logout
     Route::get('/logout', [LoginController::class, 'logout']);

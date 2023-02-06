@@ -1255,6 +1255,4 @@ return array(
     'table_chips' => 'Table chips',
     'warning' => 'Warning!',
     'export_all' => 'Export all',
-
-
 );

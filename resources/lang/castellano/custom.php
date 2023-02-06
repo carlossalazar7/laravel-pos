@@ -27,16 +27,38 @@ return [
     'add_municipio' => 'Añadir municipio',
     'edit_municipio' => 'Editar municipio',
     'nombre_municipio' => 'Nombre municipio',
+    'municipio_deleted_permanently' => 'Este municipio será borrado de forma permanente.',
 
     // puntos entrega
-    'puntos_entrega' => 'Departments',
-    'add_punto_entrega' => 'Add department',
-    'edit_punto_entrega' => 'Edit department',
-    'nombre_punto_entrega' => 'Department name',
+    'punto_entrega' => 'Punto de entrega',
+    'puntos_entrega' => 'Puntos de entrega',
+    'add_punto_entrega' => 'Añadir punto de entrega',
+    'edit_punto_entrega' => 'Editar punto de entrega',
+    'nombre_punto_entrega' => 'Nombre punto de entrega',
+    'delivery_point_deleted_permanently' => 'Este punto de entrega será borrado de forma permanente.',
 
     // deliveries
-    'deliveries' => 'Departments',
-    'add_delivery' => 'Add department',
-    'edit_delivery' => 'Edit department',
+    'delivery' => 'Repartidor',
+    'deliveries' => 'Repartidores',
+    'add_delivery' => 'Añadir repartidor',
+    'edit_delivery' => 'Editar repartidor',
+    'nombre_delivery' => 'Nombre repartidor',
+    'delivery_phone' => 'Teléfono',
+    'delivery_mail' => 'Correo',
+    'delivery_type' => 'Tipo',
+    'status_delivery' => 'Estado',
+    'type_external' => 'Externo',
+    'type_internal' => 'Interno',
+    'status_active' => 'Activ',
+    'status_inactive' => 'Inactivo',
+    'delivery_deleted_permanently' => 'Este repartidor será borrado de forma permanente.',
+
+    // routes
+    'route' => 'Ruta',
+    'routes' => 'Rutas',
+    'add_route' => 'Añadir ruta',
+    'edit_route' => 'Editar ruta',
+    'route_deleted_permanently' => 'Esta ruta será borrada de forma permanente.',
+    'nombre_route' => 'Nombre ruta',
 
 ];
