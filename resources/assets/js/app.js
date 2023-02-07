@@ -255,6 +255,11 @@ Vue.component('userlist-action-component', require('./components/datatable/UserL
 Vue.component('roles-action-component', require('./components/datatable/RolesActionComponent.vue'));
 Vue.component('restaurant-table-action-component', require('./components/datatable/RestaurantTableSettingActions.vue'));
 Vue.component('adjust-stock-action-component', require('./components/datatable/AdjustStockActionComponent'));
+Vue.component('departamento-action-component', require('./components/datatable/DepartamentoActionTable.vue'));
+Vue.component('municipio-action-component', require('./components/datatable/MunicipioActionTable.vue'));
+Vue.component('punto-entrega-action-component', require('./components/datatable/PuntoEntregaActionTable.vue'));
+Vue.component('delivery-action-component', require('./components/datatable/DeliveryActionTable.vue'));
+Vue.component('route-action-component', require('./components/datatable/RouteActionTable.vue'));
 
 //layouts component
 Vue.component('side-bar', require('./components/layouts/Sidebar.vue'));
@@ -417,27 +422,22 @@ Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
 //Departments
 Vue.component('departments-index', require('./components/departamentos/DepartamentoIndex.vue'));
 Vue.component('add-edit-depto-modal', require('./components/departamentos/AddEditDepartamentoModal.vue'));
-Vue.component('departamento-action-component', require('./components/datatable/DepartamentoActionTable.vue'));
 
 //Municipios
 Vue.component('municipios-index', require('./components/municipios/MunicipiosIndex.vue'));
 Vue.component('add-edit-municipio-modal', require('./components/municipios/AddEditMunicipioModal.vue'));
-Vue.component('municipio-action-component', require('./components/datatable/MunicipioActionTable.vue'));
 
 //Puntos entrega
 Vue.component('punto-entrega-index', require('./components/puntos_entrega/PuntoEntregaIndex.vue'));
 Vue.component('add-edit-punto-entrega-modal', require('./components/puntos_entrega/AddEditPuntoEntregaModal.vue'));
-Vue.component('punto-entrega-action-component', require('./components/datatable/PuntoEntregaActionTable.vue'));
 
 //Deliveries
 Vue.component('delivery-index', require('./components/deliveries/DeliveryIndex.vue'));
 Vue.component('add-edit-delivery-modal', require('./components/deliveries/AddEditDeliveryModal.vue'));
-Vue.component('delivery-action-component', require('./components/datatable/DeliveryActionTable.vue'));
 
 //Routes
 Vue.component('route-index', require('./components/routes/RoutesIndex.vue'));
 Vue.component('add-edit-route-modal', require('./components/routes/AddEditRouteModal.vue'));
-Vue.component('route-action-component', require('./components/datatable/RouteActionTable.vue'));
 
 //Customers Component
 Vue.component('customers-page-index', require('./components/contacts/customersTab/CustomersPageIndex.vue'));

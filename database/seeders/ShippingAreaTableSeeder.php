@@ -18,20 +18,26 @@ class ShippingAreaTableSeeder extends Seeder
 
         DB::table("shipping_areas")->insert([
             [
-                'area' => 'Washington',
-                'price' => '200',
+                'area' => 'San Salvador',
+                'price' => '0',
                 'created_at' =>now(),
                 'updated_at' =>now(),
             ],
             [
-                'area' => 'New York',
-                'price' => '55',
+                'area' => 'Occidente',
+                'price' => '1.99',
                 'created_at' =>now(),
                 'updated_at' =>now(),
             ],
             [
-                'area' => 'Florida',
-                'price' => '250',
+                'area' => 'Oriente',
+                'price' => '1.99',
+                'created_at' =>now(),
+                'updated_at' =>now(),
+            ],
+            [
+                'area' => 'Otros',
+                'price' => '1.99',
                 'created_at' =>now(),
                 'updated_at' =>now(),
             ],
