@@ -267,6 +267,23 @@ class Order extends BaseModel
         return Order::select('created_by as createdBy', 'customer_id as customer', 'created_at as date', 'id as orderID', 'type as salesOrReceivingType')->where('status', 'hold')->get();
     }
 
+    public static function ordenesEnPreparacion()
+    {
+        return Order::join('customers', 'customers.id', '=', 'orders.customer_id')
+        ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
+        ->join('shipping_areas', 'shipping_areas.id', '=', 'shipping_information.shipping_area_id')
+        ->select('orders.invoice_id', 
+        'customers.first_name',
+        'customers.last_name', 
+        'orders.created_at as date', 
+        'orders.total', 
+        'orders.status', 
+        'orders.id as orderID', 
+        'shipping_areas.area')
+        ->where('orders.status', 'hold')->get();
+        
+    }
+
     public static function userSales($id, $Month, $date)
     {
         return Order::join('order_items', 'order_items.order_id', '=', 'orders.id')

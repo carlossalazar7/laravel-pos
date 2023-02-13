@@ -429,6 +429,11 @@ Vue.component('punto-entrega-index', require('./components/puntos_entrega/PuntoE
 Vue.component('add-edit-punto-entrega-modal', require('./components/puntos_entrega/AddEditPuntoEntregaModal.vue'));
 Vue.component('punto-entrega-action-component', require('./components/datatable/PuntoEntregaActionTable.vue'));
 
+//Pedidos en preparacion
+Vue.component('pedidos-index', require('./components/pedidos/PedidosEnPreparacion.vue'));
+Vue.component('pedidos-action-component', require('./components/datatable/PedidosActionTable.vue'));
+Vue.component('pedido-detail-modal', require('./components/pedidos/PedidoDetailModal.vue'));
+
 //Deliveries
 Vue.component('delivery-index', require('./components/deliveries/DeliveryIndex.vue'));
 Vue.component('add-edit-delivery-modal', require('./components/deliveries/AddEditDeliveryModal.vue'));

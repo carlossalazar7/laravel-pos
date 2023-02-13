@@ -61,4 +61,9 @@ return [
     'route_deleted_permanently' => 'Esta ruta será borrada de forma permanente.',
     'nombre_route' => 'Nombre ruta',
 
+    //pedidos
+    'pedidoEP' => 'Pedidos en preparación',
+    'pedidos' => 'Pedidos',
+    'edit_pedido' => 'Editar orden',
+    'order_deleted_permanently' => 'Este pedido será borrado de forma permanente.',
 ];
