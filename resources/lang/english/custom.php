@@ -13,6 +13,21 @@ return [
 
     'hello2' => 'Hello2 updated by custom language',
 
+    // sales
+    'check_customer' => 'Check customer',
+    'shipping_settings' => 'Shipping Settings',
+    'shipping_not_configured' => 'Shipping not configured',
+    'select_all' => 'Select all',
+    'selected_orders' => 'Selected orders: ',
+    'download_orders' => 'Download orders',
+    'list' => 'List',
+    'phone' => 'Phone',
+    'client_name' => 'Client name',
+    'client_lastName' => 'Client last name',
+    'address' => 'Client address',
+    'next_btn' => 'Next',
+    'customer_not_found' => 'There are no customers found with this phone number.',
+
     // departamentos
     'departamento' => 'Department',
     'departamentos' => 'Departments',

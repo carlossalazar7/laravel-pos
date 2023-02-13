@@ -1284,7 +1284,6 @@ export default {
             }
         },
         commonMethodForAccessingShortcut(data) {
-
             if (data === 'addCustomerShortcut' && parseInt(this.shortcutKeyInfo.addCustomerShortcut.status) === 1 && parseInt(this.shortcutStatus) === 1) {
                 $('#customer-add-edit-modal').modal('show');
                 this.newCustomerAddModalOpen();

@@ -18,6 +18,8 @@ Route::post('/customer/delete/{id}', [CustomerController::class, 'deleteCustomer
 Route::get('/customer-data/{id}', [CustomerController::class, 'getCustomerData']);
 Route::post('/update-customer-avatar/{id}', [CustomerController::class, 'updateAvatar']);
 
+Route::get('/get-customerByPhone/{phone}', [CustomerController::class, 'getCustomerByPhone']);
+
 //supplier
 Route::post('import-supplier-contacts', [SupplierController::class, 'importSuppliers']);
 Route::post('supplier/store', [SupplierController::class, 'store']);

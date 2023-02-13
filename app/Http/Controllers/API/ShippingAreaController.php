@@ -91,4 +91,9 @@ class ShippingAreaController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function show($id)
+    {
+        return ShippingArea::getOne($id);
+    }
 }
