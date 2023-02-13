@@ -133,6 +133,8 @@ Route::get('/edit-shipping-area/{id}', [ShippingAreaController::class, 'getRowSh
 Route::post('/edit-shipping-area/{id}', [ShippingAreaController::class, 'update'])
     ->middleware('permissions:can_manage_shipping_area');
 
+Route::get('/shipping-area/{id}', [ShippingAreaController::class, 'show']);
+
 //branches
 Route::get('/allBranches', [BranchController::class, 'getAllBranches']);
 Route::get('/branches', [BranchController::class, 'index']);

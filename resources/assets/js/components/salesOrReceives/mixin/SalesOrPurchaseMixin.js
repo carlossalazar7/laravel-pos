@@ -195,9 +195,16 @@ export default {
         municipiosData: [],
         departamentos: [],
 
-        ordersSelected:[],
+        ordersSelected: [],
         selected: [],
         allSelected: false,
+
+        customerPhone: '',
+        customerData: [],
+        customerName: '',
+        customerLastName: '',
+        customerAddress: '',
+        customerExists: '',
     }),
     computed: {
         filteredHoldOrder() {
@@ -406,7 +413,7 @@ export default {
             response => {
                 this.shippingAreaData = response.data.shippingData;
             },
-        ),
+        );
         this.axiosGet(
             "/get-departamentos",
             response => {
@@ -1893,6 +1900,7 @@ export default {
             }
         },
         newCustomerAddModalOpen() {
+            $('#shippment-orders-modal').modal('hide');
             this.isCustomerModalActive = true;
         },
         taxEditModal() {
@@ -2061,13 +2069,18 @@ export default {
             if (!this.isCartComponentActive) $('#cart-modal-for-mobile-view').modal('hide');
         },
         setShippingPrice() {
-
+            let areaId = document.getElementById("shippingAreaId").value;
+            this.axiosGet("/shipping-area/" + areaId,
+                response => {
+                    this.shippingPrice = response.data.price;
+                },
+            );
         },
-        descargarPedidos(){
+        descargarPedidos() {
             let instance = this;
             console.log(this.ordersSelected);
 
-            if(this.ordersSelected.length>0){
+            if (this.ordersSelected.length > 0) {
                 axios({
                     url: '/get-order-by-invoice-id',
                     method: 'POST',
@@ -2081,14 +2094,14 @@ export default {
                     document.body.appendChild(link);
                     link.click();
                 });
-            }else{
+            } else {
                 this.showSuccessAlert("seleccione un pedido primero");
             }
 
         },
         selectAll() {
             this.ordersSelected = [];
-            let ordenes =[];
+            let ordenes = [];
             if (!this.allSelected) {
                 this.orderHoldItems.forEach(function (orderHoldItem, index, array) {
                     ordenes.push(orderHoldItem.invoice_id);
@@ -2096,8 +2109,32 @@ export default {
             }
             this.ordersSelected = ordenes;
         },
+        checkCustomer() {
+            let phone = this.customerPhone;
+            let instance = this;
+            let arrCustomer = [];
+            instance.axiosGet('/get-customerByPhone/' + phone,
+                function (response) {
+                    arrCustomer = response.data;
+                    if (arrCustomer.length === 0) {
+                        instance.customerExists = true;
+                    } else {
+                        $('#shippment-orders-modal').modal('hide');
+                        instance.customerData = response.data.customer;
+                        instance.customerName = instance.customerData[0].first_name;
+                        instance.customerLastName = instance.customerData[0].last_name;
+                        instance.customerAddress = instance.customerData[0].address;
+                        instance.customerPhone = instance.customerData[0].phone_number;
+                        $('#customer-data-orders-modal').modal('show');
+                    }
+                });
+        },
+        shippingDetails() {
+            $('#customer-data-orders-modal').modal('hide');
+            $('#shipping-details-orders-modal').modal('show');
+        },
         saveShipping() {
-            $('#shippment-orders-modal').modal('hide');
+            $('#shipping-details-orders-modal').modal('hide');
             let subtotal = this.finalCart.grandTotal + this.finalCart.overAllDiscount;
             let date = this.finalCart.date;
             let lastOrderIdHold = [];
@@ -2117,7 +2154,7 @@ export default {
             instance.axiosGETorPOST({url: '/get-last-order', postData: lasOrderHoldToSave},
                 (success, responseData) => {
                     if (success) {
-                        console.log(responseData)
+                        //console.log(responseData)
                         lastOrderIdHold = responseData;
                         numeroOrden = responseData.id;
 
@@ -2125,7 +2162,7 @@ export default {
                         let data = {
                             shippingAreaId: this.shippingAreaId,
                             shippingPrice: this.shippingPrice,
-                            shippingAreaSddress: this.shippingAddress,
+                            shippingAreaSddress: this.customerAddress,
                             branchId: this.currentBranch.id,
                             orderId: (numeroOrden != null) ? numeroOrden : null,
                             departamento: this.shippingDepartamento,

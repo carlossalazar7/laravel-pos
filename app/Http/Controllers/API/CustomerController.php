@@ -361,5 +361,14 @@ class CustomerController extends Controller
             return response()->json($response, 201);
         }
     }
+
+    public function getCustomerByPhone($phone)
+    {
+        $customer = DB::select("SELECT * FROM customers WHERE phone_number = ?", [$phone]);
+        if ($customer) {
+            return ['customer' => $customer];
+        }
+        return null;
+    }
 }
 
