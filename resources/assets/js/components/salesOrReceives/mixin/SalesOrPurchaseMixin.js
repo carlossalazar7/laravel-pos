@@ -208,6 +208,8 @@ export default {
     }),
     computed: {
         filteredHoldOrder() {
+            this.ordersSelected = [];
+            this.allSelected = false;
             if (this.salesOrReceivingType === 'customer' && this.currentBranch != null && this.currentBranch.branch_type === 'restaurant') {
                 // Returns result in restaurant customer
                 return this.customerHoldOrders.filter(customerHoldOrder => {
@@ -438,7 +440,7 @@ export default {
             });
             $("#pop_mouse2").click(function () {
                 $("input").focus();
-            });
+            });      
         });
 
         if (this.order_type === 'sales') {
@@ -498,6 +500,7 @@ export default {
 
         $('#hold-orders-modal').on('hidden.bs.modal', function () {
             instance.searchHoldOrder = '';
+            instance.shippingAreaIdGet = 0;
         });
 
         $('#register-info-modal').on('hidden.bs.modal', function () {
@@ -2093,6 +2096,9 @@ export default {
                     link.setAttribute('download', 'file.pdf');
                     document.body.appendChild(link);
                     link.click();
+                    this.ordersSelected = [];
+                    //this.allSelected = false;
+                    this.getHoldOrders();
                 });
             } else {
                 this.showSuccessAlert("seleccione un pedido primero");
@@ -2103,7 +2109,7 @@ export default {
             this.ordersSelected = [];
             let ordenes = [];
             if (!this.allSelected) {
-                this.orderHoldItems.forEach(function (orderHoldItem, index, array) {
+                this.filteredHoldOrder.forEach(function (orderHoldItem, index, array) {
                     ordenes.push(orderHoldItem.invoice_id);
                 });
             }

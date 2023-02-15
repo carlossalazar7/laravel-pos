@@ -11,18 +11,14 @@
       <datatable-component class="main-layout-card-content" :options="tableOptions" :exportData="exportToVue"
                            exportFileName="pedidos" @resetStatus="resetExportValue"></datatable-component>
   
-      <!-- Modal -->
+      <!-- Detail Modal -->
       <div class="modal fade" id="pedido-detail-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <pedido-detail-modal class="modal-content" v-if="isActive" :id="selectedItemId"
                                 :modalOptions="modalOptions"></pedido-detail-modal>
         </div>
       </div>
   
-      <!-- Delete Modal -->
-      <confirmation-modal id="confirm-delete" :message="'departamento_deleted_permanently'" :firstButtonName="'yes'"
-                          :secondButtonName="'no'"
-                          @confirmationModalButtonAction="confirmationModalButtonAction"></confirmation-modal>
     </div>
   </template>
   
@@ -37,7 +33,7 @@
     data() {
       return {
         tableOptions: {
-          tableName: 'departamdentos',
+          tableName: 'orders',
           columns: [
             {title: 'lang.id', key: 'orderID', type: 'text', sortable: true},
             {title: 'lang.invoice_id', key: 'invoice_id', type: 'text', sortable: true},
@@ -63,9 +59,7 @@
         modalOptions: {
           modalID: '#pedido-detail-modal',
           titleLang: 'Detalle del pedido',
-          getDataURL: sourceURL,
-          postDataWithIDURL: sourceURL,
-          postDataWithoutIDURL: sourceURL + '/store',
+          getDataURL: sourceURL
         },
         buttonLoader: false,
         isDisabled: false,
@@ -82,9 +76,6 @@
     },
   
     methods: {
-      confirmationModalButtonAction() {
-        this.deleteDataMethod(sourceURL + '/delete/' + this.deleteID, this.deleteIndex);
-      },
       resetPedidoDetailModal(value, save) {
         $("#pedido-detail-modal").on("hidden.bs.modal", function (e) {
           this.isActiveAttributeModal = false;

@@ -81,4 +81,6 @@ return [
     'pedidos' => 'Orders',
     'edit_pedido' => 'Edit order',
     'order_deleted_permanently' => 'This order will be deleted permanently.',
+    'order_info' => 'Order information',
+    'shipping_address' => 'Shipping address',
 ];

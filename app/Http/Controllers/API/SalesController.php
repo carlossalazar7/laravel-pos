@@ -1583,6 +1583,13 @@ class SalesController extends Controller
             ->get();
 
         foreach($orders as $item) {
+
+            //Cambiando estado de la orden a en preparación
+            $idOrder = $item['id'];
+            $order = Order::find($idOrder);
+            $order->status = "en preparacion";
+            $order->save();
+
             $id =  $item['id_customer'];
             $customers = Customer::where("id","=",$id)
                 ->select(

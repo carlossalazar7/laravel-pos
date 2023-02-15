@@ -66,4 +66,6 @@ return [
     'pedidos' => 'Pedidos',
     'edit_pedido' => 'Editar orden',
     'order_deleted_permanently' => 'Este pedido será borrado de forma permanente.',
+    'order_info' => 'Información de la orden',
+    'shipping_address' => 'Dirección de envio',
 ];

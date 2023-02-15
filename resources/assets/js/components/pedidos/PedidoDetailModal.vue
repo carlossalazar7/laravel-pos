@@ -20,17 +20,77 @@
         <pre-loader v-if="!hidePreLoader" class="small-loader-container"></pre-loader>
         <form class="form-row margin-top" v-else>
           <div class="form-group col-md-12">
-            {{ alertMessage }}
-            <label for="invoiceID">{{ trans('lang.invoice_id') }}</label>
-            <input v-validate="'required'" name="invoiceID" class="form-control" id="invoiceID"
-                   type="text"
-                   v-model="invoice_id" :class="{ 'is-invalid': submitted && errors.has('invoiceID') }">
+            <h5><strong>{{ trans('lang.order_info') }}</strong></h5>
+            <div class="row">
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.invoice_id') }}: </strong>{{ orden.invoice_id }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.date') }}: </strong>{{ orden.created_at }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.customer') }}: </strong>{{ cliente.first_name }} {{ cliente.last_name }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.phone_number') }}: </strong>{{ cliente.phone_number }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.emails') }}: </strong>{{ cliente.email }}</h6>
+                </div>
+                <div class="col-6">
+                  <h6 class=""><strong>{{ trans('lang.customer_address') }}: </strong>{{ cliente.address }}</h6>
+                </div>
+                
+            </div>
+
+            <h5 class="mt-4"><strong>{{ trans('lang.shipping') }}</strong></h5>
+            <div class="row">
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.shipping_area') }}: </strong>{{ envio.area }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.price') }}: </strong>${{ envio.price }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.departamento') }}: </strong>{{ envio.departamento }}</h6>
+                </div>
+                <div class="col-5">
+                  <h6 class=""><strong>{{ trans('lang.municipio') }}: </strong>{{ envio.municipio }}</h6>
+                </div>
+                <div class="col-12">
+                  <h6 class=""><strong>{{ trans('lang.shipping_address') }}: </strong>{{ envio.shipping_address }}</h6>
+                </div>
+                
+                
+            </div>
+
+            <h5 class="mt-4"><strong>{{ trans('lang.products') }}</strong></h5>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">{{ trans('lang.title') }}</th>
+                  <th scope="col">{{ trans('lang.quantity') }}</th>
+                  <th scope="col">{{ trans('lang.price') }}</th>
+                  <th scope="col">{{ trans('lang.subtotal') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(producto, index) in detalle_orden" :key="index">
+                  <td>{{ producto.title }}</td>
+                  <td>{{ producto.quantity }}</td>
+                  <td>${{ producto.price }}</td>
+                  <td>${{ producto.sub_total }}</td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>{{ trans('lang.total') }}</strong></td>
+                  <td>${{ orden.total }}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
           </div>
           <div class="col-12">
-            <button class="btn btn-primary app-color mobile-btn" type="submit" @click.prevent="save()">{{
-                trans('lang.save')
-              }}
-            </button>
             <button class="btn btn-secondary cancel-btn mobile-btn" data-dismiss="modal"
                     @click.prevent="close()">{{ trans('lang.cancel') }}
             </button>
@@ -51,8 +111,10 @@
     extends: axiosGetPost,
     data() {
       return {
-        name: '',
-        invoice_id: '',
+        orden: '',
+        cliente: '',
+        envio: '',
+        detalle_orden: '',
         alertMessage: '',
         checkStatus: true,
         saveStatus: false,
@@ -73,7 +135,6 @@
   
     methods: {
       close() {
-        this.name = '';
         this.$validator.reset();
         this.checkStatus = false;
         this.saveStatus = false;
@@ -82,53 +143,24 @@
       closeModal() {
         $(this.modalOptions.modalID).modal('toggle')
       },
-      save() {
-        this.submitted = true;
-        this.$validator.validateAll().then((result) => {
-          if (result) {
-            this.inputFields = {
-              name: this.name,
-            };
-            if (this.id) {
-              this.postDataMethod(this.modalOptions.postDataWithIDURL + '/' + this.id, this.inputFields);
-            } else {
-              this.postDataMethod(this.modalOptions.postDataWithoutIDURL, this.inputFields);
-            }
-          }
-        });
-      },
       getCommonData(route) {
         
         let instance = this;
         this.setPreLoader(false);
         this.axiosGet(route,
             function (response) {
-                //data
-                //alert(response.data.invoice_id);
-              instance.invoice_id = response.data.orden.invoice_id;
+              //data
+              instance.orden = response.data.orden;
+              instance.cliente = response.data.cliente;
+              instance.envio = response.data.envio;
+              instance.detalle_orden = response.data.detalle_orden;
               instance.setPreLoader(true);
             },
             function (response) {
               instance.setPreLoader(true);
             },
         );
-      },
-      postDataThenFunctionality(response = null) {
-        $(this.modalOptions.modalID).modal('toggle');
-        let instance = this;
-        instance.saveStatus = true;
-        this.name = '';
-        this.$validator.reset();
-        this.checkStatus = false;
-        this.$emit('resetPedidoDetailModal', this.checkStatus, this.saveStatus);
-        if (!this.modalOptions.turnOffLoader) {
-          this.$hub.$emit('reloadDataTable');
-        } else {
-          this.$hub.$emit('reloadAttributeData');
-        }
-      },
-      postDataCatchFunctionality(error) {
-      },
+      }
     },
   }
   </script>

@@ -280,7 +280,7 @@ class Order extends BaseModel
         'orders.status', 
         'orders.id as orderID', 
         'shipping_areas.area')
-        ->where('orders.status', 'hold')->get();
+        ->where('orders.status', 'en preparacion')->get();
         
     }
 

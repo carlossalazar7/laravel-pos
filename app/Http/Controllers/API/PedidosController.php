@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Customer;
+use App\Models\OrderItems;
+use App\Models\ShippingInformation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 
@@ -15,6 +18,11 @@ class PedidosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+    {
+        
+    }
+
+    public function PedidosEnPreparacionIndex()
     {
         $tabName = '';
         $routeName = '';
@@ -71,10 +79,17 @@ class PedidosController extends Controller
     public function show($id)
     {
         //
-        $orden ;
-        $cliente ;
-        $detalle_orden ;
-        return ['orden' => Order::getOne($id)];
+        $orden = Order::find($id);
+        $cliente = Customer::join('orders', 'orders.customer_id', '=', 'customers.id')->where('orders.id', '=', $id)->first();
+        $envio = ShippingInformation::select('shipping_address', 'shipping_information.price as price', 'area', 'municipios.name as municipio', 'departamentos.name as departamento')
+                ->join('shipping_areas', 'shipping_areas.id', '=','shipping_information.shipping_area_id')
+                ->join('departamentos', 'departamentos.id', '=', 'shipping_information.departamento')
+                ->join('municipios', 'municipios.id', '=', 'shipping_information.municipio')
+                ->where('order_id', '=', $id)->first();
+        $detalle_orden = OrderItems::join('product_variants', 'product_variants.id', '=', 'order_items.variant_id')
+                        ->join('products', 'products.id', '=', 'product_variants.product_id')
+                        ->where('order_items.order_id', '=', $id)->get();
+        return ['orden' => $orden, 'cliente' => $cliente, 'envio' => $envio, 'detalle_orden' => $detalle_orden];
     }
 
     /**
