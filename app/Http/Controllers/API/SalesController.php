@@ -867,7 +867,7 @@ class SalesController extends Controller
                             $content = EmailTemplate::query()->select('template_subject', 'default_content', 'custom_content')->where('template_type', 'pos_invoice')->first();
 
                             $subject = $content->template_subject;
-                            $text = $content->custom_content ?  $content->custom_content : $content->default_content;
+                            $text = $content->custom_content ? $content->custom_content : $content->default_content;
 
                             $mailText = str_replace('{first_name}', $orderCustomer->first_name, str_replace('{invoice_id}', $orderDetails->invoice_id, str_replace('{app_name}', Config::get('app_name'), $text)));
 
@@ -1142,7 +1142,7 @@ class SalesController extends Controller
             );
 
             $content = $pdf->download()->getOriginalContent();
-            Storage::put('public/pdf/'.$fileNameToStore,$content);
+            Storage::put('public/pdf/' . $fileNameToStore, $content);
 
             $emailSend = new Email;
             $emailSend->sendEmail($mailText, $email, $subject, $fileNameToStore);
@@ -1544,6 +1544,7 @@ class SalesController extends Controller
 
         ShippingInformation::store($ShippingData);
     }
+
     public function saveShippingInformation(Request $request)
     {
         $ShippingData = array();
@@ -1563,22 +1564,25 @@ class SalesController extends Controller
         return response()->json($response, 200);
     }
 
-    public function getShipping(Request $request){
-        $shippings = ShippingInformation::where("order_id","=",$request->id)->first();
+    public function getShipping(Request $request)
+    {
+        $shippings = ShippingInformation::where("order_id", "=", $request->id)->first();
         return $shippings;
     }
-    public function getOrderByInvoiceId(Request $request){
+
+    public function getOrderByInvoiceId(Request $request)
+    {
         $orders = Order::join('users', 'users.id', '=', 'orders.created_by')
             ->join('branches', 'branches.id', '=', 'orders.branch_id')
             ->select(
-                    'orders.id',
-                    'orders.date',
-                    'orders.invoice_id',
-                    'orders.sub_total',
-                    'orders.total',
-                    'branches.name as branch_name',
-                    DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by_name"),
-                )
+                'orders.id',
+                'orders.date',
+                'orders.invoice_id',
+                'orders.sub_total',
+                'orders.total',
+                'branches.name as branch_name',
+                DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by_name"),
+            )
             ->whereIn("invoice_id", $request)
             ->get();
 
@@ -1590,8 +1594,8 @@ class SalesController extends Controller
             $order->status = "en preparacion";
             $order->save();
 
-            $id =  $item['id_customer'];
-            $customers = Customer::where("id","=",$id)
+            $id = $item['id_customer'];
+            $customers = Customer::where("id", "=", $id)
                 ->select(
                     'customers.id as id_customer',
                     'first_name',
@@ -1607,22 +1611,22 @@ class SalesController extends Controller
             else $subTotal = DB::raw('abs(order_items.sub_total) as total');
 
             $orderItems = OrderItems::query()
-                    ->leftjoin('products', 'order_items.product_id', '=', 'products.id')
-                    ->leftJoin('product_variants', 'order_items.variant_id', '=', 'product_variants.id')
-                    ->where('order_items.order_id', '=', $id)
-                    ->select(
-                        'order_items.price',
-                        'order_items.type',
-                        $subTotal,
-                        'products.title  as producto',
-                        DB::raw('(CASE WHEN order_items.product_id = 0
+                ->leftjoin('products', 'order_items.product_id', '=', 'products.id')
+                ->leftJoin('product_variants', 'order_items.variant_id', '=', 'product_variants.id')
+                ->where('order_items.order_id', '=', $id)
+                ->select(
+                    'order_items.price',
+                    'order_items.type',
+                    $subTotal,
+                    'products.title  as producto',
+                    DB::raw('(CASE WHEN order_items.product_id = 0
                         THEN (CASE WHEN order_items.type = "shipment" THEN "Shipment" ELSE "Discount" END) 
                         ELSE concat(title,if(variant_title="default_variant"," ",concat("(",product_variants.variant_title,")"))) END) as title'),
-                        DB::raw('(CASE WHEN order_items.type = "discount" THEN 0 ELSE (CASE WHEN order_items.quantity > 0 
+                    DB::raw('(CASE WHEN order_items.type = "discount" THEN 0 ELSE (CASE WHEN order_items.quantity > 0 
                         THEN ((-1)*order_items.quantity) ELSE abs(order_items.quantity) END) END) as quantity'),
-                        'order_items.discount'
-                    )
-                    ->get();
+                    'order_items.discount'
+                )
+                ->get();
 
             $item['$orderItems'] = $orderItems;
         }
@@ -1636,7 +1640,7 @@ class SalesController extends Controller
 //        $orderItems = $this->formatOrdersItems($orderID);
 
         $invoiceLogo = Config::get('invoiceLogo');
-        $fileNameToStore = 'IMPADI-' .$order->invoice_id . '.pdf';
+        $fileNameToStore = 'IMPADI-' . $order->invoice_id . '.pdf';
         $appName = Config::get('app_name');
 
 
@@ -1650,15 +1654,17 @@ class SalesController extends Controller
         );
         return $pdf->download($fileNameToStore);
     }
-    public function getLastOrder(Request $request){
-        $order = Order::where("branch_id","=",$request->branchId)
-            ->where("created_at","=",Carbon::parse($request->date)->format('Y-m-d H:i:s'))
-            ->where("status","=",$request->status)
-            ->where("profit","=",$request->profit)
-            ->where("total","=",$request->grandTotal)
-            ->where("type","=",$request->salesOrReceivingType)
-            ->where("created_by","=",$request->createdBy)
-            ->where("sub_total","=",$request->sub_total)
+
+    public function getLastOrder(Request $request)
+    {
+        $order = Order::where("branch_id", "=", $request->branchId)
+            ->where("created_at", "=", Carbon::parse($request->date)->format('Y-m-d H:i:s'))
+            ->where("status", "=", $request->status)
+            ->where("profit", "=", $request->profit)
+            ->where("total", "=", $request->grandTotal)
+            ->where("type", "=", $request->salesOrReceivingType)
+            ->where("created_by", "=", $request->createdBy)
+            ->where("sub_total", "=", $request->sub_total)
             ->first();
         return $order;
     }

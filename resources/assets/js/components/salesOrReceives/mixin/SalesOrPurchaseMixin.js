@@ -195,6 +195,8 @@ export default {
         municipiosData: [],
         departamentos: [],
 
+        customerAddress: '',
+
         ordersSelected: [],
         selected: [],
         allSelected: false,
@@ -203,8 +205,9 @@ export default {
         customerData: [],
         customerName: '',
         customerLastName: '',
-        customerAddress: '',
-        customerExists: '',
+        customerNotExists: '',
+
+
     }),
     computed: {
         filteredHoldOrder() {
@@ -404,12 +407,10 @@ export default {
     },
     mounted() {
         /*
-        ---BUG
-        cargar por defecto el modal
+        //cargar por defecto el modal
         this.addShipmentInfo = true;
         this.$emit('addShipmentInfo', this.shippingInfo, true);
-        */
-
+         */
         this.axiosGet(
             "/get-areal-list",
             response => {
@@ -421,7 +422,7 @@ export default {
             response => {
                 this.departamentosData = response.data.departments;
             },
-        )
+        );
 
         let instance = this;
         instance.offlineAllBranch = JSON.parse(this.all_branch);
@@ -1520,7 +1521,6 @@ export default {
             } else {
                 this.addShipmentInfo = false;
                 this.$emit('addShipmentInfo', this.shippingInfo, false);
-                $('#shippment-orders-modal').modal('hide');
             }
         },
         setHoldOrderToCart(holdItem) {
@@ -1616,6 +1616,7 @@ export default {
                 this.justPayRestaurantTableId = holdItem.tableId;
                 this.getHoldOrders();
             }
+
         },
         setHoldToPending(data, orderID, invoice_id) {
             let instance = this, itemStatus = true, temp;
@@ -2123,7 +2124,7 @@ export default {
                 function (response) {
                     arrCustomer = response.data;
                     if (arrCustomer.length === 0) {
-                        instance.customerExists = true;
+                        instance.customerNotExists = true;
                     } else {
                         $('#shippment-orders-modal').modal('hide');
                         instance.customerData = response.data.customer;
@@ -2136,10 +2137,18 @@ export default {
                 });
         },
         shippingDetails() {
+            this.addShipment = '';
+            this.addShipmentInfo = '';
+            this.customerNotExists = '';
+            this.customerPhone = '';
             $('#customer-data-orders-modal').modal('hide');
             $('#shipping-details-orders-modal').modal('show');
         },
         saveShipping() {
+            this.addShipment = '';
+            this.addShipmentInfo = '';
+            this.customerNotExists = '';
+            this.customerPhone = '';
             $('#shipping-details-orders-modal').modal('hide');
             let subtotal = this.finalCart.grandTotal + this.finalCart.overAllDiscount;
             let date = this.finalCart.date;
@@ -2154,23 +2163,22 @@ export default {
                 createdBy: this.finalCart.createdBy,
                 sub_total: subtotal
             };
+
             let numeroOrden = null;
             let instance = this;
 
             instance.axiosGETorPOST({url: '/get-last-order', postData: lasOrderHoldToSave},
                 (success, responseData) => {
                     if (success) {
-                        //console.log(responseData)
                         lastOrderIdHold = responseData;
                         numeroOrden = responseData.id;
-
                         //si obtenemos la orden procedemos a guardarla
                         let data = {
                             shippingAreaId: this.shippingAreaId,
                             shippingPrice: this.shippingPrice,
                             shippingAreaSddress: this.customerAddress,
                             branchId: this.currentBranch.id,
-                            orderId: (numeroOrden != null) ? numeroOrden : null,
+                            orderId: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
                             departamento: this.shippingDepartamento,
                             municipio: this.shippingMunicipio
                         }
@@ -2192,6 +2200,10 @@ export default {
                                                 if (success) {
                                                     this.showSuccessAlert(responseData.message);
                                                     this.getHoldOrders(false);
+                                                    this.shippingAreaId = '';
+                                                    this.shippingPrice = '';
+                                                    this.shippingDepartamento = '';
+                                                    this.shippingMunicipio = '';
                                                 }
                                             })
                                     }
@@ -2200,7 +2212,10 @@ export default {
                     } else {
                         this.showSuccessAlert("Error general contacte al administrador...");
                     }
-                })
+                });
+        },
+        saveCustomer(){
+            $('#clear-cart-modal').modal('show');
         },
         getShipping(id) {
             let response = [];
@@ -2395,6 +2410,6 @@ export default {
                     this.municipiosData = response.data.municipios;
                 },
             );
-        },
+        }
     }
 }

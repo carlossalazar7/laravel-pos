@@ -13,3 +13,5 @@ Route::post('guide/delete/{id}', [GuideController::class, 'destroy']);
 
 /*Route::get('/get-departamentos', [DepartamentoController::class, 'getDepartamentos']);
 Route::get('/get-municipios-departamentoId/{department_id}', [MunicipioController::class, 'getMunicipiosByDepId']);*/
+//Route::get('guide', [GuideController::class, 'guide'])->middleware('permissions:can_manage_guides');
+//Route::get('guides', [GuideController::class, 'index'])->middleware('permissions:can_manage_guides');

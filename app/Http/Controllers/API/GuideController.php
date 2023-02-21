@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Lang;
 
 class GuideController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $guides = Guide::all();
@@ -28,7 +23,21 @@ class GuideController extends Controller
         if (isset($_GET['route_name'])) {
             $routeName = $_GET['route_name'];
         }
-        return view('guides.GuidesIndex', ['tab_name' => $tabName, 'route_name' =>$routeName]);
+        return view('guides.GuidesIndex', ['tab_name' => $tabName, 'route_name' => $routeName]);
+    }
+
+    public function guide()
+    {
+        $guides = Guide::all();
+        $tabName = '';
+        $routeName = '';
+        if (isset($_GET['tab_name'])) {
+            $tabName = $_GET['tab_name'];
+        }
+        if (isset($_GET['route_name'])) {
+            $routeName = $_GET['route_name'];
+        }
+        return view('guides.Guides', ['tab_name' => $tabName, 'route_name' => $routeName]);
     }
 
     public function getAllGuides(Request $request)
@@ -53,12 +62,6 @@ class GuideController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
@@ -105,12 +108,6 @@ class GuideController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $guia = Guide::find($id);
@@ -138,24 +135,6 @@ class GuideController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -205,12 +184,6 @@ class GuideController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         Guide::deleteData($id);

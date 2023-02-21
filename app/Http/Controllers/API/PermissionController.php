@@ -29,6 +29,7 @@ class PermissionController extends Controller
             return 0;
         }
     }
+
     public function suppliersManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_add_suppliers') || $this->permissionCheck()->isAdmin()) {
@@ -41,6 +42,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function receivesManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_manage_receives') || $this->permissionCheck()->isAdmin()) {
@@ -49,6 +51,7 @@ class PermissionController extends Controller
             return 0;
         }
     }
+
     public function userManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_manage_users') || $this->permissionCheck()->isAdmin()) {
@@ -61,6 +64,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function appsManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_edit_application_setting') || $this->permissionCheck()->isAdmin()) {
@@ -73,6 +77,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function emailsManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_edit_email_setting') || $this->permissionCheck()->isAdmin()) {
@@ -85,6 +90,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function emailTemplateManagePermission()
     {
         if ($this->permissionCheck()->hasPermission('can_edit_email_template') || $this->permissionCheck()->isAdmin()) {
@@ -137,6 +143,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function cornJobSettingsPermission()
     {
         if ($this->permissionCheck()->isAdmin()) {
@@ -605,6 +612,7 @@ class PermissionController extends Controller
             }
         }
     }
+
     public function salesSettingsPermission()
     {
         if ($this->permissionCheck()->hasPermission('can_manage_sales_setting') || $this->permissionCheck()->isAdmin()) {
@@ -663,6 +671,7 @@ class PermissionController extends Controller
             return 0;
         }
     }
+
     public function customerDetailsPermission()
     {
 
@@ -692,6 +701,7 @@ class PermissionController extends Controller
             return 0;
         }
     }
+
     public function adjustStockPermission()
     {
         if ($this->permissionCheck()->hasPermission('can_see_adjust_stock') || $this->permissionCheck()->isAdmin()) {
@@ -700,6 +710,7 @@ class PermissionController extends Controller
             return 0;
         }
     }
+
     public function shipmentReportPermission()
     {
         if ($this->permissionCheck()->hasPermission('can_see_shipment_report') || $this->permissionCheck()->isAdmin()) {
@@ -715,6 +726,84 @@ class PermissionController extends Controller
             return "manage";
         } else {
             if ($this->permissionCheck()->hasPermission('can_see_sms_settings')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function guidesManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_dguides') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_guides')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function departamentosManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_departamentos') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_departamentos')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function municipiosManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_municipios') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_municipios')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function deliveriesManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_deliveries') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_deliveries')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function puntosEntregaManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_puntos_entrega') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_puntos_entrega')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function routesManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_routes') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_routes')) {
                 return 'read_only';
             } else {
                 return 0;

@@ -5,7 +5,7 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent m-0">
           <li class="breadcrumb-item">
-            <span>{{ trans('lang.contacts') }}</span>a
+            <span>{{ trans('lang.guides') }}</span>
           </li>
         </ol>
       </nav>
@@ -13,42 +13,40 @@
         <div class="custom-tabs">
           <ul class="nav nav-tabs">
             <li class="nav-item d-flex justify-content-center" :class="{'active':isSelectedTab(tab.name)}"
-                @click.prevent="selectTab(tab.name, tab.component)" v-if="isVisible(tab.name)"
-                v-for="tab in tabs">
-              <a class="nav-link" href="#customers" @click.prevent="isActive = 1"> {{
-                  trans(tab.lang)
-                }} </a>
+                @click.prevent="selectTab(tab.name, tab.component)" v-if="isVisible(tab.name)" v-for="tab in tabs">
+              <a class="nav-link" href="#customers" @click.prevent="isActive = 1"> {{ trans(tab.lang) }} </a>
             </li>
           </ul>
         </div>
         <transition name="slide-fade" mode="out-in">
-          <component v-if="this.componentName" v-bind:is="this.componentName"
-                     :permission="permission"></component>
+          <component v-if="this.componentName" v-bind:is="this.componentName" :permission="permission"></component>
         </transition>
       </div>
     </div>
   </div>
 </template>
+
+
 <script>
 import axiosGetPost from '../../helper/axiosGetPostCommon';
 
 export default {
   extends: axiosGetPost,
-  props: ['customers', 'suppliers', 'customer_group', 'tab_name', 'route_name'],
+  props: ['guides', 'departamentos', 'municipios', 'deliveries', 'puntos_entrega', 'routes'],
   data() {
     return {
-      shortcuts: '',
       selectedTab: null,
       permission: '',
       componentName: null,
       loadSales: [],
 
       tabs: [
-        {name: "customers", lang: "lang.customers", component: "customers-index"},
-        {name: "customer_group", lang: "lang.customer_groups_dt", component: "groups-index"},
-        {name: "suppliers", lang: "lang.suppliers", component: "suppliers-page-index"},
-        {name: "shortcuts", lang: "lang.shortcuts", component: "shortcuts-setting"},
-
+        {name: "guides", lang: "lang.guides", component: "guides-index"},
+        {name: "departamentos", lang: "lang.departamentos", component: "departments-index"},
+        {name: "municipios", lang: "lang.municipios", component: "municipios-index"},
+        {name: "deliveries", lang: "lang.deliveries", component: "delivery-index"},
+        {name: "puntos_entrega", lang: "lang.puntos_entrega", component: "punto-entrega-index"},
+        {name: "routes", lang: "lang.routes", component: "route-index"},
       ],
       isVisible: function (tabName) {
         return (this[tabName] === 'manage' || this[tabName] === 'read_only');
@@ -57,6 +55,8 @@ export default {
         return (tabName === this.selectedTab);
       },
     }
+  },
+  created() {
   },
   methods: {
     selectTab: function (tabName, componentName) {
@@ -86,6 +86,7 @@ export default {
         }
       });
     }
+
   }
 }
 </script>

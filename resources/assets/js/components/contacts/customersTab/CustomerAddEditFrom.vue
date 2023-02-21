@@ -105,7 +105,6 @@
         components: {VueTelInput},
         data() {
             return {
-
                 firstName: '',
                 lastName: '',
                 email: '',
@@ -145,8 +144,9 @@
                             if (this.id) {
                                 this.postDataMethod('/customer/' + this.id, this.inputFields);
                             } else {
-
                                 this.postDataMethod('/customer/store', this.inputFields);
+
+                                $("#shipping-details-orders-modal").modal('show');
                             }
                         } else {
                             $(this.modalID).modal('hide');

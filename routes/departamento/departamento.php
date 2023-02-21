@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\DepartamentoController;
+use App\Http\Controllers\API\MunicipioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('departamento', [DepartamentoController::class, 'index']);

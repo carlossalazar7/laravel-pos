@@ -85,6 +85,7 @@ return [
     'shipping_address' => 'Shipping address',
     
     //guides
+    'guides' => 'Guides',
     'guide_name' => 'Guide',
     'fecha_entrega' => 'Delivery date',
     'observacion' => 'Comments',
@@ -92,4 +93,5 @@ return [
     'pedidos_guia' => 'Guide orders',
     'sin_pedidos_guia' => 'There are no orders added to the guide',
     'sin_pedidos_disponibles' => 'There are no orders available to add to the guide',
+    
 ];
