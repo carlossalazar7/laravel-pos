@@ -43,7 +43,7 @@
 
         <!-- Modal -->
         <div class="modal fade" id="customer-add-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered short-modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <customer-create-edit class="modal-content" v-if="isActive" :id="selectedItemId"
                                       :modalID="modalID"></customer-create-edit>
             </div>

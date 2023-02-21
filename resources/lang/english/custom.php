@@ -75,4 +75,7 @@ return [
     'edit_route' => 'Edit route',
     'route_deleted_permanently' => 'This route will be deleted permanently.',
     'nombre_route' => 'Route name',
+
+    //guides
+    'guides' => 'Guides',
 ];

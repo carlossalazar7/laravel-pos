@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class GuideController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $guides = Guide::all();
@@ -24,70 +19,37 @@ class GuideController extends Controller
         if (isset($_GET['route_name'])) {
             $routeName = $_GET['route_name'];
         }
-        return view('guides.GuidesIndex', ['tab_name' => $tabName, 'route_name' =>$routeName]);
+        return view('guides.GuidesIndex', ['tab_name' => $tabName, 'route_name' => $routeName]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function guide()
     {
-        //
+        $tabName = '';
+        $routeName = '';
+        if (isset($_GET['tab_name'])) {
+            $tabName = $_GET['tab_name'];
+        }
+        if (isset($_GET['route_name'])) {
+            $routeName = $_GET['route_name'];
+        }
+        return view('guides.Guides', ['tab_name' => $tabName, 'route_name' => $routeName]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

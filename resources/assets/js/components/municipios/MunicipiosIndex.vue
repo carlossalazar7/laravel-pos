@@ -1,5 +1,5 @@
 <template>
-  <div class="main-layout-wrapper">
+  <div>
     <div class="main-layout-card-header-with-button">
       <div class="main-layout-card-content-wrapper">
         <div class="main-layout-card-header-contents">

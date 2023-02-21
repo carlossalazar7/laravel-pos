@@ -5,13 +5,13 @@
 
 @section('content')
 
-   <contacts-page-index
-                customers={{$permission->customersManagePermission()}}
-                suppliers={{$permission->suppliersManagePermission()}}
-                customer_group={{$permission->customerGroupManagePermission()}}
-                tab_name={{$tab_name}}
-                route_name={{$route_name}}
-    >
-    </contacts-page-index>
+<contacts-page-index
+       customers={{$permission->customersManagePermission()}}
+            suppliers={{$permission->suppliersManagePermission()}}
+            customer_group={{$permission->customerGroupManagePermission()}}
+            tab_name={{$tab_name}}
+            route_name={{$route_name}}
+>
+</contacts-page-index>
 
 @endsection

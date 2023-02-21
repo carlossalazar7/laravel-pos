@@ -417,6 +417,7 @@ Vue.component('adjust-stock-details', require('./components/settings/adjustStock
 Vue.component('contacts-page-index', require('./components/contacts/ContactsPageIndex.vue'));
 
 //Guides
+Vue.component('guides', require('./components/guides/Index.vue'));
 Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
 
 //Departments
