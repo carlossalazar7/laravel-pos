@@ -21,7 +21,9 @@ class CreateGuidesTable extends Migration
             $table->date('fecha_entrega');
             $table->string('observacion');
             $table->unsignedBigInteger('delivery_id');
+            $table->unsignedBigInteger('route_id');
             $table->foreign('delivery_id')->references('id')->on('deliveries');
+            $table->foreign('route_id')->references('id')->on('routes');
             $table->timestamps();
         });
     }

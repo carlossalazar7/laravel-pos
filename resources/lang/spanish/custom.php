@@ -68,4 +68,15 @@ return [
     'order_deleted_permanently' => 'Este pedido será borrado de forma permanente.',
     'order_info' => 'Información de la orden',
     'shipping_address' => 'Dirección de envio',
+
+    //guides
+    'guide_name' => 'Guia',
+    'fecha_entrega' => 'Fecha de entrega',
+    'observacion' => 'Observación',
+    'pedidos_sin_asignar' => 'Pedidos sin asignar',
+    'pedidos_guia' => 'Pedidos de la guia',
+    'sin_pedidos_guia' => 'No hay pedidos agregados a la guia',
+    'sin_pedidos_disponibles' => 'No hay pedidos disponibles para agregar a la guía',
+    
+    
 ];

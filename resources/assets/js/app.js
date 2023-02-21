@@ -257,6 +257,7 @@ Vue.component('restaurant-table-action-component', require('./components/datatab
 Vue.component('adjust-stock-action-component', require('./components/datatable/AdjustStockActionComponent'));
 Vue.component('departamento-action-component', require('./components/datatable/DepartamentoActionTable.vue'));
 Vue.component('municipio-action-component', require('./components/datatable/MunicipioActionTable.vue'));
+Vue.component('guide-action-component', require('./components/datatable/GuideActionTable.vue'));
 Vue.component('punto-entrega-action-component', require('./components/datatable/PuntoEntregaActionTable.vue'));
 Vue.component('delivery-action-component', require('./components/datatable/DeliveryActionTable.vue'));
 Vue.component('route-action-component', require('./components/datatable/RouteActionTable.vue'));
@@ -418,6 +419,7 @@ Vue.component('contacts-page-index', require('./components/contacts/ContactsPage
 
 //Guides
 Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
+Vue.component('add-edit-guide-modal', require('./components/guides/AddEditGuideModal.vue'));
 
 //Departments
 Vue.component('departments-index', require('./components/departamentos/DepartamentoIndex.vue'));

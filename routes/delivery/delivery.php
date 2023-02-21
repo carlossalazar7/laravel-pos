@@ -10,3 +10,4 @@ Route::post('delivery/{id}', [DeliveryController::class, 'update'])->middleware(
 Route::get('delivery/{id}', [DeliveryController::class, 'show']);
 
 Route::post('deliveries', [DeliveryController::class, 'getAllDeliveries']);
+Route::get('/get-deliveries', [DeliveryController::class, 'getDeliveries']);

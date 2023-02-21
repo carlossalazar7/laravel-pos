@@ -1,143 +1,111 @@
-<!--suppress ALL -->
 <template>
-  <div>
-    <div class="main-layout-wrapper" v-shortkey="loadSales" @shortkey="globalShortcutMethod()">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent m-0">
-          <li class="breadcrumb-item">
-            <span>{{ trans('lang.contacts') }}</span>
-          </li>
-        </ol>
-      </nav>
-      <div class="main-layout-card">
-        <div class="custom-tabs">
-          <ul class="nav nav-tabs">
-            <li class="nav-item d-flex justify-content-center" :class="{'active':isSelectedTab(tab.name)}"
-                @click.prevent="selectTab(tab.name, tab.component)" v-if="isVisible(tab.name)"
-                v-for="tab in tabs">
-              <a class="nav-link" href="#customers" @click.prevent="isActive = 1"> {{
-                  trans(tab.lang)
-                }} </a>
-            </li>
-          </ul>
+  <div class="main-layout-wrapper">
+    <div class="main-layout-card-header-with-button">
+      <div class="main-layout-card-content-wrapper">
+        <div class="main-layout-card-header-contents">
+          <h5 class="m-0">{{ trans('lang.guides') }}</h5>
         </div>
-        <transition name="slide-fade" mode="out-in">
-          <component v-if="this.componentName" v-bind:is="this.componentName"
-                     :permission="permission"></component>
-        </transition>
-
-        <table class="table">
-          <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
-          </tbody>
-        </table>
+        <div v-if="permission !== 'read_only'"
+             class="main-layout-card-header-contents text-right d-flex justify-content-end">
+          <div class="p-1">
+            <button class="btn btn-primary app-color" data-toggle="modal" data-target="#guide-add-edit-modal"
+                    @click.prevent="addEditAction('')">
+              {{ trans('lang.add') }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <datatable-component class="main-layout-card-content" :options="tableOptions" :exportData="exportToVue"
+                         exportFileName="guides" @resetStatus="resetExportValue"></datatable-component>
+
+    <!-- Modal -->
+    <div class="modal fade" id="guide-add-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <add-edit-guide-modal class="modal-content" v-if="isActive" :id="selectedItemId"
+                                       :modalOptions="modalOptions"></add-edit-guide-modal>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <confirmation-modal id="confirm-delete" :message="'guide_deleted_permanently'" :firstButtonName="'yes'"
+                        :secondButtonName="'no'"
+                        @confirmationModalButtonAction="confirmationModalButtonAction"></confirmation-modal>
   </div>
 </template>
 
 <script>
 import axiosGetPost from '../../helper/axiosGetPostCommon';
 
+var sourceURL = '/guide';
+
 export default {
   extends: axiosGetPost,
-  props: ['guides', 'suppliers', 'customer_group', "tab_name", "route_name"],
+  props: ['permission'],
   data() {
     return {
-      selectedTab: null,
-      permission: '',
-      componentName: null,
-      loadSales: [],
-      shortcuts: '',
+      tableOptions: {
+        tableName: 'guides',
+        columns: [
+          {title: 'lang.id', key: 'id', type: 'text', sortable: true},
+          {title: 'lang.guide_name', key: 'name', type: 'text', sortable: true},
+          {title: 'lang.fecha_entrega', key: 'fecha_entrega', type: 'text', sortable: true},
+          {title: 'lang.delivery', key: 'nombreDelivery', type: 'text', sortable: true},          
+          {title: 'lang.route', key: 'nombreRuta', type: 'text', sortable: true},
+          {title: 'lang.observacion', key: 'observacion', type: 'text', sortable: true},
+          {title: 'lang.status', key: 'status', type: 'text', sortable: true},
+          (this.permission !== 'read_only' ? {
+            title: 'lang.action',
+            type: 'component',
+            key: 'action',
+            componentName: 'guide-action-component'
+          } : {})
+        ],
+        source: '/guides',
+        search: false,
+        right_align: 'action',
+      },
 
-      tabs: [
-        {name: "customer_group", lang: "lang.customer_groups_dt", component: "groups-index"},
-        {name: "suppliers", lang: "lang.suppliers", component: "suppliers-page-index"},
-        {name: "shortcuts", lang: "lang.shortcuts", component: "shortcuts-setting"},
-        {name: "guides", lang: "lang.customers", component: "suppliers-page-index"},
-      ],
-      isVisible: function (tabName) {
-        return (this[tabName] === 'manage' || this[tabName] === 'read_only');
+      modalOptions: {
+        modalID: '#guide-add-edit-modal',
+        addLang: 'lang.add_guide',
+        editLang: 'lang.edit_guide',
+        getDataURL: sourceURL,
+        postDataWithIDURL: sourceURL,
+        postDataWithoutIDURL: sourceURL + '/store',
       },
-      isSelectedTab: function (tabName) {
-        return (tabName === this.selectedTab);
-      },
+      buttonLoader: false,
+      isDisabled: false,
+      exportToVue: false,
     }
   },
-  created() {
-  } ,
   methods: {
-    selectTab: function (tabName, componentName) {
-      this.permission = this[tabName];
-      this.selectedTab = tabName;
-      this.componentName = componentName;
-    }
-    ,
-    goBack() {
-      let instance = this;
-      instance.redirect(`/${this.routeName}?tab_name=${this.tabName}&&route_name=${this.routeName}`);
+    confirmationModalButtonAction() {
+      this.deleteDataMethod(sourceURL + '/delete/' + this.deleteID, this.deleteIndex);
     },
-    selectTab: function (tabName, componentName) {
-      this.permission = this[tabName];
-      this.selectedTab = tabName;
-      this.componentName = componentName;
-    },
-    initSelectedTab: function () {
-      var instance = this;
-
-      this.tabs.forEach(function (tab) {
-        if (!instance.selectedTab && instance.isVisible(tab.name)) {
-          instance.selectTab(tab.name, tab.component);
-        }
+    resetguideModal(value, save) {
+      $("#guide-add-edit-modal").on("hidden.bs.modal", function (e) {
+        this.isActiveAttributeModal = false;
+        $("body").addClass("modal-open");
       });
+      this.checkStatus = value;
+      if (save) this.bus.$emit("saveStatus");
     },
-    initSelectedTab: function () {
-      var instance = this;
+    resetExportValue(value) {
+      this.exportToVue = value;
+      this.buttonLoader = false;
+      this.isDisabled = false;
 
-      this.tabs.forEach(function (tab) {
-        if (!instance.selectedTab && instance.isVisible(tab.name)) {
-          instance.selectTab(tab.name, tab.component);
-        }
-      });
     }
-  }
-  ,
+  },
   mounted() {
-    this.initSelectedTab();
-    this.loadSales = this.shortCutKeyConversion();
+    let instance = this;
+    this.$hub.$on('guideAddEdit', function (id, name) {
+      instance.addEditAction(id, name);
+    });
 
-    if (this.tab_name) {
-      var instance = this;
-      this.tabs.forEach(function (tab) {
-
-          instance.selectTab(tab.name, tab.component);
-
-      });
-    }
+    this.modalCloseAction(this.modalOptions.modalID);
   }
 }
 </script>

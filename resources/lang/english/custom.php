@@ -83,4 +83,13 @@ return [
     'order_deleted_permanently' => 'This order will be deleted permanently.',
     'order_info' => 'Order information',
     'shipping_address' => 'Shipping address',
+    
+    //guides
+    'guide_name' => 'Guide',
+    'fecha_entrega' => 'Delivery date',
+    'observacion' => 'Comments',
+    'pedidos_sin_asignar' => 'Unassigned orders',
+    'pedidos_guia' => 'Guide orders',
+    'sin_pedidos_guia' => 'There are no orders added to the guide',
+    'sin_pedidos_disponibles' => 'There are no orders available to add to the guide',
 ];

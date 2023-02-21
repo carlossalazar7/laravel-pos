@@ -49,6 +49,20 @@ class PedidosController extends Controller
         return ['datarows' => $ordenes];
     }
 
+    public function getPedidosEnPreparacionSinGuia()
+    {
+        $ordenes = Order::ordenesEnPreparacionSinGuia();
+
+        return ['pedidos' => $ordenes];
+    }
+
+    public function getPedidosGuia($id)
+    {
+        $ordenes = Order::ordenesGuia($id);
+
+        return ['pedidosGuia' => $ordenes];
+    }
+
     /**
      * Show the form for creating a new resource.
      *

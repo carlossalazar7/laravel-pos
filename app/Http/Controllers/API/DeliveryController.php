@@ -35,6 +35,12 @@ class DeliveryController extends Controller
         return ['datarows' => $delivery['data'], 'count' => $delivery['count']];
     }
 
+    public function getDeliveries()
+    {
+        $deliveries = Delivery::all();
+        return ['deliveries' => $deliveries];
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, [
