@@ -22,7 +22,7 @@
       <form class="form-row margin-top" v-else>
         <div class="form-group col-md-5">
           {{ alertMessage }}
-          <label for="nombreGuide">{{ trans('lang.guide_name') }}</label>
+          <label for="nombreGuide">{{ trans('lang.guide') }}</label>
           <input v-validate="'required'" name="nombreGuide" class="form-control" id="nombreGuide"
                  type="text"
                  v-model="name" :class="{ 'is-invalid': submitted && errors.has('name') }">

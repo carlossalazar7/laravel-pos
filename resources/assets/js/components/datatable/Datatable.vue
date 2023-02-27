@@ -4,7 +4,7 @@
         <div v-show="hidePreLoader">
             <div class="form-row">
                 <div v-for="(filter, index) in options.filters"
-                     :class="{'col-md-6': (filtersData.length === 1 && options.search), 'col-12 col-md-4 col-lg-4': (filtersData.length % 3 === 0 && !options.search || filtersData.length  === 5 )||(filtersData.length % 2 ===0 && options.search), 'col-12 col-md-6 col-lg-3': (filtersData.length % 2 ===0 && !options.search)||(filtersData.length % 3 === 0 && options.search), 'col-12 col-md-6 col-lg-6': (filtersData.length ===2 && !options.search)}">
+                     :class="{'col-md-6': (filtersData.length === 1 && options.search), 'col-12 col-md-4 col-lg-4': (filtersData.length % 3 === 0 && !options.search || filtersData.length  === 5 )||(filtersData.length % 2 ===0 && options.search), 'col-12 col-md-6 col-lg-3': (filtersData.length % 2 ===0 && !options.search)||(filtersData.length % 3 === 0 && options.search) || ((filtersData.length ===11 && !options.search)||(filtersData.length === 11 && options.search)), 'col-12 col-md-6 col-lg-6': (filtersData.length ===2 && !options.search)}">
                     <!-- Date Filter -->
                     <label>{{ trans(filter.title) }}</label>
                     <div class="dateRangeFilter" v-if="filter.type === 'date_range'" :key="filter.key">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="form-group"
-                     :class="{'col-md-6 col-lg-6': (filtersData.length === 1 && options.search), 'col-12 col-md-4 col-lg-4': filtersData.length>0 && filtersData.length % 2 ===0 || filtersData.length>4, 'col-12 col-md-6 col-lg-3': filtersData.length>0 && filtersData.length % 3 ===0, 'col-12 col-md-4 col-lg-4 offset-md-8 offset-lg-8': filtersData.length==0}"
+                     :class="{'col-md-6 col-lg-6': (filtersData.length === 1 && options.search), 'col-12 col-md-4 col-lg-4': filtersData.length>0 && filtersData.length % 2 ===0 || filtersData.length>4 && filtersData.length !==11, 'col-12 col-md-6 col-lg-3': (filtersData.length>0 && filtersData.length % 3 ===0)||(filtersData.length === 11), 'col-12 col-md-4 col-lg-4 offset-md-8 offset-lg-8': filtersData.length==0}"
                      v-if="options.search">
                     <label for="search">{{ trans('lang.search') }}</label>
                     <input id="search" type="text" @keyup="searchData" v-model="searchValue" class="form-control">

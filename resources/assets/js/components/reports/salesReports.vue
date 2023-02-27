@@ -96,7 +96,9 @@ export default {
                             categories = [{text: 'All', value: 'all', selected: true}, ...response.data.categories],
                             groups = [{text: 'All', value: 'all', selected: true}, ...response.data.groups],
                             customers = [{text: 'All', value: 'all', selected: true}, ...response.data.customers],
-                            employee = [{text: 'All', value: 'all', selected: true}, ...response.data.employee];
+                            employee = [{text: 'All', value: 'all', selected: true}, ...response.data.employee],
+                            routes = [{text: 'All', value: 'all', selected: true}, ...response.data.routes],
+                            deliveries = [{text: 'All', value: 'all', selected: true}, ...response.data.deliveries];
                         instance.tableOptions = {
 
                             tableName: 'products',
@@ -111,6 +113,10 @@ export default {
                                 },
                                 {title: 'lang.sales_date', key: 'date', type: 'text', sortable: true},
                                 {title: 'lang.sales_type_dt', key: 'type', type: 'text', sortable: true},
+                                {title: 'lang.delivery', key: 'nombre', type: 'text', sortable: true},
+                                {title: 'lang.guide', key: 'guideName', type: 'text', sortable: true},
+                                {title: 'lang.route', key: 'routeName', type: 'text', sortable: true},
+                                {title: 'lang.status', key: 'orderStatus', type: 'text', sortable: true},
                                 {
                                     title: 'lang.sold_by',
                                     key: 'created_by',
@@ -128,10 +134,10 @@ export default {
                                     sortable: true
                                 },
                                 {title: 'lang.item_purchased', key: 'item_purchased', type: 'text', sortable: false},
-                                {title: 'lang.tax', key: 'tax', type: 'text', sortable: false},
-                                {title: 'lang.discount', key: 'discount', type: 'text', sortable: false},
+                                /*{title: 'lang.tax', key: 'tax', type: 'text', sortable: false},
+                                {title: 'lang.discount', key: 'discount', type: 'text', sortable: false},*/
                                 {title: 'lang.total', key: 'total', type: 'text', sortable: false},
-                                {title: 'lang.due', key: 'due_amount', type: 'text', sortable: false},
+                                //{title: 'lang.due', key: 'due_amount', type: 'text', sortable: false},
                             ],
                             source: '/sales-report',
                             summary: true,
@@ -195,6 +201,34 @@ export default {
                                     type: 'dropdown',
                                     languageType: "raw",
                                     options: employee
+                                },
+                                {
+                                    title: 'lang.route',
+                                    key: 'routes',
+                                    type: 'dropdown',
+                                    languageType: "raw",
+                                    options: routes
+                                },
+                                {
+                                    title: 'lang.delivery',
+                                    key: 'deliveries',
+                                    type: 'dropdown',
+                                    languageType: "raw",
+                                    options: deliveries
+                                }, 
+                                {
+                                    title: 'lang.status', type: 'dropdown', key: 'status', options: [
+                                        {text: 'lang.all', value: 'all', selected: true},
+                                        {text: 'lang.done', value: 'done'},
+                                        {text: 'lang.cancelled', value: 'cancelled'},
+                                        {text: 'lang.en_preparacion', value: 'en preparacion'},
+                                        {text: 'lang.despachado', value: 'despachado'},
+                                        {text: 'lang.en_ruta', value: 'en ruta'},
+                                        {text: 'lang.incompleto', value: 'incompleto'},
+                                        {text: 'lang.entregado', value: 'entregado'},
+                                        {text: 'lang.cancelado', value: 'cancelado'},                                        
+                                        {text: 'lang.reasignado', value: 'reasignado'},
+                                    ]
                                 },
                             ]
                         }

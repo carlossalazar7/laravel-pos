@@ -20,6 +20,8 @@ use App\Models\ProductGroup;
 use App\Models\ProductVariant;
 use App\Models\ShippingInformation;
 use App\Models\Supplier;
+use App\Models\Route;
+use App\Models\Delivery;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\AdjustProductStockType;
@@ -1147,8 +1149,10 @@ class ReportController extends Controller
         $groups = ProductGroup::index(['name as text', 'id as value']);
         $customers = Customer::query()->select([DB::raw('concat(first_name," ",last_name) as text'), 'id as value'])->get();
         $employee = CustomUser::getAll([DB::raw('concat(first_name," ",last_name) as text'), 'id as value'], 'user_type', 'staff');
+        $routes = Route::index(['name as text', 'id as value']);
+        $deliveries = Delivery::index(['nombre as text', 'id as value']);
 
-        return ['brands' => $brands, 'categories' => $categories, 'groups' => $groups, 'customers' => $customers, 'employee' => $employee];
+        return ['brands' => $brands, 'categories' => $categories, 'groups' => $groups, 'customers' => $customers, 'employee' => $employee, 'routes' => $routes, 'deliveries' => $deliveries];
     }
 
     public function purchaseReportFilter()

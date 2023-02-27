@@ -1,6 +1,7 @@
 <template>
   <div class="action-button-wrapper">
     <div class='action-button-container'>
+      <a href="" class='action-button' @click.prevent="generarPDF(rowData.id,rowIndex)"><i class="las la-file-alt"></i></a>
       <a href="" class='action-button' data-toggle="modal" data-target="#confirm-delete"
          @click.prevent="selectedDeletableId(rowData.id,rowIndex)"><i class="la la-trash-o la-2x"></i></a>
       <a href="" class='action-button' data-toggle="modal" data-target="#guide-add-edit-modal"
@@ -32,6 +33,9 @@ export default {
     },
     selectedDeletableId(id, index) {
       this.$hub.$emit('selectedDeletableId', id, index);
+    },
+    generarPDF(id) {
+      this.$hub.$emit('generarPDF', id);
     },
   }
 }

@@ -117,6 +117,10 @@ class OrderItems extends BaseModel
             ->leftJoin('taxes', 'taxes.id', '=', 'order_items.tax_id')
             ->leftJoin('customers', 'customers.id', '=', 'orders.customer_id')
             ->leftJoin('branches', 'branches.id', 'orders.transfer_branch_id')
+            ->leftJoin('detalle_guia', 'detalle_guia.order_id', '=', 'orders.id')    
+            ->leftJoin('guides', 'guides.id', '=', 'detalle_guia.guide_id')      
+            ->leftJoin('deliveries', 'deliveries.id', '=', 'guides.delivery_id')  
+            ->leftJoin('routes', 'routes.id', '=', 'guides.route_id')            
             ->select(
                 'products.title',
                 'orders.id',
@@ -128,6 +132,10 @@ class OrderItems extends BaseModel
                 'orders.total',
                 'orders.invoice_id',
                 'orders.due_amount',
+                'deliveries.nombre',
+                'guides.name as guideName',
+                'routes.name as routeName',
+                'orders.status as orderStatus',
                 DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by"),
                 DB::raw("users.id as user_id"),
                 DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customer"),
@@ -137,7 +145,7 @@ class OrderItems extends BaseModel
                 DB::raw('CONVERT(abs(SUM(CASE WHEN order_items.type = "discount" THEN 0 ELSE order_items.quantity END)),SIGNED INTEGER) as item_purchased')
             )
             ->where('orders.order_type', '!=', 'receiving')
-            ->where('orders.status', '=', 'done')
+            //->where('orders.status', '=', 'done')
             ->where('orders.order_type', '=', 'sales')
             ->groupBy('order_items.order_id');
 
@@ -181,6 +189,32 @@ class OrderItems extends BaseModel
                 } else if (array_key_exists('key', $singleFilter) && $singleFilter['key'] == "employee") {
 
                     $query->where('users.id', $singleFilter['value']);
+                } else if (array_key_exists('key', $singleFilter) && $singleFilter['key'] == "routes") {
+
+                    $query->where('routes.id', $singleFilter['value']);
+                }  else if (array_key_exists('key', $singleFilter) && $singleFilter['key'] == "deliveries") {
+
+                    $query->where('deliveries.id', $singleFilter['value']);
+                } else if (array_key_exists('key', $singleFilter) && $singleFilter['key'] == "status" && $singleFilter['value'] != "all") {
+                    if ($singleFilter['value'] == 'done') {
+                        $query->where('orders.status', '=', 'done');
+                    } elseif ($singleFilter['value'] == 'cancelled') {
+                        $query->where('orders.status', '=', 'cancelled');
+                    } elseif ($singleFilter['value'] == 'en preparacion') {
+                        $query->where('orders.status', '=', 'en preparacion');
+                    } elseif ($singleFilter['value'] == 'despachado') {
+                        $query->where('orders.status', '=', 'despachado');
+                    } elseif ($singleFilter['value'] == 'en ruta') {
+                        $query->where('orders.status', '=', 'en ruta');
+                    } elseif ($singleFilter['value'] == 'incompleto') {
+                        $query->where('orders.status', '=', 'incompleto');
+                    } elseif ($singleFilter['value'] == 'entregado') {
+                        $query->where('orders.status', '=', 'entregado');
+                    } elseif ($singleFilter['value'] == 'cancelado') {
+                        $query->where('orders.status', '=', 'cancelado');
+                    } elseif ($singleFilter['value'] == 'reasignado') {
+                        $query->where('orders.status', '=', 'reasignado');
+                    }
                 }
             }
         }
@@ -192,7 +226,10 @@ class OrderItems extends BaseModel
                     ->orWhere('customers.last_name', 'LIKE', '%' . $searchValue . '%')
                     ->orWhere('customers.last_name', 'LIKE', '%' . $searchValue . '%')
                     ->orWhere('orders.id', 'LIKE', '%' . $searchValue . '%')
-                    ->orWhere('orders.invoice_id', 'LIKE', '%' . $searchValue . '%');
+                    ->orWhere('orders.invoice_id', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('deliveries.nombre', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('guides.name', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('routes.name', 'LIKE', '%' . $searchValue . '%');
             });
         }
 

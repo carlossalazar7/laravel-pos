@@ -11,4 +11,5 @@ Route::post('guide/{id}', [GuideController::class, 'update'])->middleware('permi
 Route::post('guide/delete/{id}', [GuideController::class, 'destroy'])->middleware('permissions:can_manage_guides');;
 
 Route::get('guide', [GuideController::class, 'guide'])->middleware('permissions:can_manage_guides');
+Route::get('/generate-pdf-guide/{id}', [GuideController::class, 'generatePDF'])->middleware('permissions:can_manage_guides');;
 //Route::get('guides', [GuideController::class, 'index'])->middleware('permissions:can_manage_guides');

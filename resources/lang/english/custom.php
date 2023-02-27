@@ -85,13 +85,25 @@ return [
     'shipping_address' => 'Shipping address',
     
     //guides
+    'guide_name_mayus' => 'GUIDE',
     'guides' => 'Guides',
-    'guide_name' => 'Guide',
+    'guide' => 'Guide',
     'fecha_entrega' => 'Delivery date',
     'observacion' => 'Comments',
     'pedidos_sin_asignar' => 'Unassigned orders',
     'pedidos_guia' => 'Guide orders',
     'sin_pedidos_guia' => 'There are no orders added to the guide',
     'sin_pedidos_disponibles' => 'There are no orders available to add to the guide',
+    'reporte_guia' => 'Guide report',
     
+    //estados
+    'done' => 'done',
+    'cancelled' => 'cancelado',
+    'en_preparacion' => 'en preparacion',
+    'despachado' => 'despachado',
+    'en_ruta' => 'en ruta', 
+    'incompleto' => 'incompleto', 
+    'entregado' => 'entregado',
+    'cancelado' => 'cancelado', 
+    'reasignado' => 'reasignado',
 ];
