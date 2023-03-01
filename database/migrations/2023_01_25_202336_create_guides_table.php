@@ -19,7 +19,7 @@ class CreateGuidesTable extends Migration
             $table->string('status', 50)->default('open');
             $table->integer('created_by');
             $table->date('fecha_entrega');
-            $table->string('observacion');
+            $table->string('observacion')->nullable();
             $table->unsignedBigInteger('delivery_id');
             $table->unsignedBigInteger('route_id');
             $table->foreign('delivery_id')->references('id')->on('deliveries');

@@ -13,6 +13,7 @@ use PDF;
 use Config;
 use Milon\Barcode\DNS1D;
 use DB;
+use \DateTime;
 
 class GuideController extends Controller
 {
@@ -72,6 +73,8 @@ class GuideController extends Controller
         $this->validate($request, [
             'name' => 'required|numeric',
             'fecha_entrega' => 'required',
+            'delivery_id'=> 'required',
+            'route_id'=> 'required',
         ]);
 
         $guideData = [
@@ -82,12 +85,32 @@ class GuideController extends Controller
             'route_id' => $request->route_id,
             'created_by' => Auth::user()->id
         ];
-        $id_temp = 0;
+
+        $fecha_actual = date_create("now");
+        $fecha_entrada =  date_create($request->input('fecha_entrega'));
+
+        $days_last = $fecha_actual->diff($fecha_entrada);
+
+        if(intval($days_last->format('%r%a')) < 0){
+            $response = [
+                'message' => Lang::get('lang.validacion_fecha')
+            ];
+
+            return response()->json($response, 404);
+        }
+
+        $pedidosGuia = $request->pedidosGuia;
+
+        if(empty($pedidosGuia)){
+            $response = [
+                'message' => Lang::get('lang.seleccionar_al_menos_un_pedido')
+            ];
+
+            return response()->json($response, 404);
+        }
 
         if ($guide = Guide::store($guideData)) {
 
-            $pedidosGuia = $request->pedidosGuia;
-            
             foreach ($pedidosGuia as $pedido){
                 
                 $pedidosData = [
@@ -113,33 +136,44 @@ class GuideController extends Controller
             ];
 
             return response()->json($response, 404);
-        }
+        } 
     }
 
     public function generatePDF($id)
     {
-        $orders = Order::join('users', 'users.id', '=', 'orders.created_by')
-        ->join('branches', 'branches.id', '=', 'orders.branch_id')
-        ->join('detalle_guia', 'detalle_guia.order_id', '=', 'orders.id')
-        ->join('customers', 'customers.id', '=', 'orders.customer_id')
-        ->select(
-            'orders.id',
-            'orders.date',
-            'orders.invoice_id',
-            'orders.sub_total',
-            'orders.total',
-            'branches.name as branch_name',
-            DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customerName"),
-            DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by_name"),
-        )
-        ->where("detalle_guia.guide_id", '=',$id)
+        $orders = DB::query()
+        ->fromSub(function ($query) use ($id){
+            $query->select(
+                'orders.id',
+                'orders.invoice_id',
+                'orders.sub_total',
+                'orders.total',
+                'orders.status',
+                'branches.name as branch_name',
+                DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customerName"),
+                DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by_name"),
+                'customers.phone_number',
+                'shipping_information.shipping_address',
+                DB::raw("CONCAT(TRUNCATE((order_items.quantity*-1),0), '-', GROUP_CONCAT(products.title))  AS 'productos'"))
+                ->from('orders')
+                ->join('users', 'users.id', '=', 'orders.created_by')
+                ->join('branches', 'branches.id', '=', 'orders.branch_id')
+                ->join('detalle_guia', 'detalle_guia.order_id', '=', 'orders.id')
+                ->join('customers', 'customers.id', '=', 'orders.customer_id')
+                ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
+                ->join('order_items', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.variant_id', '=', 'products.id')
+                ->where("detalle_guia.guide_id", '=',$id)
+                ->groupBy('order_items.id');
+        }, 'resultados')
+        ->select('id', 'invoice_id', 'sub_total', 'total', 'status', 'branch_name', 'customerName', 'created_by_name', 'phone_number', 'shipping_address',
+        DB::raw("GROUP_CONCAT(productos SEPARATOR ' + ') as 'tipo_productos'"))
+        ->groupBy('id')
         ->get();
 
-        
         $total = 0;
         foreach($orders as $item){
-            //$total += $item->total;
-            $total += $item['total'];
+            $total += $item->total;
         }
 
         $guide = Guide::select('guides.*', 'deliveries.nombre as deliveryName', 'routes.name as routeName', DB::raw("SUM(orders.total) as total"))
@@ -150,22 +184,11 @@ class GuideController extends Controller
         ->where('guides.id', '=',$id)
         ->groupBy('guides.id')->first();
 
-
-
-        //return ['orders' => $orders, 'guides' => $guide];
-    
-        //$allSettingFormat = new AllSettingFormat();
-    //        $order = $this->formatOrdersDetails($order[0]->id, $order[0].branch_id);
-    //        $order->due = $allSettingFormat->getCurrencySeparator($order->due);
-    //        $orderItems = $this->formatOrdersItems($orderID);
-
         $invoiceLogo = Config::get('invoiceLogo');
         $fileNameToStore = 'IMPADI-' . $guide['name'] . '.pdf';
         $appName = Config::get('app_name');
 
-
         $pdf = PDF::loadView('guides.guideDetail',
-            //'orderItems',
             [ 
                 "guide" => $guide,
                 "orders" => $orders,
@@ -173,8 +196,9 @@ class GuideController extends Controller
                 "appName" => $appName,
                 "invoiceLogo" => $invoiceLogo
             ]
-        );
-        return $pdf->download($fileNameToStore);
+            );
+        $pdf->render();
+        return $pdf->stream($fileNameToStore);
     }
     
 
@@ -196,7 +220,6 @@ class GuideController extends Controller
         ->where('detalle_guia.guide_id', '=', $id)->get();
 
         return ['guia' => $guia, 'pedidosGuia' => $pedidosGuia];
-        //return $guia;
     }
 
     public static function ordenesGuia()
@@ -210,12 +233,37 @@ class GuideController extends Controller
         $this->validate($request, [
             'name' => 'required|numeric',
             'fecha_entrega' => 'required',
+            'delivery_id'=> 'required',
+            'route_id'=> 'required',
         ]);
 
         $guide = Guide::getOne($id);
 
+        $fecha_actual = date_create("now");
+        $fecha_entrada =  date_create($request->input('fecha_entrega'));
+
+        $days_last = $fecha_actual->diff($fecha_entrada);
+
+        if(intval($days_last->format('%r%a')) < 0){
+            $response = [
+                'message' => Lang::get('lang.validacion_fecha')
+            ];
+
+            return response()->json($response, 404);
+        }
+
         if($guide->status == 'open'){
 
+            $pedidosGuia = $request->input('pedidosGuia');
+
+            if(empty($pedidosGuia)){
+                $response = [
+                    'message' => Lang::get('lang.seleccionar_al_menos_un_pedido')
+                ];
+    
+                return response()->json($response, 404);
+            }
+            
             if ($guide) {
                 $guide->name = $request->input('name');
                 $guide->fecha_entrega = $request->input('fecha_entrega');
@@ -225,7 +273,6 @@ class GuideController extends Controller
                 $guide->save();
     
                 // agregar pedidos a guia
-                $pedidosGuia = $request->input('pedidosGuia');
                 $pedidos = [];
                 foreach ($pedidosGuia as $pedido){
                     
@@ -269,7 +316,7 @@ class GuideController extends Controller
                 ];
     
                 return response()->json($response, 404);
-            }
+            }          
         } else {
             $response = [
                 'message' => Lang::get('lang.error_during_update')
@@ -282,8 +329,6 @@ class GuideController extends Controller
 
     public function destroy($id)
     {
-        Guide::deleteData($id);
-        DetalleGuia::where('guide_id', '=', $id)->delete();
 
         $pedidosExtraer = Order::select('orders.id as id')
             ->join('detalle_guia', 'detalle_guia.order_id', '=', 'orders.id')
@@ -295,28 +340,15 @@ class GuideController extends Controller
             $orden->save();
         }
 
+        Guide::deleteData($id);
+        DetalleGuia::where('guide_id', '=', $id)->delete();
+
         $response = [
             'message' => Lang::get('lang.guide') . ' ' . Lang::get('lang.successfully_deleted')
         ];
 
         return response()->json($response, 201);
 
-        /*$used = Departamento::usedDepartamento($id);
-
-        if ($used == 0) {
-            Departamento::deleteData($id);
-            $response = [
-                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.successfully_deleted')
-            ];
-
-            return response()->json($response, 201);
-        } else {
-            $response = [
-                'message' => Lang::get('lang.departamento') . ' ' . Lang::get('lang.in_use') . ', ' . Lang::get('lang.you_can_not_delete_the') . ' ' . strtolower(Lang::get('lang.departamento'))
-            ];
-
-            return response()->json($response, 200);
-        }*/
     }
     
 }

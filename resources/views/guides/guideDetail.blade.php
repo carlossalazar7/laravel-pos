@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Guia</title>
     <style>
+        @page {
+            size: a4 landscape;
+        }
         body{
             font-family: -apple-system,DejaVu Sans, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-size: 1rem;
@@ -34,13 +37,13 @@
         }
         .invoice-middle{
             display: block;
-            width: 70%;
+            width: 85%;
             margin: 0px auto;
             overflow: hidden;
         }
         .invoice-table{
             display: block;
-            width: 70%;
+            width: 85%;
             margin: 0px auto;
 
         }
@@ -71,7 +74,7 @@
     </style>
 </head>
 <body>
-<div class="p-3">
+<div class="">
         <div id="cart-print">
 
             <div class="invoice-header" >
@@ -114,8 +117,11 @@
                     <thead>
                     <tr style="font-size: small">
                         <th class="text-left">@lang('default.invoice_id')</th>
-                        <th class="text-left">@lang('custom.fecha_entrega')</th>
                         <th class="text-left">@lang('default.sold_to')</th>
+                        <th class="text-left">@lang('custom.shipping_address')</th>
+                        <th class="text-left">@lang('default.phone_number')</th>
+                        <th class="text-left">@lang('default.products')</th>
+                        <th class="text-left">@lang('default.status')</th>
                         <th class="text-right">@lang('default.total')</th>
                     </tr>
                     </thead>
@@ -123,8 +129,11 @@
                     @foreach($orders as $item)
                         <tr>
                             <td class="cart-summary-table">{{$item->invoice_id}}</td>
-                            <td class="text-left">{{$item->date}}</td>                            
                             <td class="text-left">{{$item->customerName}}</td>
+                            <td class="text-left">{{$item->shipping_address}}</td>
+                            <td class="text-left">{{$item->phone_number}}</td>
+                            <td class="text-left">{{$item->tipo_productos}}</td>
+                            <td class="text-left">{{$item->status}}</td>                            
                             <td class="text-right">{{$item->total}}</td>
                         </tr>
                     @endforeach
@@ -132,6 +141,9 @@
                     <tfoot>
                     <tr>
                         <td class="font-weight-bold">@lang('default.total')</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class=" text-right">{{$guide->total}}</td>

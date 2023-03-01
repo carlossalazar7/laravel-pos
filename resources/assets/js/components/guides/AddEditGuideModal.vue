@@ -381,9 +381,13 @@ export default {
       let month = date.getMonth() + 1
       let year = date.getFullYear()
 
-      if(month < 10){
+      if(month < 10 && day < 10){
+        fecha = `${year}-0${month}-0${day}`;
+      } else if(month < 10 && day >= 10) {
         fecha = `${year}-0${month}-${day}`;
-      }else{
+      } else if(month >= 10 && day < 10) {
+        fecha = `${year}-${month}-0${day}`;
+      } else {
         fecha = `${year}-${month}-${day}`;
       }
       this.fecha_entrega = fecha;

@@ -94,7 +94,9 @@ return [
     'pedidos_guia' => 'Guide orders',
     'sin_pedidos_guia' => 'There are no orders added to the guide',
     'sin_pedidos_disponibles' => 'There are no orders available to add to the guide',
-    'reporte_guia' => 'Guide report',
+    'reporte_guia' => 'Delivery control',
+    'seleccionar_al_menos_un_pedido' => 'You must select at least one order',
+    'validacion_fecha' => 'The delivery date must be greater than or equal to the current one',
     
     //estados
     'done' => 'done',

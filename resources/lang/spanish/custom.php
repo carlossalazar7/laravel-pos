@@ -79,7 +79,9 @@ return [
     'pedidos_guia' => 'Pedidos de la guia',
     'sin_pedidos_guia' => 'No hay pedidos agregados a la guia',
     'sin_pedidos_disponibles' => 'No hay pedidos disponibles para agregar a la guía',
-    'reporte_guia' => 'Reporte de guia',
+    'reporte_guia' => 'Control de entrega',
+    'seleccionar_al_menos_un_pedido' => 'Debe seleccionar al menos un pedido',
+    'validacion_fecha' => 'La fecha de entrega debe ser mayor o igual a la actual',
 
     //estados
     'done' => 'done',
