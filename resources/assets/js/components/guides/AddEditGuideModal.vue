@@ -22,7 +22,7 @@
       <form class="form-row margin-top" v-else>
         <div class="form-group col-md-5">
           {{ alertMessage }}
-          <label for="nombreGuide">{{ trans('lang.guide_name') }}</label>
+          <label for="nombreGuide">{{ trans('lang.guide') }}</label>
           <input v-validate="'required'" name="nombreGuide" class="form-control" id="nombreGuide"
                  type="text"
                  v-model="name" :class="{ 'is-invalid': submitted && errors.has('name') }">
@@ -381,9 +381,13 @@ export default {
       let month = date.getMonth() + 1
       let year = date.getFullYear()
 
-      if(month < 10){
+      if(month < 10 && day < 10){
+        fecha = `${year}-0${month}-0${day}`;
+      } else if(month < 10 && day >= 10) {
         fecha = `${year}-0${month}-${day}`;
-      }else{
+      } else if(month >= 10 && day < 10) {
+        fecha = `${year}-${month}-0${day}`;
+      } else {
         fecha = `${year}-${month}-${day}`;
       }
       this.fecha_entrega = fecha;

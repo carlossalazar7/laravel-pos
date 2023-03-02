@@ -74,13 +74,28 @@ return [
     'shipping_address' => 'Dirección de envio',
 
     //guides
-    'guide_name' => 'Guia',
+    'guide_name_mayus' => 'GUIA',
+    'guides' => 'Guias',
+    'guide' => 'Guia',
     'fecha_entrega' => 'Fecha de entrega',
     'observacion' => 'Observación',
     'pedidos_sin_asignar' => 'Pedidos sin asignar',
     'pedidos_guia' => 'Pedidos de la guia',
     'sin_pedidos_guia' => 'No hay pedidos agregados a la guia',
     'sin_pedidos_disponibles' => 'No hay pedidos disponibles para agregar a la guía',
-    
+    'reporte_guia' => 'Control de entrega',
+    'seleccionar_al_menos_un_pedido' => 'Debe seleccionar al menos un pedido',
+    'validacion_fecha' => 'La fecha de entrega debe ser mayor o igual a la actual',
+
+    //estados
+    'done' => 'done',
+    'cancelled' => 'cancelado',
+    'en_preparacion' => 'en preparacion',
+    'despachado' => 'despachado',
+    'en_ruta' => 'en ruta', 
+    'incompleto' => 'incompleto', 
+    'entregado' => 'entregado',
+    'cancelado' => 'cancelado', 
+    'reasignado' => 'reasignado',
     
 ];

@@ -49,7 +49,7 @@ export default {
         tableName: 'guides',
         columns: [
           {title: 'lang.id', key: 'id', type: 'text', sortable: true},
-          {title: 'lang.guide_name', key: 'name', type: 'text', sortable: true},
+          {title: 'lang.guide', key: 'name', type: 'text', sortable: true},
           {title: 'lang.fecha_entrega', key: 'fecha_entrega', type: 'text', sortable: true},
           {title: 'lang.delivery', key: 'nombreDelivery', type: 'text', sortable: true},          
           {title: 'lang.route', key: 'nombreRuta', type: 'text', sortable: true},
@@ -103,6 +103,26 @@ export default {
     let instance = this;
     this.$hub.$on('guideAddEdit', function (id, name) {
       instance.addEditAction(id, name);
+    });
+
+    this.$hub.$on('generarPDF', function (id) {
+      let instance = this;
+      console.log(id);
+
+
+      axios({
+          url: '/generate-pdf-guide/'+ id,
+          method: 'GET',
+          responseType: 'blob', // important
+      }).then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'file.pdf');
+          document.body.appendChild(link);
+          link.click();
+      });
+
     });
 
     this.modalCloseAction(this.modalOptions.modalID);
