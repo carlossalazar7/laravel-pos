@@ -21,6 +21,7 @@ class CreateShippingInformationTable extends Migration
             $table->integer('order_id');
             $table->integer('branch_id');
             $table->string('status')->default('pending');
+            $table->string('delivery_note');
             $table->timestamps();
         });
     }

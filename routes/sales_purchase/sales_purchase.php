@@ -46,6 +46,8 @@ Route::get('/receives', [SalesController::class, 'purchaseView']);
 Route::get('/get-register-amount/{id}', [SalesController::class, 'getRegisterAmount']);
 Route::post('/save-due-amount', [SalesController::class, 'saveDueAmount']);
 Route::post('/offline-sales', [SalesController::class, 'offlineSalesStore']);
+Route::post('/get-orders', [SalesController::class, 'getOrdersInformation']);
+Route::post('/check-shipping-information', [SalesController::class, 'checkShippingInformation']);
 
 // Customer sales sms
 Route::post('/customer-send-sms', [SalesController::class, 'customerSendSms']);

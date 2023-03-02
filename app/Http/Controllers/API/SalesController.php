@@ -41,6 +41,8 @@ use PDF;
 use Config;
 use Milon\Barcode\DNS1D;
 use DB;
+use App;
+use function Psy\sh;
 
 class SalesController extends Controller
 {
@@ -1547,16 +1549,22 @@ class SalesController extends Controller
 
     public function saveShippingInformation(Request $request)
     {
-        $ShippingData = array();
-        $ShippingData['shipping_area_id'] = $request->shippingAreaId;
-        $ShippingData['price'] = $request->shippingPrice;
-        $ShippingData['shipping_address'] = $request->shippingAreaSddress;
-        $ShippingData['order_id'] = $request->orderId;
-        $ShippingData['branch_id'] = $request->branchId;
-        $ShippingData['departamento'] = $request->departamento;
-        $ShippingData['municipio'] = $request->municipio;
+        $shippingInformation = new ShippingInformation();
+        $shippingInformation->shipping_area_id = $request->shippingAreaId;
+        $shippingInformation->price = $request->shippingPrice;
+        $shippingInformation->shipping_address = $request->shippingAreaSddress;
+        $shippingInformation->order_id = $request->orderId;
+        $shippingInformation->branch_id = $request->branchId;
+        $shippingInformation->departamento = $request->departamento;
+        $shippingInformation->municipio = $request->municipio;
+        $shippingInformation->delivery_note = $request->deliveryNote;
+        $shippingInformation->save();
 
-        ShippingInformation::store($ShippingData);
+        $idOrder = $request->orderId;
+        $order = Order::find($idOrder);
+        $order->customer_id = $request->customerId;
+        $order->save();
+
         $response = [
             'message' => 'Informacion de envio guardada'
         ];
@@ -1580,21 +1588,21 @@ class SalesController extends Controller
                 'orders.invoice_id',
                 'orders.sub_total',
                 'orders.total',
+                'orders.customer_id',
                 'branches.name as branch_name',
                 DB::raw("CONCAT(users.first_name,' ',users.last_name)  AS created_by_name"),
             )
             ->whereIn("invoice_id", $request)
             ->get();
 
-        foreach($orders as $item) {
-
+        foreach ($orders as $item) {
             //Cambiando estado de la orden a en preparación
             $idOrder = $item['id'];
             $order = Order::find($idOrder);
-            $order->status = "en preparacion";
+            //$order->status = "en preparacion";
             $order->save();
 
-            $id = $item['id_customer'];
+            $id = $item['customer_id'];
             $customers = Customer::where("id", "=", $id)
                 ->select(
                     'customers.id as id_customer',
@@ -1606,14 +1614,13 @@ class SalesController extends Controller
                 ->first();
             $item['customers'] = $customers;
 
-
             if ($id) $subTotal = "order_items.sub_total";
             else $subTotal = DB::raw('abs(order_items.sub_total) as total');
 
             $orderItems = OrderItems::query()
                 ->leftjoin('products', 'order_items.product_id', '=', 'products.id')
                 ->leftJoin('product_variants', 'order_items.variant_id', '=', 'product_variants.id')
-                ->where('order_items.order_id', '=', $id)
+                ->where('order_items.order_id', '=', $idOrder)
                 ->select(
                     'order_items.price',
                     'order_items.type',
@@ -1627,22 +1634,32 @@ class SalesController extends Controller
                     'order_items.discount'
                 )
                 ->get();
+            $item['orderItems'] = $orderItems;
 
-            $item['$orderItems'] = $orderItems;
+            $shipping_info = ShippingInformation::query()
+                ->leftjoin('departamentos', 'departamentos.id', '=', 'shipping_information.departamento')
+                ->leftjoin('municipios', 'municipios.id', '=', 'shipping_information.municipio')
+                ->where('order_id', '=', $idOrder)
+                ->select(
+                    'shipping_information.shipping_address',
+                    'municipios.name as municipio',
+                    'departamentos.name as departamento',
+                    'shipping_information.delivery_note'
+                )
+                ->get();
+
+            $item['shippingInfo'] = $shipping_info;
         }
-
         $order = $orders[0];
 
-
-        $allSettingFormat = new AllSettingFormat();
-//        $order = $this->formatOrdersDetails($order[0]->id, $order[0].branch_id);
-//        $order->due = $allSettingFormat->getCurrencySeparator($order->due);
-//        $orderItems = $this->formatOrdersItems($orderID);
+        //$allSettingFormat = new AllSettingFormat();
+        //$order = $this->formatOrdersDetails($order[0]->id, $order[0].branch_id);
+        //$order->due = $allSettingFormat->getCurrencySeparator($order->due);
+        //$orderItems = $this->formatOrdersItems($orderID);
 
         $invoiceLogo = Config::get('invoiceLogo');
         $fileNameToStore = 'IMPADI-' . $order->invoice_id . '.pdf';
         $appName = Config::get('app_name');
-
 
         $pdf = PDF::loadView('invoice.invoicePending',
             //'orderItems',
@@ -1688,4 +1705,33 @@ class SalesController extends Controller
         return $orderIdInternalTransfer;
     }
 
+    public function getOrdersInformation(Request $request)
+    {
+        $orders = Order::join('users', 'users.id', '=', 'orders.created_by')
+            ->join('branches', 'branches.id', '=', 'orders.branch_id')
+            ->select(
+                'orders.id',
+                'orders.date',
+                'orders.invoice_id',
+                'orders.sub_total',
+                'orders.total',
+                'orders.customer_id',
+                'branches.name as branch_name',
+            )
+            ->whereIn("invoice_id", $request)
+            ->get();
+        return $orders;
+    }
+
+    public function checkShippingInformation(Request $request)
+    {
+        $shipping = ShippingInformation::join('orders', 'orders.id', '=', 'shipping_information.order_id')
+            ->select(
+                'shipping_information.id',
+            )
+            ->whereIn("order_id", $request)
+            ->get();
+
+        return $shipping;
+    }
 }

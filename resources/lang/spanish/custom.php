@@ -13,6 +13,10 @@ return [
 
     'hello2' => 'Hello2 updated by custom language',
 
+    // sales
+    'delivery_note' => 'Nota de envío',
+    'delivery_note_not_found' => 'Esta orden no tiene dirección de envío.',
+
     // departamentos
     'departamento' => 'Departamento',
     'departamentos' => 'Departamentos',

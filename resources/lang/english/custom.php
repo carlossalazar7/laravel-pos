@@ -19,7 +19,7 @@ return [
     'shipping_not_configured' => 'Shipping not configured',
     'select_all' => 'Select all',
     'selected_orders' => 'Selected orders: ',
-    'download_orders' => 'Download orders',
+    'dispatch_orders' => 'Dispatch orders',
     'list' => 'List',
     'phone' => 'Phone',
     'client_name' => 'Client name',
@@ -27,6 +27,9 @@ return [
     'address' => 'Client address',
     'next_btn' => 'Next',
     'customer_not_found' => 'There are no customers found with this phone number.',
+    'customer_information' => 'Customer information',
+    'delivery_note' => 'Delivery note',
+    'delivery_note_not_found' => 'This orders does not have a delivery note',
 
     // departamentos
     'departamento' => 'Department',
@@ -83,7 +86,7 @@ return [
     'order_deleted_permanently' => 'This order will be deleted permanently.',
     'order_info' => 'Order information',
     'shipping_address' => 'Shipping address',
-    
+
     //guides
     'guides' => 'Guides',
     'guide_name' => 'Guide',
@@ -93,5 +96,5 @@ return [
     'pedidos_guia' => 'Guide orders',
     'sin_pedidos_guia' => 'There are no orders added to the guide',
     'sin_pedidos_disponibles' => 'There are no orders available to add to the guide',
-    
+
 ];

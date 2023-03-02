@@ -195,6 +195,7 @@ export default {
         municipiosData: [],
         departamentos: [],
 
+        customerId: 0,
         customerAddress: '',
 
         ordersSelected: [],
@@ -205,9 +206,9 @@ export default {
         customerData: [],
         customerName: '',
         customerLastName: '',
-        customerNotExists: '',
+        customerNotExists: false,
 
-
+        deliveryNote: '',
     }),
     computed: {
         filteredHoldOrder() {
@@ -441,7 +442,7 @@ export default {
             });
             $("#pop_mouse2").click(function () {
                 $("input").focus();
-            });      
+            });
         });
 
         if (this.order_type === 'sales') {
@@ -506,6 +507,16 @@ export default {
 
         $('#register-info-modal').on('hidden.bs.modal', function () {
             instance.registerInfoModal = false;
+        });
+
+        //emit for customer info
+        this.$hub.$on('customerInformation', function (customerInfo) {
+            instance.customerName = customerInfo.first_name;
+            instance.customerLastName = customerInfo.last_name;
+            instance.customerAddress = customerInfo.address;
+            instance.customerPhone = customerInfo.phone_number;
+            instance.customerData = customerInfo;
+            $("#shipping-information-modal").modal('show');
         });
 
         this.$hub.$on('setOrderID', function (orderID, lastInvoiceId, orderIdInternalTransfer) {
@@ -775,7 +786,6 @@ export default {
             }
         },
         addCustomer(event) {  // remove for cart
-            $('#customer-add-edit-modal').modal('show');
             this.isCustomerModalActive = true;
         },
         holdCard() {
@@ -1810,7 +1820,6 @@ export default {
             let instance = this;
             instance.redirect('/dashboard');
         },
-
         //emit from customer
         newCustomer(customer) {
             this.newCustomerId = customer.id;
@@ -1904,8 +1913,18 @@ export default {
             }
         },
         newCustomerAddModalOpen() {
-            $('#shippment-orders-modal').modal('hide');
-            this.isCustomerModalActive = true;
+            let element = document.getElementById("shipping-information-modal");
+            if (this.customerNotExists === true) {
+                this.isCustomerModalActive = true;
+                $('#shippment-orders-modal').modal('hide');
+                element.classList.add("customerNotExists");
+                console.log(this.customerPhone);
+                this.$emit('sendPhoneNumber', this.customerPhone);
+            } else {
+                this.isCustomerModalActive = true;
+            }
+            this.customerNotExists = false;
+            //element.classList.remove("customerNotExists");
         },
         taxEditModal() {
             this.isTaxModalActive = true;
@@ -2082,29 +2101,52 @@ export default {
         },
         descargarPedidos() {
             let instance = this;
-            console.log(this.ordersSelected);
+            let response = [], response2 = [];
 
-            if (this.ordersSelected.length > 0) {
-                axios({
-                    url: '/get-order-by-invoice-id',
-                    method: 'POST',
-                    data: this.ordersSelected,
-                    responseType: 'blob', // important
-                }).then((response) => {
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', 'file.pdf');
-                    document.body.appendChild(link);
-                    link.click();
-                    this.ordersSelected = [];
-                    //this.allSelected = false;
-                    this.getHoldOrders();
+            instance.axiosGETorPOST({url: '/get-orders', postData: this.ordersSelected},
+                (success, responseData) => {
+                    if (success) {
+                        for (let item of responseData) {
+                            response.push(item.id);
+                        }
+                        instance.axiosGETorPOST({url: '/check-shipping-information', postData: response},
+                            (success, responseData) => {
+                                if (success) {
+                                    response2 = responseData;
+                                    if (response2.length > 0) {
+                                        if (this.ordersSelected.length > 0) {
+                                            console.log(this.ordersSelected);
+                                            this.showSuccessAlert("Generando pdf...");
+                                            axios({
+                                                url: '/get-order-by-invoice-id',
+                                                method: 'POST',
+                                                data: this.ordersSelected,
+                                                responseType: 'blob', // important
+                                            }).then((response) => {
+                                                const url = window.URL.createObjectURL(new Blob([response.data]));
+                                                const link = document.createElement('a');
+                                                link.href = url;
+                                                link.setAttribute('download', 'file.pdf');
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                this.ordersSelected = [];
+                                                this.allSelected = false;
+                                                this.getHoldOrders();
+                                            });
+                                        } else {
+                                            this.showSuccessAlert("Seleccione un pedido primero");
+                                        }
+                                    } else {
+                                        this.showSuccessAlert("No se ha configurado la información de envío.");
+                                        this.ordersSelected = [];
+                                        this.allSelected = false;
+                                    }
+                                }else{
+                                    this.showSuccessAlert("No se pudo completar la acción.");
+                                }
+                            })
+                    }
                 });
-            } else {
-                this.showSuccessAlert("seleccione un pedido primero");
-            }
-
         },
         selectAll() {
             this.ordersSelected = [];
@@ -2118,38 +2160,38 @@ export default {
         },
         checkCustomer() {
             let phone = this.customerPhone;
-            let instance = this;
-            let arrCustomer = [];
-            instance.axiosGet('/get-customerByPhone/' + phone,
-                function (response) {
-                    arrCustomer = response.data;
-                    if (arrCustomer.length === 0) {
-                        instance.customerNotExists = true;
-                    } else {
+            this.axiosGet('/get-customerByPhone/' + phone,
+                response => {
+                    if (response.data.customer) {
                         $('#shippment-orders-modal').modal('hide');
-                        instance.customerData = response.data.customer;
-                        instance.customerName = instance.customerData[0].first_name;
-                        instance.customerLastName = instance.customerData[0].last_name;
-                        instance.customerAddress = instance.customerData[0].address;
-                        instance.customerPhone = instance.customerData[0].phone_number;
-                        $('#customer-data-orders-modal').modal('show');
+                        this.customerData = response.data.customer;
+                        this.customerId = this.customerData[0].id;
+                        this.customerName = this.customerData[0].first_name;
+                        this.customerLastName = this.customerData[0].last_name;
+                        this.customerAddress = this.customerData[0].address;
+                        this.customerPhone = this.customerData[0].phone_number;
+                        console.log(this.customerAddress);
+                        $('#shipping-information-modal').modal('show');
+                    } else {
+                        this.customerNotExists = true;
+                        this.showSuccessAlert("No se encontro ningún cliente.");
+                        document.getElementById("phoneNumber").value = "HOLA";
                     }
-                });
+                },
+            );
         },
-        shippingDetails() {
-            this.addShipment = '';
-            this.addShipmentInfo = '';
+        cancelNewCustomer() {
             this.customerNotExists = '';
             this.customerPhone = '';
-            $('#customer-data-orders-modal').modal('hide');
-            $('#shipping-details-orders-modal').modal('show');
+            this.addShipmentInfo = '';
+            this.addShipment = '';
+            $('#shippment-orders-modal').modal('hide');
         },
         saveShipping() {
+            this.customerPhone = '';
             this.addShipment = '';
             this.addShipmentInfo = '';
-            this.customerNotExists = '';
-            this.customerPhone = '';
-            $('#shipping-details-orders-modal').modal('hide');
+            $('#shipping-information-modal').modal('hide');
             let subtotal = this.finalCart.grandTotal + this.finalCart.overAllDiscount;
             let date = this.finalCart.date;
             let lastOrderIdHold = [];
@@ -2163,16 +2205,15 @@ export default {
                 createdBy: this.finalCart.createdBy,
                 sub_total: subtotal
             };
-
             let numeroOrden = null;
             let instance = this;
-
             instance.axiosGETorPOST({url: '/get-last-order', postData: lasOrderHoldToSave},
                 (success, responseData) => {
                     if (success) {
                         lastOrderIdHold = responseData;
                         numeroOrden = responseData.id;
                         //si obtenemos la orden procedemos a guardarla
+
                         let data = {
                             shippingAreaId: this.shippingAreaId,
                             shippingPrice: this.shippingPrice,
@@ -2180,8 +2221,22 @@ export default {
                             branchId: this.currentBranch.id,
                             orderId: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
                             departamento: this.shippingDepartamento,
-                            municipio: this.shippingMunicipio
+                            municipio: this.shippingMunicipio,
+                            customerId: this.customerId,
+                            deliveryNote: this.deliveryNote,
                         }
+
+                        if (data.customerId === 0) {
+                            this.axiosGet('/get-customerByPhone/' + this.customerData.phone_number,
+                                response => {
+                                    if (response.data.customer) {
+                                        this.customerData = response.data.customer;
+                                        data.customerId = this.customerData[0].id;
+                                    }
+                                },
+                            );
+                        }
+
                         let info = {
                             id: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
                         }
@@ -2204,6 +2259,7 @@ export default {
                                                     this.shippingPrice = '';
                                                     this.shippingDepartamento = '';
                                                     this.shippingMunicipio = '';
+                                                    this.customerId = 0;
                                                 }
                                             })
                                     }
@@ -2214,7 +2270,7 @@ export default {
                     }
                 });
         },
-        saveCustomer(){
+        saveCustomer() {
             $('#clear-cart-modal').modal('show');
         },
         getShipping(id) {

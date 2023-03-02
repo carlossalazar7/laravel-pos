@@ -1058,7 +1058,7 @@
                     </label>
                     <div class="pl-2 ml-4">
                       <button type="button" class="btn btn-primary" @click="descargarPedidos">
-                        <i class="la la-download"></i> {{ trans('lang.download_orders') }}
+                        <i class="la la-download"></i> {{ trans('lang.dispatch_orders') }}
                       </button>
                     </div>
                   </div>
@@ -1093,22 +1093,22 @@
 
                           <div class="row">
                             <div class="col-4 text-left">
-                                                            <span class="font-weight-bold pl-1">{{
-                                                                customerHoldOrder.invoice_id
-                                                              }}</span>
+                              <span class="font-weight-bold pl-1">{{
+                                  customerHoldOrder.invoice_id
+                                }}</span>
                             </div>
                             <div class="col-4">
-                                                            <span v-if="customerHoldOrder.customer == null"
-                                                                  class="text-center">
-                                                                {{ dateFormats(customerHoldOrder.date) }}
-                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
-                                                            </span>
+                              <span v-if="customerHoldOrder.customer == null"
+                                    class="text-center">
+                                  {{ dateFormats(customerHoldOrder.date) }}
+                                  {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                              </span>
                               <span v-else-if="customerHoldOrder.customer != null" class="text-center">
-                                                                {{ customerHoldOrder.customer.first_name }}
-                                                                {{ customerHoldOrder.customer.last_name }}
-                                                                {{ dateFormats(customerHoldOrder.date) }}
-                                                                {{ timeFormateForDatetime(customerHoldOrder.time) }}
-                                                            </span>
+                                  {{ customerHoldOrder.customer.first_name }}
+                                  {{ customerHoldOrder.customer.last_name }} <br>
+                                  {{ dateFormats(customerHoldOrder.date) }}
+                                  {{ timeFormateForDatetime(customerHoldOrder.time) }}
+                              </span>
                             </div>
                             <div class="col-4 text-center">
                                                             <span v-if="customerHoldOrder.shipping == null"
@@ -1218,20 +1218,21 @@
     </div>
 
     <!-- modal shippment-->
-    <div class="modal fade" id="shippment-orders-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" role="dialog" id="shippment-orders-modal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <pre-loader class="small-loader-container" v-if="!hideOrderHoldItemsPreLoader"/>
+          <div class="modal-header">
+            <pre-loader class="small-loader-container" v-if="!hideOrderHoldItemsPreLoader"/>
 
-          <div class="pt-2 px-4 pb-4" v-else>
+            <h5 class="mb-3 text-center">
+              {{ trans('lang.shipping_settings') }}
+            </h5>
             <a href="#" class="close" data-dismiss="modal"
                aria-label="Close" @click.prevent="">
               <i class="la la-close text-grey"/>
             </a>
-            <h5 class="mb-3 text-center">
-              {{ trans('lang.shipping_settings') }}
-            </h5>
-
+          </div>
+          <div class="modal-body">
             <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
               <div class="d-flex align-items-center">
                 <div class="custom-control custom-radio custom-control-inline">
@@ -1276,60 +1277,63 @@
                          class="form-control"
                          v-model="customerPhone"/>
                   <div class="heightError">
-                    <small class="text-danger" v-show="errors.has('shipping_area')">
-                      {{ errors.first('shipping_area') }}
+                    <small class="text-danger" v-show="errors.has('customerPhone')">
+                      {{ errors.first('customerPhone') }}
                     </small>
                   </div>
-                  <button class="btn app-color mobile-btn mr-1 mb-1" @click="checkCustomer()">{{
-                      trans('lang.send')
-                    }}
+                  <br>
+                  <button class="btn app-color mobile-btn mr-1 mb-1" @click="checkCustomer()">
+                    {{ trans('lang.send') }}
                   </button>
+
                   <div v-if="customerNotExists" class="">
+                    <p style="color: red">No se encontro ningun cliente. ¿Desea crear un nuevo cliente?</p>
+
                     <!--Customer add button-->
-                    <div class=""
-                         v-if="addcustomer ==='manage' && salesOrReceivingType === 'customer' && order_type ==='sales'">
-                        <span>
-                            <a class="btn app-color"
-                               data-toggle="modal"
-                               data-target="#customer-add-edit-modal"
-                               href="#"
-                               @click.prevent="newCustomerAddModalOpen"
-                               v-shortkey="addCustomerShortKey"
-                               @shortkey="commonMethodForAccessingShortcut('addCustomerShortcut')">
-                                <i class="la la-user-plus"></i>
-                            </a>
-                        </span>
+                    <div v-if="addcustomer ==='manage' && salesOrReceivingType === 'customer' && order_type ==='sales'">
+
+                      <a data-toggle="modal"
+                         data-target="#customer-add-edit-modal"
+                         href="#"
+                         @click.prevent="newCustomerAddModalOpen"
+                         v-shortkey="addCustomerShortKey"
+                         @shortkey="commonMethodForAccessingShortcut('addCustomerShortcut')">
+                        <button class="btn btn-success">Aceptar</button>
+                      </a>
+
+                      <a href="#">
+                        <button class="btn btn-secondary" @click="cancelNewCustomer()">Cancelar</button>
+                      </a>
 
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="customerNotExists" class="">
-              <p>No se encontro ningun registro. Prueba con otro número.</p>
-            </div>
           </div>
+
         </div>
       </div>
     </div>
 
-    <div class="modal fade" tabindex="-1" id="customer-data-orders-modal">
+
+    <!-- Shipping information modal -->
+    <div class="modal fade" tabindex="-1" id="shipping-information-modal" aria-hidden="true" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="mb-4 text-center">{{ trans('lang.shipping_settings') }}</h5>
+            <h5 class="mb-4 text-center">{{ trans('lang.customer_information') }}</h5>
             <a href="#" class="close" data-dismiss="modal" aria-label="Close" @click.prevent="">
               <i class="la la-close text-grey"/>
             </a>
           </div>
           <div class="modal-body">
-
             <div class="form-group row ml-0">
               <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label mt-2" for="customerName">
                 {{ trans('lang.client_name') }}
               </label>
               <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                <input name="customerName" type="text" class="form-control"
+                <input name="customerName" id="customerName" type="text" class="form-control"
                        v-model="customerName" readonly/>
                 <div class="heightError">
                   <small class="text-danger" v-show="errors.has('customerName')">
@@ -1338,7 +1342,6 @@
                 </div>
               </div>
             </div>
-
             <div class="form-group row ml-0">
               <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label mt-2" for="customerLastName">
                 {{ trans('lang.client_lastName') }}
@@ -1349,21 +1352,6 @@
                 <div class="heightError">
                   <small class="text-danger" v-show="errors.has('customerLastName')">
                     {{ errors.first('customerLastName') }}
-                  </small>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row ml-0">
-              <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label mt-2" for="customerAddress">
-                {{ trans('lang.address') }}
-              </label>
-              <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                <input name="customerAddress" type="text" class="form-control"
-                       v-model="customerAddress" readonly/>
-                <div class="heightError">
-                  <small class="text-danger" v-show="errors.has('customerAddress')">
-                    {{ errors.first('customerAddress') }}
                   </small>
                 </div>
               </div>
@@ -1384,27 +1372,9 @@
               </div>
             </div>
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn app-color mobile-btn mr-1 mb-1" @click="shippingDetails()">
-              {{ trans('lang.next_btn') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            <hr>
 
-    <!-- modal shipping details -->
-    <div class="modal fade" tabindex="-1" id="shipping-details-orders-modal">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="mb-4 text-center">{{ trans('lang.shipping_settings') }}</h5>
-            <a href="#" class="close" data-dismiss="modal" aria-label="Close" @click.prevent="">
-              <i class="la la-close text-grey"/>
-            </a>
-          </div>
-          <div class="modal-body">
+            <h5 class="mb-4">{{ trans('lang.shipping_settings') }}</h5>
 
             <div class="form-group row ml-0">
               <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label" for="shipping_area">
@@ -1481,7 +1451,6 @@
               </div>
             </div>
 
-
             <div class="form-group row ml-0">
               <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label" for="shippingMunicipio">
                 {{ trans('lang.municipio') }}
@@ -1499,16 +1468,31 @@
               </div>
             </div>
 
+            <div class="form-group row ml-0">
+              <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label" for="shippingMunicipio">
+                {{ trans('lang.delivery_note') }}
+              </label>
+              <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
+                <textarea class="form-control" placeholder="Añadir una nota de envío" id="deliveryNote"
+                          name="deliveryNote" v-model="deliveryNote">
+                </textarea>
+                <div class="heightError">
+                  <small class="text-danger" v-show="errors.has('deliveryNote')">
+                    {{ errors.first('deliveryNote') }}
+                  </small>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer">
-            <button class="btn app-color mobile-btn mr-1 mb-1" @click="saveShipping()">
+            <button type="button" class="btn app-color mobile-btn mr-1 mb-1" @click="saveShipping()">
               {{ trans('lang.save') }}
             </button>
           </div>
         </div>
       </div>
     </div>
-
 
     <!-- Confirmation Modal -->
     <confirmation-modal id="clear-cart-modal"

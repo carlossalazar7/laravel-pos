@@ -619,6 +619,7 @@ export default {
     'return_cart_length',
     'invoice_size',
     'adjusted_discount',
+    'customer_not_exists'
   ],
   data() {
     return {
@@ -957,7 +958,6 @@ export default {
       this.$emit('taxEditModal');
     },
     storeCustomer() {
-      $('#customer-add-edit-modal').modal('show')
       this.isCustomerModalActive = true;
     },
     searchCustomerInput() {
@@ -1204,7 +1204,6 @@ export default {
         }
       }
       currentStorage = ((data.length * 16) / (8 * 1024)).toFixed(2);
-      /*
       if (this.checkBrowser() === "Chrome") {
           window.webkitStorageInfo.queryUsageAndQuota(webkitStorageInfo.PERSISTENT, function (usage, total) {
               if (total != 0) instance.totalStorage = total;
@@ -1214,7 +1213,7 @@ export default {
       } else {
           instance.remainingStorage = instance.totalStorage - currentStorage;
           return instance.remainingStorage < instance.minimumSizeOfLocalStorage;
-      }*/
+      }
     },
 
     orderHold() {
