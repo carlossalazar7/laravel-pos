@@ -20,7 +20,7 @@ class CreateDetalleGuiaTable extends Migration
 
             $table->foreign("guide_id")->references('id')->on('guides');
             $table->foreign("order_id")->references('id')->on('orders');
-            
+
             $table->timestamps();
         });
     }
