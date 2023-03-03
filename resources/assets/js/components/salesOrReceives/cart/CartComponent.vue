@@ -1204,7 +1204,7 @@ export default {
         }
       }
       currentStorage = ((data.length * 16) / (8 * 1024)).toFixed(2);
-      if (this.checkBrowser() === "Chrome") {
+      /*if (this.checkBrowser() === "Chrome") {
           window.webkitStorageInfo.queryUsageAndQuota(webkitStorageInfo.PERSISTENT, function (usage, total) {
               if (total != 0) instance.totalStorage = total;
               instance.remainingStorage = instance.totalStorage - currentStorage;
@@ -1213,7 +1213,7 @@ export default {
       } else {
           instance.remainingStorage = instance.totalStorage - currentStorage;
           return instance.remainingStorage < instance.minimumSizeOfLocalStorage;
-      }
+      }*/
     },
 
     orderHold() {
@@ -1222,6 +1222,7 @@ export default {
       let info = {
         id: this.order_id,
       }
+      console.log(this.order_id);
       instance.axiosGETorPOST({url: '/get-shipping', postData: info},
           (success, responseData) => {
             if (success) {

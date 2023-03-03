@@ -7,10 +7,10 @@
           </div>
         </div>
       </div>
-  
+
       <datatable-component class="main-layout-card-content" :options="tableOptions" :exportData="exportToVue"
                            exportFileName="pedidos" @resetStatus="resetExportValue"></datatable-component>
-  
+
       <!-- Detail Modal -->
       <div class="modal fade" id="pedido-detail-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -18,15 +18,15 @@
                                 :modalOptions="modalOptions"></pedido-detail-modal>
         </div>
       </div>
-  
+
     </div>
   </template>
-  
+
   <script>
   import axiosGetPost from '../../helper/axiosGetPostCommon';
-  
+
   var sourceURL = '/pedidos';
-  
+
   export default {
     props: ['permission'],
     extends: axiosGetPost,
@@ -39,7 +39,7 @@
             {title: 'lang.invoice_id', key: 'invoice_id', type: 'text', sortable: true},
             {title: 'lang.customer', key: 'first_name', type: 'text', sortable: true},
             {title: 'lang.area', key: 'area', type: 'text', sortable: true},
-            
+
             {title: 'lang.date', key: 'date', type: 'text', sortable: true},
             {title: 'lang.total', key: 'total', type: 'text', sortable: true},
             {title: 'lang.status', key: 'status', type: 'text', sortable: true},
@@ -49,13 +49,13 @@
               key: 'action',
               componentName: 'pedidos-action-component'
             } : {})
-  
+
           ],
           source: '/pedidosPreparacion',
           search: false,
           right_align: 'action',
         },
-  
+
         modalOptions: {
           modalID: '#pedido-detail-modal',
           titleLang: 'Detalle del pedido',
@@ -66,7 +66,7 @@
         exportToVue: false,
       }
     },
-  
+
     mounted() {
       let instance = this;
       this.$hub.$on('pedidosDetail', function (id) {
@@ -74,7 +74,7 @@
       });
       this.modalCloseAction(this.modalOptions.modalID);
     },
-  
+
     methods: {
       resetPedidoDetailModal(value, save) {
         $("#pedido-detail-modal").on("hidden.bs.modal", function (e) {
@@ -88,9 +88,9 @@
         this.exportToVue = value;
         this.buttonLoader = false;
         this.isDisabled = false;
-  
+
       }
     }
   }
-  
+
   </script>

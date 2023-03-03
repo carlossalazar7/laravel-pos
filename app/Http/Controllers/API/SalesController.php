@@ -1557,7 +1557,12 @@ class SalesController extends Controller
         $shippingInformation->branch_id = $request->branchId;
         $shippingInformation->departamento = $request->departamento;
         $shippingInformation->municipio = $request->municipio;
-        $shippingInformation->delivery_note = $request->deliveryNote;
+        if ($request->deliveryNote == "") {
+            $shippingInformation->delivery_note = "";
+        } else {
+            $shippingInformation->delivery_note = $request->deliveryNote;
+        }
+
         $shippingInformation->save();
 
         $idOrder = $request->orderId;
@@ -1599,7 +1604,7 @@ class SalesController extends Controller
             //Cambiando estado de la orden a en preparación
             $idOrder = $item['id'];
             $order = Order::find($idOrder);
-            //$order->status = "en preparacion";
+            $order->status = "en preparacion";
             $order->save();
 
             $id = $item['customer_id'];

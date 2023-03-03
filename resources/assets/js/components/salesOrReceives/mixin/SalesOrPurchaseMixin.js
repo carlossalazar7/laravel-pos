@@ -1530,7 +1530,9 @@ export default {
                 this.$emit('addShipmentInfo', this.shippingInfo, true);
             } else {
                 this.addShipmentInfo = false;
+                console.log(this.addShipment);
                 this.$emit('addShipmentInfo', this.shippingInfo, false);
+                $('#shippment-orders-modal').modal('hide');
             }
         },
         setHoldOrderToCart(holdItem) {
@@ -1913,18 +1915,8 @@ export default {
             }
         },
         newCustomerAddModalOpen() {
-            let element = document.getElementById("shipping-information-modal");
-            if (this.customerNotExists === true) {
-                this.isCustomerModalActive = true;
-                $('#shippment-orders-modal').modal('hide');
-                element.classList.add("customerNotExists");
-                console.log(this.customerPhone);
-                this.$emit('sendPhoneNumber', this.customerPhone);
-            } else {
-                this.isCustomerModalActive = true;
-            }
-            this.customerNotExists = false;
-            //element.classList.remove("customerNotExists");
+            this.isCustomerModalActive = true;
+            $('#shippment-orders-modal').modal('hide');
         },
         taxEditModal() {
             this.isTaxModalActive = true;
@@ -2141,7 +2133,7 @@ export default {
                                         this.ordersSelected = [];
                                         this.allSelected = false;
                                     }
-                                }else{
+                                } else {
                                     this.showSuccessAlert("No se pudo completar la acción.");
                                 }
                             })
@@ -2170,12 +2162,11 @@ export default {
                         this.customerLastName = this.customerData[0].last_name;
                         this.customerAddress = this.customerData[0].address;
                         this.customerPhone = this.customerData[0].phone_number;
-                        console.log(this.customerAddress);
                         $('#shipping-information-modal').modal('show');
                     } else {
                         this.customerNotExists = true;
+                        console.log(this.customerId);
                         this.showSuccessAlert("No se encontro ningún cliente.");
-                        document.getElementById("phoneNumber").value = "HOLA";
                     }
                 },
             );
@@ -2260,6 +2251,8 @@ export default {
                                                     this.shippingDepartamento = '';
                                                     this.shippingMunicipio = '';
                                                     this.customerId = 0;
+                                                    this.customerNotExists = '';
+                                                    this.deliveryNote = '';
                                                 }
                                             })
                                     }

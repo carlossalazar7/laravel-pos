@@ -665,10 +665,10 @@
                             }}{{ cashRegister.note }}</label>
 
                           <label>
-                                                    <textarea :id="'note-'+index" :name="'note'"
-                                                              v-validate="(!(!(openingAmount == closingAmount)&&!note&&!noteValidation) )? '':'required'"
-                                                              class="form-control"
-                                                              v-model="note"/>
+                          <textarea :id="'note-'+index" :name="'note'"
+                                    v-validate="(!(!(openingAmount == closingAmount)&&!note&&!noteValidation) )? '':'required'"
+                                    class="form-control"
+                                    v-model="note"/>
                           </label>
                           <div class="heightError">
                             <small class="text-danger" v-show="errors.has('note')">
@@ -1288,10 +1288,8 @@
 
                   <div v-if="customerNotExists" class="">
                     <p style="color: red">No se encontro ningun cliente. ¿Desea crear un nuevo cliente?</p>
-
                     <!--Customer add button-->
                     <div v-if="addcustomer ==='manage' && salesOrReceivingType === 'customer' && order_type ==='sales'">
-
                       <a data-toggle="modal"
                          data-target="#customer-add-edit-modal"
                          href="#"
@@ -1300,11 +1298,9 @@
                          @shortkey="commonMethodForAccessingShortcut('addCustomerShortcut')">
                         <button class="btn btn-success">Aceptar</button>
                       </a>
-
                       <a href="#">
                         <button class="btn btn-secondary" @click="cancelNewCustomer()">Cancelar</button>
                       </a>
-
                     </div>
                   </div>
                 </div>

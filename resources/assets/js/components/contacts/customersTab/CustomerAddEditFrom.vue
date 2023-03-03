@@ -60,7 +60,9 @@
         </div>
         <div class="form-group col-md-6 margin-top">
           <label for="phoneNumber">{{ trans('lang.phone_number') }}</label>
-          <input id="phoneNumber" type="text" class="form-control" v-model="phoneNumber">
+          <input v-validate="'required'" id="phoneNumber" name="phoneNumber"
+                 type="text" class="form-control" v-model="phoneNumber"
+                 :class="{ 'is-invalid': submitted && errors.has('phoneNumber') }">
           <div v-if="submitted && errors.has('phoneNumber')" class="heightError">
             <small class="text-danger"
                    v-show="errors.has('phoneNumber')">{{
