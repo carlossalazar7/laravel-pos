@@ -17,7 +17,7 @@ class CreateMunicipiosTable extends Migration
             $table->bigIncrements('id');
             $table->string("name");
             $table->unsignedBigInteger('department_id');
-            $table->foreign("department_id")->references('id')->on('departamentos');
+            $table->foreign('department_id')->references('id')->on('departamentos');
             $table->timestamps();
         });
     }
