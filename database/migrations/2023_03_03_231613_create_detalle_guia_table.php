@@ -18,8 +18,8 @@ class CreateDetalleGuiaTable extends Migration
             $table->unsignedBigInteger('guide_id');
             $table->unsignedBigInteger('order_id');
 
-            //$table->foreign("guide_id")->references('id')->on('guides');
-            //$table->foreign("order_id")->references('id')->on('orders');
+            $table->foreign('guide_id')->references('id')->on('guides');
+            $table->foreign('order_id')->references('id')->on('orders');
 
             $table->timestamps();
         });
