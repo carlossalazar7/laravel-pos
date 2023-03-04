@@ -17,7 +17,7 @@ class CreatePuntoEntregasTable extends Migration
             $table->id();
             $table->unsignedBigInteger('municipio_id');
             $table->string('name');
-            $table->foreign('municipio_id')->references('id')->on('municipios');
+            //$table->foreign('municipio_id')->references('id')->on('municipios');
             $table->timestamps();
         });
     }

@@ -17,10 +17,10 @@ class CreateDetallePuntoEntregasTable extends Migration
             $table->id();
 //            relacion a rutas
             $table->unsignedBigInteger('route_id');
-            $table->foreign('route_id')->references('id')->on('routes');
+            //$table->foreign('route_id')->references('id')->on('routes');
 //            relacion a puntos de entregas
             $table->unsignedBigInteger('punto_entrega_id');
-            $table->foreign('punto_entrega_id')->references('id')->on('punto_entregas');
+            //$table->foreign('punto_entrega_id')->references('id')->on('punto_entregas');
             $table->string('observacion');
             $table->timestamps();
         });
