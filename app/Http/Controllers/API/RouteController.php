@@ -25,7 +25,7 @@ class RouteController extends Controller
 
     public function getRoutes()
     {
-        $routes = Route::all();
+        $routes = Route::join('shipping_areas', 'shipping_areas.id', '=', 'routes.shipping_area_id')->select('routes.id as id', 'name', 'area', 'price')->get();
         return ['routes' => $routes];
     }
 
@@ -45,10 +45,12 @@ class RouteController extends Controller
     {
         $this->validate($request, [
             'nombreRuta' => 'required',
+            'shippingAreaId' => 'required',
         ]);
 
         $routeData = [
             'name' => $request->nombreRuta,
+            'shipping_area_id' => $request->shippingAreaId,
         ];
 
         if ($route = Route::store($routeData)) {
@@ -68,19 +70,21 @@ class RouteController extends Controller
 
     public function show($id)
     {
-        return Route::getOne($id);
+        return Route::join('shipping_areas', 'shipping_areas.id', '=', 'routes.shipping_area_id')->where('routes.id', $id)->first();
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'nombreRuta' => 'required',
+            'shippingAreaId' => 'required',
         ]);
 
         $route = Route::getOne($id);
 
         if ($route) {
             $route->name = $request->input('nombreRuta');
+            $route->shipping_area_id = $request->input('shippingAreaId');
             $route->save();
             $response = [
                 'message' => Lang::get('lang.route') . ' ' . Lang::get('lang.successfully_updated')

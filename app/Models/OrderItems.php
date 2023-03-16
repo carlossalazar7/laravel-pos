@@ -198,20 +198,18 @@ class OrderItems extends BaseModel
                 } else if (array_key_exists('key', $singleFilter) && $singleFilter['key'] == "status" && $singleFilter['value'] != "all") {
                     if ($singleFilter['value'] == 'done') {
                         $query->where('orders.status', '=', 'done');
+                    } elseif ($singleFilter['value'] == 'hold') {
+                        $query->where('orders.status', '=', 'hold');
                     } elseif ($singleFilter['value'] == 'cancelled') {
                         $query->where('orders.status', '=', 'cancelled');
                     } elseif ($singleFilter['value'] == 'en preparacion') {
                         $query->where('orders.status', '=', 'en preparacion');
-                    } elseif ($singleFilter['value'] == 'despachado') {
-                        $query->where('orders.status', '=', 'despachado');
                     } elseif ($singleFilter['value'] == 'en ruta') {
                         $query->where('orders.status', '=', 'en ruta');
                     } elseif ($singleFilter['value'] == 'incompleto') {
                         $query->where('orders.status', '=', 'incompleto');
                     } elseif ($singleFilter['value'] == 'entregado') {
                         $query->where('orders.status', '=', 'entregado');
-                    } elseif ($singleFilter['value'] == 'cancelado') {
-                        $query->where('orders.status', '=', 'cancelado');
                     } elseif ($singleFilter['value'] == 'reasignado') {
                         $query->where('orders.status', '=', 'reasignado');
                     }

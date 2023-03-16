@@ -16,6 +16,7 @@ class CreateRoutesTable extends Migration
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('shipping_area_id');
             $table->timestamps();
         });
     }

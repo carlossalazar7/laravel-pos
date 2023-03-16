@@ -32,6 +32,27 @@
               }}</small>
           </div>
         </div>
+        <div class="form-group col-md-12">
+          <label for="shipping_area">
+            {{ trans('lang.shipping_area') }}
+          </label>
+          <select v-validate="'required'"
+                  v-model="shippingAreaId"
+                  data-vv-as="shipping area"
+                  id="shippingAreaId"
+                  name="shipping_area"
+                  class="form-control" 
+                  :class="{ 'is-invalid': submitted && errors.has('shipping_area') }">
+            <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
+            <option v-for="(ship) in shippingAreaData" :value="ship.id">{{ ship.area }}</option>
+          </select>
+          <div class="heightError">
+            <small class="text-danger" v-show="errors.has('shipping_area')">
+              {{ errors.first('shipping_area') }}
+            </small>
+          </div>
+        </div>
+        
         <div class="col-12">
           <button class="btn btn-primary app-color mobile-btn" type="submit" @click.prevent="save()">{{
               trans('lang.save')
@@ -58,10 +79,12 @@ export default {
   data() {
     return {
       nombreRuta: '',
+      shippingAreaId: '',
       alertMessage: '',
       checkStatus: true,
       saveStatus: false,
       submitted: false,
+      shippingAreaData: [],
     }
   },
   created() {
@@ -74,11 +97,18 @@ export default {
     $('#attributes-add-edit-modal').on('hidden.bs.modal', function (e) {
       instance.close();
     });
+    this.axiosGet(
+        "/get-areal-list",
+        response => {
+            this.shippingAreaData = response.data.shippingData;
+        },
+    );
   },
 
   methods: {
     close() {
       this.nombreRuta = '';
+      this.shippingAreaId = '';
       this.$validator.reset();
       this.checkStatus = false;
       this.saveStatus = false;
@@ -93,6 +123,7 @@ export default {
         if (result) {
           this.inputFields = {
             nombreRuta: this.nombreRuta,
+            shippingAreaId: this.shippingAreaId,
           };
           if (this.id) {
             this.postDataMethod(this.modalOptions.postDataWithIDURL + '/' + this.id, this.inputFields);
@@ -109,6 +140,7 @@ export default {
       this.axiosGet(route,
           function (response) {
             instance.nombreRuta = response.data.name;
+            instance.shippingAreaId = response.data.shipping_area_id;
             instance.setPreLoader(true);
           },
           function (response) {
@@ -121,6 +153,7 @@ export default {
       let instance = this;
       instance.saveStatus = true;
       this.nombreRuta = '';
+      this.shippingAreaId = '';
       this.$validator.reset();
       this.checkStatus = false;
       this.$emit('resetRouteModal', this.checkStatus, this.saveStatus);

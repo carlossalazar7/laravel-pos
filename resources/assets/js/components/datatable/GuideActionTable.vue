@@ -2,6 +2,8 @@
   <div class="action-button-wrapper">
     <div class='action-button-container'>
       <a href="" class='action-button' @click.prevent="generarPDF(rowData.id,rowIndex)"><i class="las la-file-alt"></i></a>
+      <a v-if="rowData.status=='open'" href="" class='action-button' data-toggle="modal" data-target="#close-guide"
+         @click.prevent="closeGuide(rowData.id,rowIndex)"><i class="la la-check-circle"></i></a>
       <a href="" class='action-button' data-toggle="modal" data-target="#confirm-delete"
          @click.prevent="selectedDeletableId(rowData.id,rowIndex)"><i class="la la-trash-o la-2x"></i></a>
       <a href="" class='action-button' data-toggle="modal" data-target="#guide-add-edit-modal"
@@ -36,6 +38,9 @@ export default {
     },
     generarPDF(id) {
       this.$hub.$emit('generarPDF', id);
+    },
+    closeGuide(id) {
+      this.$hub.$emit('closeGuide', id);
     },
   }
 }

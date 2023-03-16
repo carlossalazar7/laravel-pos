@@ -421,6 +421,7 @@ Vue.component('contacts-page-index', require('./components/contacts/ContactsPage
 Vue.component('guides', require('./components/guides/Index.vue'));
 Vue.component('guides-index', require('./components/guides/GuideIndex.vue'));
 Vue.component('add-edit-guide-modal', require('./components/guides/AddEditGuideModal.vue'));
+Vue.component('close-guide-modal', require('./components/guides/CloseGuideModal.vue'));
 
 //Departments
 Vue.component('departments-index', require('./components/departamentos/DepartamentoIndex.vue'));

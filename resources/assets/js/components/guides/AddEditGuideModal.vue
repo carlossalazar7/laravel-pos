@@ -22,8 +22,8 @@
       <form class="form-row margin-top" v-else>
         <div class="form-group col-md-5">
           {{ alertMessage }}
-          <label for="nombreGuide">{{ trans('lang.guide') }}</label>
-          <input v-validate="'required'" name="nombreGuide" class="form-control" id="nombreGuide"
+          <label for="name">{{ trans('lang.guide') }}</label>
+          <input v-validate="'required|numeric'" name="name" class="form-control" id="name"
                  type="text"
                  v-model="name" :class="{ 'is-invalid': submitted && errors.has('name') }">
           <div class="heightError" v-if="submitted && errors.has('name')">
@@ -35,13 +35,13 @@
 
         <div class="form-group col-md-5">
           {{ alertMessage }}
-          <label for="fechaEntrega">{{ trans('lang.fecha_entrega') }}</label>
-          <input v-validate="'required'" name="fechaEntrega" class="form-control" id="fechaEntrega"
+          <label for="fecha entrega">{{ trans('lang.fecha_entrega') }}</label>
+          <input v-validate="'required'" name="fecha entrega" class="form-control" id="fecha entrega"
                  type="date"
-                 v-model="fecha_entrega" :class="{ 'is-invalid': submitted && errors.has('fecha_entrega') }">
-          <div class="heightError" v-if="submitted && errors.has('fecha_entrega')">
-            <small class="text-danger" v-if="errors.has('fecha_entrega')">{{
-                errors.first('fecha_entrega')
+                 v-model="fecha_entrega" :class="{ 'is-invalid': submitted && errors.has('fecha entrega') }">
+          <div class="heightError" v-if="submitted && errors.has('fecha entrega')">
+            <small class="text-danger" v-if="errors.has('fecha entrega')">{{
+                errors.first('fecha entrega')
               }}</small>
           </div>
         </div>
@@ -55,8 +55,8 @@
             <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
             <option v-for="(delivery) in deliveriesData" :value="delivery.id">{{ delivery.nombre }}</option>
           </select>
-          <div class="heightError" v-if="submitted && errors.has('delivery_id')">
-            <small class="text-danger" v-if="errors.has('delivery_id')">{{ errors.first('delivery_id') }}</small>
+          <div class="heightError" v-if="submitted && errors.has('delivery')">
+            <small class="text-danger" v-if="errors.has('delivery')">{{ errors.first('delivery') }}</small>
           </div>
         </div>
 
@@ -65,12 +65,13 @@
           <label for="ruta">{{ trans('lang.route') }}</label>
           <select v-validate="'required'" name="ruta" id="ruta"
                   class="form-control" v-model="route_id"
-                  :class="{ 'is-invalid': submitted && errors.has('route_id') }">
+                  :class="{ 'is-invalid': submitted && errors.has('ruta') }"
+                  @change="getCommonDataPedidos()">
             <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
             <option v-for="(ruta) in rutasData" :value="ruta.id">{{ ruta.name }}</option>
           </select>
-          <div class="heightError" v-if="submitted && errors.has('route_id')">
-            <small class="text-danger" v-if="errors.has('route_id')">{{ errors.first('route_id') }}</small>
+          <div class="heightError" v-if="submitted && errors.has('ruta')">
+            <small class="text-danger" v-if="errors.has('ruta')">{{ errors.first('ruta') }}</small>
           </div>
         </div>
 
@@ -147,6 +148,8 @@
                 <tr>
                   <th scope="col">{{ trans('lang.invoice_id') }}</th>
                   <th scope="col">{{ trans('lang.date') }}</th>
+                  <th scope="col">{{ trans('lang.customer') }}</th>
+                  <th scope="col">{{ trans('lang.shipping_area') }}</th>
                   <th scope="col">{{ trans('lang.total') }}</th>
                   <th scope="col"></th>
                 </tr>
@@ -155,6 +158,8 @@
                 <tr v-for="(pedido, index) in pedidosGuia" :key="index">
                   <td>{{ pedido.invoice_id }}</td>
                   <td>{{ pedido.date }}</td>
+                  <td>{{ pedido.customer, }}</td>
+                  <td>{{ pedido.area }}</td>
                   <td>${{ pedido.total }}</td>
                   <td><a href="" class='action-button text-danger' @click.prevent="removePedido(pedido)"><i class="la la-minus-circle"></i></a></td>
                 </tr>
@@ -176,6 +181,8 @@
                 <tr>
                   <th scope="col">{{ trans('lang.invoice_id') }}</th>
                   <th scope="col">{{ trans('lang.date') }}</th>
+                  <th scope="col">{{ trans('lang.customer') }}</th>
+                  <th scope="col">{{ trans('lang.shipping_area') }}</th>
                   <th scope="col">{{ trans('lang.total') }}</th>
                   <th scope="col"></th>
                 </tr>
@@ -184,12 +191,17 @@
                 <tr v-for="(pedido, index) in pedidos" :key="index">
                   <td>{{ pedido.invoice_id }}</td>
                   <td>{{ pedido.date }}</td>
+                  <td>{{ pedido.customer }}</td>
+                  <td>{{ pedido.area }}</td>
                   <td>${{ pedido.total }}</td>
                   <td><a href="" class='action-button text-success' @click.prevent="addPedido(pedido)"><i class="la la-plus-circle"></i></a></td>
                 </tr>
                 
               </tbody>
             </table>
+            <div v-else-if="route_id==0 || route_id==''" class="alert alert-warning" role="alert">
+              {{ trans('lang.ruta_no_seleccionada') }}
+            </div> 
             <div v-else class="alert alert-warning" role="alert">
               {{ trans('lang.sin_pedidos_disponibles') }}
             </div> 
@@ -222,8 +234,8 @@ export default {
       name: '',
       fecha_entrega: '',
       observacion: '',
-      delivery_id: 0,
-      route_id: 0,
+      delivery_id: '',
+      route_id: '',
       alertMessage: '',
       checkStatus: true,
       saveStatus: false,
@@ -241,11 +253,11 @@ export default {
     }
   },
   created() {
-    this.getCommonDataPedidos('/pedidosPreparacionSinGuia');
     this.setFechaActual();
     if (this.id) {
       this.getCommonData(this.modalOptions.getDataURL + '/' + this.id);
     }
+    this.getCommonDataPedidos();
   },
   mounted() {
     this.axiosGet(
@@ -280,8 +292,8 @@ export default {
       this.name = '';
       this.fecha_entrega = '';
       this.observacion = '';
-      this.delivery_id = 0;
-      this.route_id = 0;
+      this.delivery_id = '';
+      this.route_id = '';
       this.$validator.reset();
       this.checkStatus = false;
       this.saveStatus = false;
@@ -302,8 +314,6 @@ export default {
             route_id: this.route_id,
             pedidosGuia: this.pedidosGuia,
           };
-          console.log(this.delivery_id);
-          console.log(this.inputFields);
           if (this.id) {
             this.postDataMethod(this.modalOptions.postDataWithIDURL + '/' + this.id, this.inputFields);
           } else {
@@ -316,39 +326,52 @@ export default {
       let instance = this;
       this.setPreLoader(false);
       this.axiosGet(route,
-          function (response) {
+          response => {
             instance.name = response.data.guia.name;
             instance.fecha_entrega = response.data.guia.fecha_entrega,
             instance.observacion = response.data.guia.observacion,
             instance.delivery_id = response.data.guia.delivery_id,
             instance.route_id = response.data.guia.route_id,
-            instance.pedidosGuia = response.data.pedidosGuia,
-            instance.setPreLoader(true);
-          },
-          function (response) {
-            instance.setPreLoader(true);
-          },
+            instance.pedidosGuia = response.data.pedidosGuia;                        
+                      
+          }
       );
     },
-    getCommonDataPedidos(route) {
-      let instance = this;
+    getCommonDataPedidos() {  
+      let instance = this;  
+      if (this.id) {
+        this.axiosGet(this.modalOptions.getDataURL + '/' + this.id,
+          response => {
+            if(this.route_id == response.data.guia.route_id) {
+              instance.pedidosGuia = response.data.pedidosGuia;
+            } else {
+              instance.pedidosGuia = [];
+            }                        
+          }
+        );
+      } else {
+        this.pedidosGuia = [];
+      }
+      
       this.setPreLoader(false);
-      this.axiosGet(route,
-          function (response) {
-            instance.pedidos = response.data.pedidos,
-            instance.setPreLoader(true);
-          },
-          function (response) {
-            instance.setPreLoader(true);
-          },
-      );
+      if(instance.route_id != '') {
+        this.axiosGet('/pedidosPreparacionSinGuia/'+instance.route_id,
+            response => {
+              this.pedidos = response.data.pedidos;
+              
+            }
+        );
+      } else {
+        this.pedidos = [];
+      }
+      instance.setPreLoader(true);
     },
     addPedido(pedido){
 
       this.pedidosGuia.push({
         area: pedido.area,
         date: pedido.date,
-        first_name: pedido.first_name,
+        customer: pedido.customer,
         invoice_id: pedido.invoice_id,
         last_name: pedido.last_name,
         orderID: pedido.orderID,
@@ -363,7 +386,7 @@ export default {
       this.pedidos.push({
         area: pedido.area,
         date: pedido.date,
-        first_name: pedido.first_name,
+        customer: pedido.customer,
         invoice_id: pedido.invoice_id,
         last_name: pedido.last_name,
         orderID: pedido.orderID,
@@ -392,7 +415,8 @@ export default {
       }
       this.fecha_entrega = fecha;
       
-    },orderSearch(sortedResults) {
+    },
+    orderSearch(sortedResults) {
         let instance = this;
         if (instance.searchValue) {
             this.filterPedidos = sortedResults.filter(function (element) {
@@ -444,8 +468,8 @@ export default {
       this.name = '';
       this.fecha_entrega = '';
       this.observacion = '';
-      this.delivery_id = 0;
-      this.route_id = 0;
+      this.delivery_id = '';
+      this.route_id = '';
       this.$validator.reset();
       this.checkStatus = false;
       this.$emit('resetGuideModal', this.checkStatus, this.saveStatus);
