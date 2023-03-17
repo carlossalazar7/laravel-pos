@@ -120,7 +120,7 @@ class GuideController extends Controller
                 DetalleGuia::store($pedidosData);
 
                 $orden = Order::find($pedido["orderID"]);
-                $orden->status = 'despachado';
+                $orden->status = 'en ruta';
                 $orden->save();
             }
 
@@ -204,14 +204,15 @@ class GuideController extends Controller
 
     public function show($id)
     {
-        $guia = Guide::find($id);
+        $guia = Guide::join('deliveries', 'deliveries.id', '=', 'guides.delivery_id')
+        ->join('routes', 'routes.id', '=', 'guides.route_id')
+        ->select('guides.*', 'routes.name as route', 'deliveries.nombre as delivery')->find($id);
         $pedidosGuia = Order::join('customers', 'customers.id', '=', 'orders.customer_id')
         ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
         ->join('shipping_areas', 'shipping_areas.id', '=', 'shipping_information.shipping_area_id')
         ->join('detalle_guia','detalle_guia.order_id','=','orders.id')
         ->select('orders.invoice_id', 
-        'customers.first_name',
-        'customers.last_name', 
+        DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customer"),
         'orders.created_at as date', 
         'orders.total', 
         'orders.status', 
@@ -220,6 +221,13 @@ class GuideController extends Controller
         ->where('detalle_guia.guide_id', '=', $id)->get();
 
         return ['guia' => $guia, 'pedidosGuia' => $pedidosGuia];
+    }
+
+    public function showData($id)
+    {
+        $data = Guide::getGuideData($id);
+
+        return ['guia' => $data['guia'], 'pedidosGuia' => $data['pedidosGuia']];
     }
 
     public static function ordenesGuia()
@@ -246,7 +254,7 @@ class GuideController extends Controller
 
         if(intval($days_last->format('%r%a')) < 0){
             $response = [
-                'message' => Lang::get('lang.validacion_fecha')
+                'message' => Lang::get('lang.validacion_fecha') 
             ];
 
             return response()->json($response, 404);
@@ -286,7 +294,7 @@ class GuideController extends Controller
                         DetalleGuia::store($pedidosData);
     
                         $orden = Order::find($pedido["orderID"]);
-                        $orden->status = 'despachado';
+                        $orden->status = 'en ruta';
                         $orden->save();
                     }
                     array_push($pedidos, $pedido["orderID"]);
@@ -350,5 +358,30 @@ class GuideController extends Controller
         return response()->json($response, 201);
 
     }
+
+    public function closeGuide(Request $request, $id)
+    {
+        $guide = Guide::getOne($id);
+
+        if($guide->status == 'open'){
+
+            $guide->status = 'closed';
+
+            if($guide->save()){
+                $response = [
+                    'data' => $guide,
+                    'message' => Lang::get('lang.guide') . ' ' . Lang::get('lang.successfully_updated')
+                ];
     
+                return response()->json($response, 201);
+            } else {
+                $response = [
+                    'message' => Lang::get('lang.error_during_update')
+                ];
+
+                return response()->json($response, 400);
+            }
+        }
+     
+    }
 }

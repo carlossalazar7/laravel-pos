@@ -220,13 +220,13 @@ export default {
                                     title: 'lang.status', type: 'dropdown', key: 'status', options: [
                                         {text: 'lang.all', value: 'all', selected: true},
                                         {text: 'lang.done', value: 'done'},
+                                        {text: 'lang.hold', value: 'hold'},
                                         {text: 'lang.cancelled', value: 'cancelled'},
                                         {text: 'lang.en_preparacion', value: 'en preparacion'},
-                                        {text: 'lang.despachado', value: 'despachado'},
+                                        /*{text: 'lang.despachado', value: 'despachado'},*/
                                         {text: 'lang.en_ruta', value: 'en ruta'},
                                         {text: 'lang.incompleto', value: 'incompleto'},
-                                        {text: 'lang.entregado', value: 'entregado'},
-                                        {text: 'lang.cancelado', value: 'cancelado'},                                        
+                                        {text: 'lang.entregado', value: 'entregado'},                                     
                                         {text: 'lang.reasignado', value: 'reasignado'},
                                     ]
                                 },

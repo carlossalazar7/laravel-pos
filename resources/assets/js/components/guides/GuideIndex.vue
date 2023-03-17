@@ -28,6 +28,14 @@
       </div>
     </div>
 
+    <!-- Close Modal -->
+    <div class="modal fade" id="close-guide" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <close-guide-modal class="modal-content" v-if="isActive" :id="selectedItemId"
+                                       :modalOptions="modalOptionsClose"></close-guide-modal>
+      </div>
+    </div>
+
     <!-- Delete Modal -->
     <confirmation-modal id="confirm-delete" :message="'guide_deleted_permanently'" :firstButtonName="'yes'"
                         :secondButtonName="'no'"
@@ -75,6 +83,13 @@ export default {
         postDataWithIDURL: sourceURL,
         postDataWithoutIDURL: sourceURL + '/store',
       },
+      modalOptionsClose: {
+        modalID: '#close-guide',
+        addLang: 'lang.add_guide',
+        editLang: 'lang.edit_guide',
+        getDataURL: '/guideData',
+        postDataWithIDURL: '/closeGuide',
+      },
       buttonLoader: false,
       isDisabled: false,
       exportToVue: false,
@@ -92,6 +107,14 @@ export default {
       this.checkStatus = value;
       if (save) this.bus.$emit("saveStatus");
     },
+    resetCloseguideModal(value, save) {
+      $("#close-modal").on("hidden.bs.modal", function (e) {
+        this.isActiveAttributeModal = false;
+        $("body").addClass("modal-open");
+      });
+      this.checkStatus = value;
+      this.bus.$emit("saveStatus");
+    },
     resetExportValue(value) {
       this.exportToVue = value;
       this.buttonLoader = false;
@@ -106,10 +129,6 @@ export default {
     });
 
     this.$hub.$on('generarPDF', function (id) {
-      let instance = this;
-      console.log(id);
-
-
       axios({
           url: '/generate-pdf-guide/'+ id,
           method: 'GET',
@@ -125,7 +144,12 @@ export default {
 
     });
 
+    this.$hub.$on('closeGuide', function (id, name) {
+      instance.addEditAction(id, name);
+    });
+
     this.modalCloseAction(this.modalOptions.modalID);
+    this.modalCloseAction(this.modalOptionsClose.modalID);
   }
 }
 </script>

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
+use DB;
+
 
 class Guide extends BaseModel
 {
@@ -26,6 +29,26 @@ class Guide extends BaseModel
         }
         $count = Guide::count();
         return ["data" => $data, 'count' => $count];
+    }
+
+    public static function getGuideData($id){
+        $guia = Guide::join('deliveries', 'deliveries.id', '=', 'guides.delivery_id')
+        ->join('routes', 'routes.id', '=', 'guides.route_id')
+        ->select('guides.*', 'routes.name as route', 'deliveries.nombre as delivery')->find($id);
+        $pedidosGuia = Order::join('customers', 'customers.id', '=', 'orders.customer_id')
+        ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
+        ->join('shipping_areas', 'shipping_areas.id', '=', 'shipping_information.shipping_area_id')
+        ->join('detalle_guia','detalle_guia.order_id','=','orders.id')
+        ->select('orders.invoice_id', 
+        DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customer"),
+        'orders.created_at as date', 
+        'orders.total', 
+        'orders.status', 
+        'orders.id as orderID', 
+        'shipping_areas.area')
+        ->where('detalle_guia.guide_id', '=', $id)->get();
+
+        return ["guia" => $guia, 'pedidosGuia' => $pedidosGuia];
     }
 
     /*public static function usedGuide($id)

@@ -50,6 +50,7 @@ export default {
         columns: [
           {title: 'lang.id', key: 'id', type: 'text', sortable: true},
           {title: 'lang.nombre_route', key: 'name', type: 'text', sortable: true},
+          {title: 'lang.shipping_area', key: 'area', type: 'text', sortable: true},
           (this.permission !== 'read_only' ? {
             title: 'lang.action',
             type: 'component',

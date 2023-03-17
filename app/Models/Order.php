@@ -273,8 +273,7 @@ class Order extends BaseModel
         ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
         ->join('shipping_areas', 'shipping_areas.id', '=', 'shipping_information.shipping_area_id')
         ->select('orders.invoice_id', 
-        'customers.first_name',
-        'customers.last_name', 
+        DB::raw('CONCAT(first_name," ", last_name) AS customer'),
         'orders.created_at as date', 
         'orders.total', 
         'orders.status', 
@@ -284,21 +283,22 @@ class Order extends BaseModel
         
     }
 
-    public static function ordenesEnPreparacionSinGuia()
+    public static function ordenesEnPreparacionSinGuia($route_id)
     {
         return Order::join('customers', 'customers.id', '=', 'orders.customer_id')
         ->join('shipping_information', 'shipping_information.order_id', '=', 'orders.id')
         ->join('shipping_areas', 'shipping_areas.id', '=', 'shipping_information.shipping_area_id')
+        ->join('routes', 'shipping_areas.id', '=', 'routes.shipping_area_id')
         ->leftJoin('detalle_guia','detalle_guia.order_id','=','orders.id')
         ->select('orders.invoice_id', 
-        'customers.first_name',
-        'customers.last_name', 
+        DB::raw('CONCAT(first_name," ", last_name) AS customer'),
         'orders.created_at as date', 
         'orders.total', 
         'orders.status', 
         'orders.id as orderID', 
         'shipping_areas.area')
         ->where('orders.status', 'en preparacion')
+        ->where('routes.id', $route_id)
         ->whereNull('detalle_guia.id')->get();
         
     }

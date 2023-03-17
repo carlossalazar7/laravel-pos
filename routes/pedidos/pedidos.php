@@ -4,7 +4,7 @@ use App\Http\Controllers\API\PedidosController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('pedidosPreparacion', [PedidosController::class, 'PedidosEnPreparacionIndex']);
-Route::get('pedidosPreparacionSinGuia', [PedidosController::class, 'getPedidosEnPreparacionSinGuia']);
+Route::get('pedidosPreparacionSinGuia/{id}', [PedidosController::class, 'getPedidosEnPreparacionSinGuia']);
 Route::post('pedidosPreparacion', [PedidosController::class, 'getPedidosEnPreparacion']);
 Route::get('pedidos/{id}', [PedidosController::class, 'show']);
 /*Route::post('/departamento/store', [DepartamentoController::class, 'store'])->middleware('permissions:can_manage_departamentos');

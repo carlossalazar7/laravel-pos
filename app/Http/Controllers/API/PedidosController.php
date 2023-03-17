@@ -49,9 +49,9 @@ class PedidosController extends Controller
         return ['datarows' => $ordenes];
     }
 
-    public function getPedidosEnPreparacionSinGuia()
+    public function getPedidosEnPreparacionSinGuia($route_id)
     {
-        $ordenes = Order::ordenesEnPreparacionSinGuia();
+        $ordenes = Order::ordenesEnPreparacionSinGuia($route_id);
 
         return ['pedidos' => $ordenes];
     }
