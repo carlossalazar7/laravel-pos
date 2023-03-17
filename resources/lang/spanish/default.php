@@ -22,7 +22,7 @@ return array(
     'add' => 'Agregar',
     'edit' => 'Editar',
     'confirm' => 'Confirmar',
-    'cancel' => 'Cancelat',
+    'cancel' => 'Cancelar',
     'yes' => 'Si',
     'no' => 'No',
     'enable_user' => 'Habilitar Usuario',

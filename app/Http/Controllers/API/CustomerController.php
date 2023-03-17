@@ -65,39 +65,67 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $autoSmsReceive = Setting::getSettingValue('new_customer_welcome_sms')->setting_value;
-        $this->validate($request, [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'customer_group' => 'required',
-        ]);
-        $customerData = [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'company' => $request->company,
-            'tin_number' => $request->tin_number,
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'customer_group' => $request->customer_group,
-            'created_by' => Auth::user()->id
-        ];
-        if ($autoSmsReceive == 1 && $request->phone_number) {
-            $this->customerWelcomeSms($request->first_name, $request->last_name, $request->phone_number);
-        }
 
-        if ($customer = Customer::store($customerData)) {
+        if ($request->tipo_cliente == "P") {
+            $this->validate($request, [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'phone_number' => 'required',
+                'customer_group' => 'required',
+            ]);
+
+            $customerData = new Customer();
+            $customerData->first_name = $request->first_name;
+            $customerData->last_name = $request->last_name;
+            $customerData->email = $request->email;
+            $customerData->phone_number = $request->phone_number;
+            $customerData->customer_group = $request->customer_group;
+            $customerData->tipo_cliente = $request->tipo_cliente;
+            $customerData->created_by = Auth::user()->id;
+            $customerData->save();
+
+            if ($autoSmsReceive == 1 && $request->phone_number) {
+                $this->customerWelcomeSms($request->first_name, $request->last_name, $request->phone_number);
+            }
+
             $response = [
-                'data' => $customer,
                 'message' => Lang::get('lang.customer') . ' ' . Lang::get('lang.successfully_saved')
             ];
             return response()->json($response, 201);
         } else {
-            $response = [
-                'message' => Lang::get('lang.getting_problems')
-            ];
+            //EMPRESA
+            $this->validate($request, [
+                'phone_number' => 'required',
+                'nombre_contacto' => 'required',
+                'company' => 'required',
+                'nrc' => 'required',
+                'nit' => 'required',
+                'tipo_cliente' => 'required',
+                'customer_group' => 'required',
+            ]);
 
-            return response()->json($response, 404);
+            $customerData = new Customer();
+            $customerData->nombre_contacto = $request->nombre_contacto;
+            $customerData->company = $request->company;
+            $customerData->nrc = $request->nrc;
+            $customerData->nit = $request->nit;
+            $customerData->phone_number = $request->phone_number;
+            $customerData->tipo_cliente = $request->tipo_cliente;
+            $customerData->customer_group = $request->customer_group;
+            $customerData->created_by = Auth::user()->id;
+            $customerData->save();
+
+            if ($autoSmsReceive == 1 && $request->phone_number) {
+                $this->customerWelcomeSms($request->first_name, $request->last_name, $request->phone_number);
+            }
+
+            $response = [
+                'message' => Lang::get('lang.customer') . ' ' . Lang::get('lang.successfully_saved')
+            ];
+            return response()->json($response, 201);
         }
+
+
     }
 
     // auto sms receive customer

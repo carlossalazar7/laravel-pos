@@ -1046,9 +1046,9 @@
                 <div class="col-12 pr-0">
                   <div class="input-group mb-2">
                     <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="la la-search"></i>
-                                            </span>
+                      <span class="input-group-text">
+                          <i class="la la-search"></i>
+                      </span>
                     </div>
                     <label>
                       <input type="text"
@@ -1064,21 +1064,44 @@
                   </div>
                   <div class="input-group mb-2">
                     <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="la la-search"></i>
-                                            </span>
+                      <span class="input-group-text">
+                          <i class="la la-search"></i>
+                      </span>
                     </div>
                     <select class="form-control rounded-right" aria-label="Filtro Cobertura" id="ship"
-                            @change="getShipping()" v-model="shippingAreaIdGet" name="shippingAreaIdGet">
+                            v-model="shippingAreaIdGet" name="shippingAreaIdGet">
                       <option value="0" selected>All</option>
                       <option v-for="(ship) in shippingAreaData" :value="ship.id">{{ ship.area }}</option>
                     </select>
                   </div>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="la la-user"></i>
+                      </span>
+                    </div>
+                    <select class="form-control rounded-right" aria-label="Filtro vendedores" id="filtroVendedores"
+                            v-model="vendedorIdGet" name="filtroVendedores">
+                      <option value="0" selected>All</option>
+                      <option v-for="(user) in vendedoresData" :value="user.id">{{ user.first_name }} {{ user.last_name }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
                 <div class="col-12 pr-0">
-                  <span>{{ trans('lang.select_all') }} <input type="checkbox" @click="selectAll"
-                                                              v-model="allSelected"></span><br>
-                  <span>{{ trans('lang.selected_orders') }} {{ ordersSelected.length }}</span>
+                  <div class="" style="display: flex; width: 100%;">
+                    <div style="width: 50%;">
+                      <span>{{ trans('lang.select_all') }} <input type="checkbox" @click="selectAll"
+                                                                  v-model="allSelected"></span><br>
+                      <span>{{ trans('lang.selected_orders') }} {{ ordersSelected.length }}</span>
+                    </div>
+                    <div style="width: 50%;">
+                      <span>{{ trans('lang.conteo_pedidos') }}: {{ conteoPedidos }}</span><br>
+                      <span>{{ trans('lang.valor_pedidos') }}: ${{ valorPedidos }}</span>
+                    </div>
+                  </div>
+                  <hr>
+
                   <div>
                     <div class="row mx-0 h-100 border hold-order-list-item"
                          v-for="(customerHoldOrder) in filteredHoldOrder"
@@ -1216,6 +1239,7 @@
         </div>
       </div>
     </div>
+    <br>
 
     <!-- modal shippment-->
     <div class="modal fade" tabindex="-1" role="dialog" id="shippment-orders-modal" aria-hidden="true">
@@ -1223,9 +1247,8 @@
         <div class="modal-content">
           <div class="modal-header">
             <pre-loader class="small-loader-container" v-if="!hideOrderHoldItemsPreLoader"/>
-
             <h5 class="mb-3 text-center">
-              {{ trans('lang.shipping_settings') }}
+              {{ trans('lang.empresa') }}
             </h5>
             <a href="#" class="close" data-dismiss="modal"
                aria-label="Close" @click.prevent="">
@@ -1233,76 +1256,40 @@
             </a>
           </div>
           <div class="modal-body">
-            <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-              <div class="d-flex align-items-center">
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio"
-                         name="shipment"
-                         class="custom-control-input"
-                         id="shipment-yes"
-                         checked="checked"
-                         @click="addShipmentStatus(1)"
-                         value="1"
-                         v-model="addShipment"/>
-                  <label class="custom-control-label"
-                         for="shipment-yes">
-                    {{ trans('lang.yes') }}
-                  </label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio"
-                         name="shipment"
-                         class="custom-control-input"
-                         id="shipment-no"
-                         @click="addShipmentStatus(0)"
-                         value="0"
-                         v-model="addShipment"/>
-                  <label class="custom-control-label"
-                         for="shipment-no">
-                    {{ trans('lang.no') }}
-                  </label>
-                </div>
+
+            <label for="customerPhone">
+              {{ trans('lang.phone') }}
+            </label>
+            <div>
+              <input name="customerPhone"
+                     type="text"
+                     class="form-control"
+                     v-model="customerPhone"/>
+              <div class="heightError">
+                <small class="text-danger" v-show="errors.has('customerPhone')">
+                  {{ errors.first('customerPhone') }}
+                </small>
               </div>
-            </div>
+              <br>
+              <button class="btn app-color mobile-btn mr-1 mb-1" @click="checkCustomer()">
+                {{ trans('lang.search') }}
+              </button>
 
-            <div v-if="addShipmentInfo" class="">
-              <div class="form-group row ml-0">
-                <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label mt-2" for="customerPhone">
-                  {{ trans('lang.phone') }}
-                </label>
-                <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                  <input v-validate="'required'"
-                         name="customerPhone"
-                         type="text"
-                         class="form-control"
-                         v-model="customerPhone"/>
-                  <div class="heightError">
-                    <small class="text-danger" v-show="errors.has('customerPhone')">
-                      {{ errors.first('customerPhone') }}
-                    </small>
-                  </div>
-                  <br>
-                  <button class="btn app-color mobile-btn mr-1 mb-1" @click="checkCustomer()">
-                    {{ trans('lang.send') }}
-                  </button>
-
-                  <div v-if="customerNotExists" class="">
-                    <p style="color: red">No se encontro ningun cliente. ¿Desea crear un nuevo cliente?</p>
-                    <!--Customer add button-->
-                    <div v-if="addcustomer ==='manage' && salesOrReceivingType === 'customer' && order_type ==='sales'">
-                      <a data-toggle="modal"
-                         data-target="#customer-add-edit-modal"
-                         href="#"
-                         @click.prevent="newCustomerAddModalOpen"
-                         v-shortkey="addCustomerShortKey"
-                         @shortkey="commonMethodForAccessingShortcut('addCustomerShortcut')">
-                        <button class="btn btn-success">Aceptar</button>
-                      </a>
-                      <a href="#">
-                        <button class="btn btn-secondary" @click="cancelNewCustomer()">Cancelar</button>
-                      </a>
-                    </div>
-                  </div>
+              <div class="text-center mt-2" v-if="customerNotExists">
+                <p style="color: red">No se encontro ningun cliente. ¿Desea crear un nuevo cliente?</p>
+                <!--Customer add button-->
+                <div v-if="addcustomer ==='manage' && salesOrReceivingType === 'customer' && order_type ==='sales'">
+                  <a data-toggle="modal"
+                     data-target="#customer-add-edit-modal"
+                     href="#"
+                     @click.prevent="newCustomerAddModalOpen"
+                     v-shortkey="addCustomerShortKey"
+                     @shortkey="commonMethodForAccessingShortcut('addCustomerShortcut')">
+                    <button class="btn btn-success">{{ trans('lang.confirm') }}</button>
+                  </a>
+                  <a href="#">
+                    <button class="btn btn-secondary" @click="cancelNewCustomer()">{{ trans('lang.cancel') }}</button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1314,7 +1301,7 @@
 
 
     <!-- Shipping information modal -->
-    <div class="modal fade" tabindex="-1" id="shipping-information-modal" aria-hidden="true" role="dialog">
+    <div class="modal fade" id="shipping-information-modal" aria-hidden="true" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -1334,20 +1321,6 @@
                 <div class="heightError">
                   <small class="text-danger" v-show="errors.has('customerName')">
                     {{ errors.first('customerName') }}
-                  </small>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row ml-0">
-              <label class="col-4 col-sm-6 col-md-5 col-lg-4 col-xl-4 col-form-label mt-2" for="customerLastName">
-                {{ trans('lang.client_lastName') }}
-              </label>
-              <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                <input name="customerLastName" type="text" class="form-control"
-                       v-model="customerLastName" readonly/>
-                <div class="heightError">
-                  <small class="text-danger" v-show="errors.has('customerLastName')">
-                    {{ errors.first('customerLastName') }}
                   </small>
                 </div>
               </div>
@@ -1434,11 +1407,9 @@
                 {{ trans('lang.departamento') }}
               </label>
               <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                <select name="shippingDepartamento" id="shippingDepartamento"
-                        class="form-control" v-model="shippingDepartamento" @change="callMunicipio()">
-                  <option value="" disabled selected>{{ trans('lang.choose_one') }}</option>
-                  <option v-for="(dep) in departamentosData" :value="dep.id">{{ dep.name }}</option>
-                </select>
+                <v-select v-model="shippingDepartamento" :options="departamentosData" id="shippingDepartamento"
+                          v-on:input="callMunicipio()"></v-select>
+
                 <div class="heightError">
                   <small class="text-danger" v-show="errors.has('shippingDepartamento')">
                     {{ errors.first('shippingDepartamento') }}
@@ -1452,10 +1423,8 @@
                 {{ trans('lang.municipio') }}
               </label>
               <div class="col-4 col-sm-6 col-md-7 col-lg-8 col-xl-8 pl-0">
-                <select name="shippingMunicipio" id="shippingMunicipio" class="form-control"
-                        v-model="shippingMunicipio">
-                  <option v-for="(mun) in municipiosData" :value="mun.id">{{ mun.name }}</option>
-                </select>
+                <v-select v-model="shippingMunicipio" :options="municipiosData" id="shippingMunicipio"></v-select>
+
                 <div class="heightError">
                   <small class="text-danger" v-show="errors.has('shippingMunicipio')">
                     {{ errors.first('shippingMunicipio') }}
@@ -1503,8 +1472,11 @@
 import templateHelperMixin from "../../mixins/templateHelperMixin";
 import axiosGetPost from '../../helper/axiosGetPostCommon';
 import salesOrReceiveMixin from "./mixin/SalesOrPurchaseMixin";
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 export default {
+  components: {vSelect},
   props: [
     'user',
     'order_type',

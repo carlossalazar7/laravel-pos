@@ -12,5 +12,4 @@ Route::get('departamento/{id}', [DepartamentoController::class, 'show']);
 
 Route::post('departamentos', [DepartamentoController::class, 'getAllDepartamentos']);
 Route::get('/get-departamentos', [DepartamentoController::class, 'getDepartamentos']);
-Route::get('/get-municipios-departamentoId/{department_id}', [MunicipioController::class, 'getMunicipiosByDepId']);
 

@@ -43,7 +43,7 @@ class MunicipioController extends Controller
 
     public function getMunicipiosByDepId($id)
     {
-        $municipios = DB::select("SELECT * FROM municipios WHERE department_id = ?", [$id]);
+        $municipios = DB::select("SELECT * FROM municipios WHERE department_id = ? ORDER BY name ASC", [$id]);
         return ['municipios' => $municipios];
     }
 

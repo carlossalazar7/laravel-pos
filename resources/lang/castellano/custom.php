@@ -13,6 +13,24 @@ return [
 
     'hello2' => 'Hello2 updated by custom language',
 
+    // sales
+    'check_customer' => 'Check customer',
+    'shipping_settings' => 'Shipping Settings',
+    'shipping_not_configured' => 'Shipping not configured',
+    'select_all' => 'Select all',
+    'selected_orders' => 'Selected orders: ',
+    'dispatch_orders' => 'Dispatch orders',
+    'list' => 'List',
+    'phone' => 'Phone',
+    'client_name' => 'Client name',
+    'client_lastName' => 'Client last name',
+    'address' => 'Client address',
+    'next_btn' => 'Next',
+    'customer_not_found' => 'There are no customers found with this phone number.',
+    'customer_information' => 'Customer information',
+    'delivery_note' => 'Delivery note',
+    'delivery_note_not_found' => 'This orders does not have a delivery note',
+
     // departamentos
     'departamento' => 'Departamento',
     'departamentos' => 'Departamentos',
@@ -60,5 +78,38 @@ return [
     'edit_route' => 'Editar ruta',
     'route_deleted_permanently' => 'Esta ruta será borrada de forma permanente.',
     'nombre_route' => 'Nombre ruta',
+
+    //pedidos
+    'pedidoEP' => 'Pedidos en preparación',
+    'pedidos' => 'Pedidos',
+    'edit_pedido' => 'Editar orden',
+    'order_deleted_permanently' => 'Este pedido será borrado de forma permanente.',
+    'order_info' => 'Información de la orden',
+    'shipping_address' => 'Dirección de envio',
+
+    //guides
+    'guide_name_mayus' => 'GUIA',
+    'guides' => 'Guias',
+    'guide' => 'Guia',
+    'fecha_entrega' => 'Fecha de entrega',
+    'observacion' => 'Observación',
+    'pedidos_sin_asignar' => 'Pedidos sin asignar',
+    'pedidos_guia' => 'Pedidos de la guia',
+    'sin_pedidos_guia' => 'No hay pedidos agregados a la guia',
+    'sin_pedidos_disponibles' => 'No hay pedidos disponibles para agregar a la guía',
+    'reporte_guia' => 'Control de entrega',
+    'seleccionar_al_menos_un_pedido' => 'Debe seleccionar al menos un pedido',
+    'validacion_fecha' => 'La fecha de entrega debe ser mayor o igual a la actual',
+
+    //estados
+    'done' => 'done',
+    'cancelled' => 'cancelado',
+    'en_preparacion' => 'en preparacion',
+    'despachado' => 'despachado',
+    'en_ruta' => 'en ruta',
+    'incompleto' => 'incompleto',
+    'entregado' => 'entregado',
+    'cancelado' => 'cancelado',
+    'reasignado' => 'reasignado',
 
 ];

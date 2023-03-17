@@ -14,8 +14,30 @@ return [
     'hello2' => 'Hello2 updated by custom language',
 
     // sales
-    'delivery_note' => 'Nota de envío',
-    'delivery_note_not_found' => 'Esta orden no tiene dirección de envío.',
+    'check_customer' => 'Check customer',
+    'shipping_settings' => 'Ingrese número telefónico',
+    'shipping_not_configured' => 'Shipping not configured',
+    'select_all' => 'Select all',
+    'selected_orders' => 'Selected orders: ',
+    'dispatch_orders' => 'Dispatch orders',
+    'list' => 'List',
+    'phone' => 'Phone',
+    'client_name' => 'Client name',
+    'client_lastName' => 'Client last name',
+    'address' => 'Client address',
+    'next_btn' => 'Next',
+    'customer_not_found' => 'There are no customers found with this phone number.',
+    'customer_information' => 'Customer information',
+    'delivery_note' => 'Delivery note',
+    'delivery_note_not_found' => 'This orders does not have a delivery note',
+    'persona_natural' => 'Persona natural',
+    'empresa' => 'Empresa',
+    'nombre_contacto' => 'Nombre contacto',
+    'nit' => 'NIT',
+    'nrc' => 'NRC',
+    'conteo_pedidos' => 'Conteo pedidos',
+    'valor_pedidos' => 'Valor de pedidos',
+
 
     // departamentos
     'departamento' => 'Departamento',
@@ -92,10 +114,10 @@ return [
     'cancelled' => 'cancelado',
     'en_preparacion' => 'en preparacion',
     'despachado' => 'despachado',
-    'en_ruta' => 'en ruta', 
-    'incompleto' => 'incompleto', 
+    'en_ruta' => 'en ruta',
+    'incompleto' => 'incompleto',
     'entregado' => 'entregado',
-    'cancelado' => 'cancelado', 
+    'cancelado' => 'cancelado',
     'reasignado' => 'reasignado',
-    
+
 ];

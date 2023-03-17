@@ -19,100 +19,165 @@
     </div>
     <div class="modal-layout-content">
       <pre-loader v-if="!hidePreLoader"></pre-loader>
-      <form class="form-row" v-else>
-        <div class="form-group col-md-6">
-          <label for="first_name">{{ trans('lang.first_name') }}</label>
-          <input v-validate="'required'" name="firstname" id="first_name" type="text" class="form-control"
-                 v-model="firstName"
-                 :class="{ 'is-invalid': submitted && errors.has('firstname') }">
-          <div v-if="submitted && errors.has('firstname')" class="heightError">
-            <small class="text-danger"
-                   v-show="errors.has('firstname')">{{
-                errors.first('firstname')
-              }}
-            </small>
-          </div>
+      <div v-else>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio"
+                 name="persona_natural"
+                 class="custom-control-input"
+                 id="persona_natural"
+                 checked="checked"
+                 @click="tipoClienteRdb(1)"
+                 value="P"
+                 v-model="tipoCliente"
+          />
+          <label class="custom-control-label"
+                 for="persona_natural">
+            {{ trans('lang.persona_natural') }}
+          </label>
         </div>
-        <div class="form-group col-md-6">
-          <label for="last_name">{{ trans('lang.last_name') }}</label>
-          <input v-validate="'required'" name="lastname" data-vv-as="last name" id="last_name"
-                 v-model="lastName" type="text" class="form-control"
-                 :class="{ 'is-invalid': submitted && errors.has('lastname') }">
-          <div v-if="submitted && errors.has('lastname')" class="heightError">
-            <small class="text-danger"
-                   v-show="errors.has('lastname')">{{
-                errors.first('lastname')
-              }}
-            </small>
-          </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio"
+                 name="empresa"
+                 class="custom-control-input"
+                 id="empresa"
+                 @click="tipoClienteRdb(0)"
+                 value="E"
+                 v-model="tipoCliente"
+          />
+          <label class="custom-control-label"
+                 for="empresa">
+            {{ trans('lang.empresa') }}
+          </label>
         </div>
-        <div class="form-group margin-top col-md-6">
-          <label for="email">{{ trans('lang.customer_email') }}</label>
-          <input v-validate="'email'" name="email" id="email" type="text" class="form-control" v-model="email"
-                 :class="{ 'is-invalid': submitted && errors.has('email') }">
-          <div class="heightError" v-if="submitted && errors.has('email')">
-            <small class="text-danger"
-                   v-show="errors.has('email')">{{
-                errors.first('email')
-              }}
-            </small>
-          </div>
+        <br>
+
+        <div v-if="tipoClienteP">
+          <form @submit.prevent="save('form-1')" class="form-row"
+                data-vv-scope="form-1">
+            <div class="form-group col-md-6">
+              <label for="phoneNumber">{{ trans('lang.phone_number') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="phoneNumber" v-validate="'required'" v-model="phoneNumber"
+                       :class="{'input': true, 'is-danger': errors.has('form-1.phoneNumber') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-1.phoneNumber')" class="text-danger">{{
+                    errors.first('form-1.phoneNumber')
+                  }}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="firstName">{{ trans('lang.first_name') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="firstName" v-validate="'required'" v-model="firstName"
+                       :class="{'input': true, 'is-danger': errors.has('form-1.firstName') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-1.firstName')" class="text-danger">{{
+                    errors.first('form-1.firstName')
+                  }}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="lastName">{{ trans('lang.last_name') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="lastName" v-validate="'required'" v-model="lastName"
+                       :class="{'input': true, 'is-danger': errors.has('form-1.lastName') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-1.lastName')" class="text-danger">{{
+                    errors.first('form-1.lastName')
+                  }}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="email">{{ trans('lang.customer_email') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="email" v-model="email"
+                       type="text" class="form-control">
+              </p>
+            </div>
+
+            <div class="col-12">
+              <button class="btn app-color mobile-btn" type="submit">
+                {{ trans('lang.save') }}
+              </button>
+              <button class="btn cancel-btn mobile-btn" data-dismiss="modal" @click.prevent="">
+                {{ trans('lang.cancel') }}
+              </button>
+            </div>
+          </form>
+
         </div>
-        <div class="form-group col-md-6 margin-top">
-          <label for="phoneNumber">{{ trans('lang.phone_number') }}</label>
-          <input v-validate="'required'" id="phoneNumber" name="phoneNumber"
-                 type="text" class="form-control" v-model="phoneNumber"
-                 :class="{ 'is-invalid': submitted && errors.has('phoneNumber') }">
-          <div v-if="submitted && errors.has('phoneNumber')" class="heightError">
-            <small class="text-danger"
-                   v-show="errors.has('phoneNumber')">{{
-                errors.first('phoneNumber')
-              }}
-            </small>
-          </div>
-          <!--
-            <vue-tel-input id="phoneNumber" mode="international" class="form-control" v-model="phoneNumber"
-         placeholder=""></vue-tel-input>
-          -->
+
+        <div v-if="tipoClienteE">
+          <form @submit.prevent="saveEmpresa('form-2')" class="form-row"
+                data-vv-scope="form-2">
+            <div class="form-group col-md-6">
+              <label for="phoneNumber">{{ trans('lang.phone_number') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="phoneNumber" v-validate="'required'" v-model="phoneNumber"
+                       :class="{'input': true, 'is-danger': errors.has('form-2.phoneNumber') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-2.phoneNumber')" class="text-danger">{{errors.first('form-2.phoneNumber')}}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="nombreContacto">{{ trans('lang.nombre_contacto') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="nombreContacto" v-validate="'required'" v-model="nombreContacto"
+                       :class="{'input': true, 'is-danger': errors.has('form-2.nombreContacto') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-2.nombreContacto')" class="text-danger">{{
+                    errors.first('form-2.nombreContacto')
+                  }}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="company">{{ trans('lang.empresa') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="company" v-validate="'required'" v-model="company"
+                       :class="{'input': true, 'is-danger': errors.has('form-2.company') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-2.company')" class="text-danger">{{
+                    errors.first('form-2.company')
+                  }}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="nit">{{ trans('lang.nit') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="nit" v-validate="'required'" v-model="nit"
+                       :class="{'input': true, 'is-danger': errors.has('form-2.nit') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-2.nit')" class="text-danger">{{errors.first('form-2.nit')}}</span>
+              </p>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="nrc">{{ trans('lang.nrc') }}</label>
+              <p class="control has-icon has-icon-right">
+                <input name="nrc" v-validate="'required'" v-model="nrc"
+                       :class="{'input': true, 'is-danger': errors.has('form-2.nrc') }" type="text"
+                       class="form-control">
+                <span v-show="errors.has('form-2.nrc')" class="text-danger">{{errors.first('form-2.nrc')}}</span>
+              </p>
+            </div>
+
+            <div class="col-12">
+              <button class="btn app-color mobile-btn" type="submit">
+                {{ trans('lang.save') }}
+              </button>
+              <button class="btn cancel-btn mobile-btn" data-dismiss="modal" @click.prevent="">
+                {{ trans('lang.cancel') }}
+              </button>
+            </div>
+          </form>
         </div>
-        <!--
-        <div class="form-group col-md-6">
-          <label for="address">{{ trans('lang.customer_address') }}</label>
-          <input id="address" type="text" class="form-control" v-model="address">
-        </div>
-        -->
-        <div class="form-group col-md-6">
-          <label for="tin_number">{{ trans('lang.tin_number') }}</label>
-          <input id="tin_number" type="text" class="form-control" v-model="tinNumber">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="company">{{ trans('lang.customer_company') }}</label>
-          <input id="company" type="text" class="form-control" v-model="company">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="customer-group">{{ trans('lang.customer_group') }}</label>
-          <select v-validate="'required'" v-model="customerGroup" name="customer-group"
-                  data-vv-as="customer group" id="customer-group" class="custom-select">
-            <option :value="group.id" v-for="group in groups"> {{ group.title }}</option>
-          </select>
-          <div v-if="submitted && errors.has('customer-group')" class="heightError">
-            <small class="text-danger" v-show="errors.has('customer-group')">{{
-                errors.first('customer-group')
-              }}
-            </small>
-          </div>
-        </div>
-        <div class="col-12">
-          <button class="btn app-color mobile-btn" type="submit" @click.prevent="save()">{{
-              trans('lang.save')
-            }}
-          </button>
-          <button class="btn cancel-btn mobile-btn" data-dismiss="modal" @click.prevent="">{{
-              trans('lang.cancel')
-            }}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -138,6 +203,13 @@ export default {
       customer: [],
       submitted: false,
       tinNumber: '',
+
+      tipoCliente: 'P',
+      tipoClienteP: true,
+      tipoClienteE: '',
+      nombreContacto: '',
+      nrc: '',
+      nit: '',
     }
   },
   created() {
@@ -146,19 +218,75 @@ export default {
       this.getCustomerData('/customer-data/' + this.id);
     }
   },
+  mounted() {
+    if (localStorage.getItem("customer_phone")) {
+      this.phoneNumber = localStorage.getItem("customer_phone");
+    }
+  },
   methods: {
-    save() {
+    validateForm(scope) {
+      this.$validator.validateAll(scope).then((result) => {
+        if (result) {
+          // eslint-disable-next-line
+          alert('Form Submitted!');
+        }
+      });
+    },
+    save(scope) {
       this.submitted = true;
-      this.$validator.validateAll().then((result) => {
+      this.$validator.validateAll(scope).then((result) => {
         if (result) {
           this.inputFields = {
             first_name: this.firstName,
             last_name: this.lastName,
             email: this.email,
-            company: this.company,
-            tin_number: this.tinNumber,
             phone_number: this.phoneNumber,
-            address: this.address,
+            customer_group: this.customerGroup,
+            tipo_cliente: this.tipoCliente,
+          };
+          if (navigator.onLine) {
+            if (this.id) {
+              this.postDataMethod('/customer/' + this.id, this.inputFields);
+            } else {
+              this.postDataMethod('/customer/store', this.inputFields);
+            }
+          } else {
+            $(this.modalID).modal('hide');
+            if (this.order_type != 'sales') {
+              this.$hub.$emit('customerAddedFromSales');
+              this.$hub.$emit('reloadDataTable');
+            }
+            this.$emit('newCustomer', this.inputFields);
+          }
+
+          let data = {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            email: this.email,
+            phone_number: this.phoneNumber,
+            customer_group: this.customerGroup,
+            tipo_cliente: this.tipoCliente,
+          };
+          this.$hub.$emit('customerInformation', data);
+          localStorage.removeItem("customer_phone");
+        }
+      });
+
+    },
+    saveEmpresa(scope) {
+      this.submitted = true;
+      this.$validator.validateAll(scope).then((result) => {
+        if (this.errors.any()) {
+          console.log(this.errors);
+        }
+        if (result) {
+          this.inputFields = {
+            phone_number: this.phoneNumber,
+            nombre_contacto: this.nombreContacto,
+            company: this.company,
+            nrc: this.nrc,
+            nit: this.nit,
+            tipo_cliente: this.tipoCliente,
             customer_group: this.customerGroup,
           };
           if (navigator.onLine) {
@@ -175,19 +303,19 @@ export default {
             }
             this.$emit('newCustomer', this.inputFields);
           }
+          let data = {
+            phone_number: this.phoneNumber,
+            nombre_contacto: this.nombreContacto,
+            company: this.company,
+            nrc: this.nrc,
+            nit: this.nit,
+            tipo_cliente: this.tipoCliente,
+            customer_group: this.customerGroup,
+          };
+          this.$hub.$emit('customerInformation', data);
+          localStorage.removeItem("customer_phone");
         }
       });
-      let data = {
-        first_name: this.firstName,
-        last_name: this.lastName,
-        email: this.email,
-        company: this.company,
-        tin_number: this.tinNumber,
-        phone_number: this.phoneNumber,
-        address: this.address,
-        customer_group: this.customerGroup,
-      };
-      this.$hub.$emit('customerInformation', data);
     },
     postDataThenFunctionality(response) {
       $(this.modalID).modal('hide');
@@ -196,7 +324,6 @@ export default {
         this.$hub.$emit('reloadDataTable');
       }
       this.$emit('newCustomer', response.data.data);
-
     },
     postDataCatchFunctionality(error) {
       let instance = this;
@@ -253,8 +380,19 @@ export default {
             instance.setPreLoader(true);
           },
       );
-    }
-
+    },
+    tipoClienteRdb(value) {
+      this.tipoCliente = value;
+      if (parseInt(this.tipoCliente) === 1) {
+        this.tipoClienteE = '';
+        this.tipoClienteP = true;
+        this.tipoCliente = 'P';
+      } else {
+        this.tipoClienteP = '';
+        this.tipoClienteE = true;
+        this.tipoCliente = 'E';
+      }
+    },
   },
 }
 </script>

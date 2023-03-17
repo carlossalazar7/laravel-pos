@@ -20,9 +20,12 @@ class CreateCustomersTable extends Migration
             $table->string('email')->nullable();
             $table->string('company')->nullable();
             $table->string('tin_number')->nullable();
-
-            $table->string('phone_number')->nullable();
+            $table->string('phone_number');
             $table->mediumText('address')->nullable();
+            $table->string('nombre_contacto')->nullable();
+            $table->string('nit')->nullable();
+            $table->string('nrc')->nullable();
+            $table->string('tipo_cliente')->nullable();
             $table->string('avatar')->default('default.jpg');
             $table->integer('customer_group')->default(1);
             $table->integer('created_by');

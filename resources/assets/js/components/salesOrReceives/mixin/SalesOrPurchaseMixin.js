@@ -178,8 +178,8 @@ export default {
         invoice_size: '',
         adjustedDiscount: 0,
         originalSoldProductForReturn: {},
-        addShipment: '',
-        addShipmentInfo: '',
+        //addShipment: '',
+        //addShipmentInfo: '',
         shippingAreaId: '',
         shippingArea: '',
         shippingPrice: '',
@@ -189,30 +189,32 @@ export default {
         shippingData: [],
         shippingInfo: {},
         shippingInfoGet: [],
-
         shippingAreaIdGet: 0,
         departamentosData: [],
         municipiosData: [],
         departamentos: [],
-
         customerId: 0,
         customerAddress: '',
-
         ordersSelected: [],
         selected: [],
         allSelected: false,
-
         customerPhone: '',
         customerData: [],
         customerName: '',
-        customerLastName: '',
+        //customerLastName: '',
         customerNotExists: false,
-
         deliveryNote: '',
+
+        conteoPedidos: 0,
+        valorPedidos: 0,
+        vendedorIdGet: 0,
+        vendedoresData: [],
     }),
     computed: {
         filteredHoldOrder() {
             this.ordersSelected = [];
+            this.valorPedidos = 0;
+            this.conteoPedidos = 0;
             this.allSelected = false;
             if (this.salesOrReceivingType === 'customer' && this.currentBranch != null && this.currentBranch.branch_type === 'restaurant') {
                 // Returns result in restaurant customer
@@ -228,18 +230,70 @@ export default {
                 return this.filteredHoldOrderSearch(this.internalTransferHoldOrders);
             } else if (this.salesOrReceivingType === 'customer' && this.currentBranch != null && this.currentBranch.branch_type !== 'restaurant') {
                 let areaId = this.shippingAreaIdGet;
-                if (areaId != 0) {
-                    return this.customerHoldOrders.filter(customerHoldOrder => {
-                        if (customerHoldOrder.shipping != null) {
-                            let shippingAreaId = customerHoldOrder.shipping.shipping_area_id;
-                            if (shippingAreaId === areaId) return customerHoldOrder.invoice_id.toLowerCase().includes(this.searchHoldOrder.toLowerCase());
+                let vendedorId = this.vendedorIdGet;
+                //FILTRO POR AREA DE ENVIO Y VENDEDOR
+                if (areaId != 0 && vendedorId != 0) {
+                    console.log("DIFRETE");
+                    return this.orderHoldItems.filter(customerHoldOrder => {
+                        //if (customerHoldOrder.shipping != null) {
+                        let shippingAreaId = customerHoldOrder.shipping.shipping_area_id;
+                        let vendedorIdGet = customerHoldOrder.createdBy;
+                        if (shippingAreaId === areaId && vendedorIdGet === vendedorId) {
+                            this.valorPedidos += customerHoldOrder.grandTotal;
+                            this.conteoPedidos++;
+                            return customerHoldOrder.invoice_id.toLowerCase().includes(this.searchHoldOrder.toLowerCase());
                         }
+                        //}
                     });
+                } else {
+                    //FILTRO POR AREA DE ENVIO
+                    if (areaId != 0) {
+                        return this.orderHoldItems.filter(customerHoldOrder => {
+                            if (customerHoldOrder.shipping != null) {
+                                let shippingAreaId = customerHoldOrder.shipping.shipping_area_id;
+                                if (shippingAreaId === areaId) {
+                                    this.valorPedidos += customerHoldOrder.grandTotal;
+                                    this.conteoPedidos++;
+                                    return customerHoldOrder.invoice_id.toLowerCase().includes(this.searchHoldOrder.toLowerCase());
+                                }
+                            }
+                        });
+                    } else {
+                        let orderItemsGranTotal = 0;
+                        this.conteoPedidos = this.orderHoldItems.length;
+                        this.orderHoldItems.forEach(function (element) {
+                            orderItemsGranTotal += element.grandTotal;
+                        });
+                        this.valorPedidos = orderItemsGranTotal;
+                    }
+                    this.valorPedidos = 0;
+                    this.conteoPedidos = 0;
+                    //FILTRO POR VENDEDOR
+                    if (vendedorId != 0) {
+                        return this.orderHoldItems.filter(customerHoldOrder => {
+                            if (customerHoldOrder.createdBy != null) {
+                                let vendedorIdGet = customerHoldOrder.createdBy;
+                                if (vendedorIdGet === vendedorId) {
+                                    this.valorPedidos += customerHoldOrder.grandTotal;
+                                    this.conteoPedidos++;
+                                    return customerHoldOrder.invoice_id.toLowerCase().includes(this.searchHoldOrder.toLowerCase());
+                                }
+                            }
+                        });
+                    } else {
+                        let orderItemsGranTotal = 0;
+                        this.conteoPedidos = this.orderHoldItems.length;
+                        this.orderHoldItems.forEach(function (element) {
+                            orderItemsGranTotal += element.grandTotal;
+                        });
+                        this.valorPedidos = orderItemsGranTotal;
+                    }
                 }
                 // Returns result in retail customer
-                return this.filteredHoldOrderSearch(this.customerHoldOrders);
+                return this.filteredHoldOrderSearch(this.orderHoldItems);
             }
         },
+
     },
     watch: {
         discount: function (newVal, oldVal) {
@@ -422,6 +476,16 @@ export default {
             "/get-departamentos",
             response => {
                 this.departamentosData = response.data.departments;
+                for (var i = 0; i < this.departamentosData.length; i++) {
+                    let deptoName = this.departamentosData[i].name;
+                    this.departamentosData[i].label = deptoName;
+                }
+            },
+        );
+        this.axiosGet(
+            "/get-vendedores",
+            response => {
+                this.vendedoresData = response.data.users;
             },
         );
 
@@ -511,10 +575,14 @@ export default {
 
         //emit for customer info
         this.$hub.$on('customerInformation', function (customerInfo) {
-            instance.customerName = customerInfo.first_name;
-            instance.customerLastName = customerInfo.last_name;
-            instance.customerAddress = customerInfo.address;
-            instance.customerPhone = customerInfo.phone_number;
+            if (customerInfo.first_name) {
+                instance.customerName = customerInfo.first_name + " " + customerInfo.last_name;
+                instance.customerAddress = customerInfo.address;
+                instance.customerPhone = customerInfo.phone_number;
+            } else {
+                instance.customerName = customerInfo.nombre_contacto;
+                instance.customerPhone = customerInfo.phone_number;
+            }
             instance.customerData = customerInfo;
             $("#shipping-information-modal").modal('show');
         });
@@ -1530,7 +1598,6 @@ export default {
                 this.$emit('addShipmentInfo', this.shippingInfo, true);
             } else {
                 this.addShipmentInfo = false;
-                console.log(this.addShipment);
                 this.$emit('addShipmentInfo', this.shippingInfo, false);
                 $('#shippment-orders-modal').modal('hide');
             }
@@ -1999,7 +2066,7 @@ export default {
             this.customerHoldOrders = this.getHoldOrdersBySalesOrReceivingType(this.orderHoldItems, 'customer');
 
             if (instance.salesOrReceivingType === 'internal') instance.countHoldOrder = instance.internalHoldOrders.length;
-            else instance.countHoldOrder = instance.customerHoldOrders.length;
+            else instance.countHoldOrder = instance.orderHoldItems.length;
             this.removeBookedTableIfEmpty();
         },
         getHoldOrdersBySalesOrReceivingType(orderHoldItems, type) {
@@ -2076,8 +2143,15 @@ export default {
             else if (type === 'takeAway') this.isPlaceOrderActive = false;
         },
         openHoldOrderModalFromCart() {
+            let orderItemsGranTotal = 0;
             $('#hold-orders-modal').modal('show');
             if (!this.isCartComponentActive) $('#cart-modal-for-mobile-view').modal('hide');
+
+            this.conteoPedidos = this.orderHoldItems.length;
+            this.orderHoldItems.forEach(function (element) {
+                orderItemsGranTotal += element.grandTotal;
+            });
+            this.valorPedidos = orderItemsGranTotal;
         },
         openModalShippmentFromCart() {
             $('#shippment-orders-modal').modal('show');
@@ -2107,7 +2181,6 @@ export default {
                                     response2 = responseData;
                                     if (response2.length > 0) {
                                         if (this.ordersSelected.length > 0) {
-                                            console.log(this.ordersSelected);
                                             this.showSuccessAlert("Generando pdf...");
                                             axios({
                                                 url: '/get-order-by-invoice-id',
@@ -2136,7 +2209,8 @@ export default {
                                 } else {
                                     this.showSuccessAlert("No se pudo completar la acción.");
                                 }
-                            })
+                            });
+
                     }
                 });
         },
@@ -2157,15 +2231,22 @@ export default {
                     if (response.data.customer) {
                         $('#shippment-orders-modal').modal('hide');
                         this.customerData = response.data.customer;
-                        this.customerId = this.customerData[0].id;
-                        this.customerName = this.customerData[0].first_name;
-                        this.customerLastName = this.customerData[0].last_name;
-                        this.customerAddress = this.customerData[0].address;
-                        this.customerPhone = this.customerData[0].phone_number;
+                        if (this.customerData[0].nombre_contacto == null) {
+                            this.customerId = this.customerData[0].id;
+                            this.customerName = this.customerData[0].first_name + " " + this.customerData[0].last_name;
+                            this.customerAddress = this.customerData[0].address;
+                            this.customerPhone = this.customerData[0].phone_number;
+                        } else {
+                            this.customerId = this.customerData[0].id;
+                            this.customerName = this.customerData[0].nombre_contacto;
+                            this.customerAddress = this.customerData[0].address;
+                            this.customerPhone = this.customerData[0].phone_number;
+                        }
                         $('#shipping-information-modal').modal('show');
                     } else {
+                        //GUARDAR TELEFONO LOCAL
+                        localStorage.setItem("customer_phone", this.customerPhone);
                         this.customerNotExists = true;
-                        console.log(this.customerId);
                         this.showSuccessAlert("No se encontro ningún cliente.");
                     }
                 },
@@ -2211,8 +2292,8 @@ export default {
                             shippingAreaSddress: this.customerAddress,
                             branchId: this.currentBranch.id,
                             orderId: (numeroOrden != null) ? numeroOrden : this.finalCart.orderID,
-                            departamento: this.shippingDepartamento,
-                            municipio: this.shippingMunicipio,
+                            departamento: this.shippingDepartamento.id,
+                            municipio: this.shippingMunicipio.id,
                             customerId: this.customerId,
                             deliveryNote: this.deliveryNote,
                         }
@@ -2277,7 +2358,7 @@ export default {
                     } else {
                         this.shippingInfoGet = [];
                     }
-                })
+                });
 
         },
         makeFinalCart(status) {
@@ -2453,12 +2534,16 @@ export default {
             this.makeFinalCart('done');
         },
         callMunicipio() {
-            let departamentoId = document.getElementById("shippingDepartamento").value;
-            this.axiosGet("/get-municipios-departamentoId/" + departamentoId,
+            //let departamentoId = document.getElementById("shippingDepartamento").value;
+            this.axiosGet("/get-municipios-departamentoId/" + this.shippingDepartamento.id,
                 response => {
                     this.municipiosData = response.data.municipios;
+                    for (var i = 0; i < this.municipiosData.length; i++) {
+                        let municipioName = this.municipiosData[i].name;
+                        this.municipiosData[i].label = municipioName;
+                    }
                 },
             );
-        }
+        },
     }
 }

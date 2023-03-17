@@ -6,6 +6,7 @@ use App\Libraries\AllSettingFormat;
 use App\Models\CashRegister;
 use App\Models\CashRegisterLog;
 use App\Models\OrderItems;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\PermissionController;
@@ -224,5 +225,11 @@ class CashRegisterController extends Controller
     public function cashRegisterInfo($id)
     {
         return CashRegister::cashRegisterInfo($id);
+    }
+
+      public function getVendedores()
+    {
+        $users = User::all();
+        return ['users' => $users];
     }
 }
