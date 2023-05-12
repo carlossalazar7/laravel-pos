@@ -85,4 +85,6 @@ Route::post('cash-register-open-close', [CashRegisterController::class, 'cashReg
 Route::post('/register-sales-info/{id}', [CashRegisterController::class, 'registerSalesInfo']);
 Route::get('/cash-register-total-sales-balance/{id}', [CashRegisterController::class, 'cashRegisterInfo']);
 
+Route::post('/register-sales-info-preparacion/{id}', [CashRegisterController::class, 'registerSalesInfoEnPreparacion']);
+
 Route::get('/get-vendedores', [CashRegisterController::class, 'getVendedores']);

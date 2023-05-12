@@ -45,6 +45,20 @@ class GuideController extends Controller
         return view('guides.Guides', ['tab_name' => $tabName, 'route_name' => $routeName]);
     }
 
+    public function ordenes()
+    {
+        $guides = Guide::all();
+        $tabName = '';
+        $routeName = '';
+        if (isset($_GET['tab_name'])) {
+            $tabName = $_GET['tab_name'];
+        }
+        if (isset($_GET['route_name'])) {
+            $routeName = $_GET['route_name'];
+        }
+        return view('sales.RegisterInfoIndex', ['tab_name' => $tabName, 'route_name' => $routeName]);
+    }
+
     public function getAllGuides(Request $request)
     {
         if ($request->columnKey) $columnName = $request->columnKey;

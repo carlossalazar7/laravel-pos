@@ -15,5 +15,6 @@ Route::post('closeGuide/{id}', [GuideController::class, 'closeGuide'])->middlewa
 
 
 Route::get('guide', [GuideController::class, 'guide'])->middleware('permissions:can_manage_guides');
+Route::get('ordenesInfo', [GuideController::class, 'ordenes'])->middleware('permissions:can_manage_ordenes');
 Route::get('/generate-pdf-guide/{id}', [GuideController::class, 'generatePDF'])->middleware('permissions:can_manage_guides');;
 //Route::get('guides', [GuideController::class, 'index'])->middleware('permissions:can_manage_guides');

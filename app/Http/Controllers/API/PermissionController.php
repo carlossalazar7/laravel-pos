@@ -811,4 +811,17 @@ class PermissionController extends Controller
         }
     }
 
+    public function ordenesManagePermission()
+    {
+        if ($this->permissionCheck()->hasPermission('can_manage_ordenes') || $this->permissionCheck()->isAdmin()) {
+            return 'manage';
+        } else {
+            if ($this->permissionCheck()->hasPermission('can_see_ordenes')) {
+                return 'read_only';
+            } else {
+                return 0;
+            }
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ import {delayCall} from "../../../helper/delayCall";
 import {cartItemsToCookie, deleteCartItemsFromCookieOrDB, subTotalAmount} from "../helper/salesComponentCommonMethod";
 import {concatProductArray, productConverter} from "../helper/productConverter";
 import {productRequestGenerator} from "../helper/helpers";
+import {storeInvoice} from "./PaymentDetailsMixin";
 
 export default {
     data: () => ({
@@ -2197,6 +2198,7 @@ export default {
                                                 this.ordersSelected = [];
                                                 this.allSelected = false;
                                                 this.getHoldOrders();
+                                                //this.storeInvoice();
                                             });
                                         } else {
                                             this.showSuccessAlert("Seleccione un pedido primero");

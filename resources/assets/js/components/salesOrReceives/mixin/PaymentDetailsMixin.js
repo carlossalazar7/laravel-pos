@@ -336,6 +336,7 @@ export default {
             if (parseInt(this.addShipment) === 1) {
 
                 this.$validator.validateAll().then((result) => {
+                    console.log(result);
                     if (result) {
                         let cartItemsToStore = this.finalCart;
                         cartItemsToStore.shippingPrice = this.shippingPrice;
@@ -347,6 +348,7 @@ export default {
                     }
                 });
             } else {
+                console.log("here");
                 this.storeInvoiceCart(action);
             }
         },
@@ -364,6 +366,7 @@ export default {
                 PaymentTime: moment().format('YYYY-MM-DD H:mm'),
                 options: this.paymentOptions,
             });
+            console.log(this.paymentListData);
             this.paymentListData.forEach(function (payment, index, paymentListArray) {
                 if (payment.paid) {
                     paidAmount += parseFloat(payment.paid);
@@ -373,7 +376,7 @@ export default {
             });
 
             if ((parseInt(this.balance) === 0 || this.paidAmount == this.finalCart.grandTotal) || (parseInt(this.paidAmount) === 0 && this.salesOrReceivingType === "internal-transfer")) {
-
+                console.log("here2");
                 let cartItemsToStore = this.finalCart,
                     postURL;
 
@@ -395,6 +398,7 @@ export default {
 
 
                 if (this.isCashRegisterBranch === true) {
+                    console.log("here3");
                     cartItemsToStore.cashRagisterId = this.selectedCashRegisterID;
                 }
 
@@ -402,6 +406,7 @@ export default {
                 cartItemsToStore.time = moment().format('YYYY-MM-DD h:mm A');
 
                 if (action === 'continue') {
+                    console.log("here4");
                     cartItemsToStore.status = 'pending';
 
                     cartItemsToStore.orderType === 'sales' ? postURL = '/continue-sale' : postURL = '/continue-purchase';
@@ -419,6 +424,7 @@ export default {
                    }
                 }
             } else {
+                console.log("here else");
                 instance.noRoundingAmount = parseFloat(instance.finalCart.grandTotal - paidAmount);
                 instance.paid = parseFloat(instance.rounding(instance.noRoundingAmount));
                 instance.paymentValue = instance.paid;

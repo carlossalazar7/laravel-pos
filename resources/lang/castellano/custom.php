@@ -30,6 +30,13 @@ return [
     'customer_information' => 'Customer information',
     'delivery_note' => 'Delivery note',
     'delivery_note_not_found' => 'This orders does not have a delivery note',
+    'persona_natural' => 'Persona natural',
+    'empresa' => 'Empresa',
+    'nombre_contacto' => 'Nombre contacto',
+    'nit' => 'NIT',
+    'nrc' => 'NRC',
+    'conteo_pedidos' => 'Conteo pedidos',
+    'valor_pedidos' => 'Valor de pedidos',
 
     // departamentos
     'departamento' => 'Departamento',

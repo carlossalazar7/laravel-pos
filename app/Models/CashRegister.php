@@ -83,6 +83,31 @@ class CashRegister extends BaseModel
         }
     }
 
+    public static function registerSaleInfoPreparacion($columnName, $columnSortedBy, $limit, $offset, $id)
+    {
+        $todaydate = date('Y-m-d');
+
+        $data = Order::leftJoin('customers', 'customers.id', '=', 'orders.customer_id')
+            ->select('orders.*',
+                DB::raw("CONCAT(customers.first_name,' ',customers.last_name)  AS customer"),
+                DB::raw("customers.id as customer_id")
+            )
+            ->where('orders.date', $todaydate)
+            ->where('orders.branch_id', $id)
+            ->where('orders.order_type', '=', 'sales')
+            ->where('orders.status', '=', 'en preparacion')
+            ->where('orders.created_by', Auth::user()->id);
+
+        if (empty($requestType)) {
+            $count = $data->get()->count();
+            $allData = $data->get();
+            $data = $data->orderBy($columnName, $columnSortedBy)->take($limit)->skip($offset)->get();
+            return ['data' => $data, 'allData' => $allData, 'count' => $count];
+        } else {
+            return $data->orderBy($columnName, $columnSortedBy)->get();
+        }
+    }
+
     public static function cashRegisterInfo($id)
     {
         $user_id = Auth::user()->id;

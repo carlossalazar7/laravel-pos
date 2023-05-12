@@ -329,7 +329,9 @@ Vue.component('sale-date-edit', require('./components/salesOrReceives/modal/Sale
 Vue.component('cart-component', require('./components/salesOrReceives/cart/CartComponent.vue'));
 Vue.component('tax-edit-modal', require('./components/salesOrReceives/modal/TaxEditModal.vue'));
 Vue.component('table-selection-modal', require('./components/salesOrReceives/modal/TableSelectionModal.vue'));
+Vue.component('register-info-index', require('./components/salesOrReceives/registerInfo/RegisterInfoIndex.vue'));
 Vue.component('register-info-modal', require('./components/salesOrReceives/registerInfo/RegisterInfo.vue'));
+Vue.component('register-info-modal-preparacion', require('./components/salesOrReceives/registerInfo/RegisterInfoEnPreparacion.vue'));
 Vue.component('datatable-invoice-modal-component', require('./components/salesOrReceives/modal/DatatableInvoiceModalComponent'));
 
 //Invoice

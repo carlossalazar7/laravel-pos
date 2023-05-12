@@ -222,12 +222,26 @@ class CashRegisterController extends Controller
         return ['datarows' => $registerInfoSale['data'], 'count' =>$registerInfoSale['count']];
     }
 
+    public function registerSalesInfoEnPreparacion(Request $request, $id)
+    {
+        if ($request->columnKey) $columnName = $request->columnKey;
+        if ($request->rowLimit) $limit = $request->rowLimit;
+        $offset = $request->rowOffset;
+        $registerInfoSale = CashRegister::registerSaleInfoPreparacion($columnName, $request->columnSortedBy, $limit, $offset, $id);
+
+        foreach ($registerInfoSale['data'] as $datarow) {
+            if ($datarow->customer == null) $datarow->customer = Lang::get('lang.walk_in_customer');
+        }
+
+        return ['datarows' => $registerInfoSale['data'], 'count' =>$registerInfoSale['count']];
+    }
+
     public function cashRegisterInfo($id)
     {
         return CashRegister::cashRegisterInfo($id);
     }
 
-      public function getVendedores()
+    public function getVendedores()
     {
         $users = User::all();
         return ['users' => $users];
